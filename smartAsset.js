@@ -8,15 +8,17 @@ contract('SmartAsset', function(accounts) {
 
   it("Should create asset", function() {
     var smartAsset;
+    var smartAssetGeneratedId;
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
       return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
-    }).then(function(assertId) {
-      return smartAsset.getAssetById.call(1);
+    }).then(function(result) {
+      smartAssetGeneratedId = result.logs[0].args.id.c[0];
+      return smartAsset.getAssetById.call(smartAssetGeneratedId);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.equal(returnValue[0], 1);
+      assert.equal(returnValue[0], smartAssetGeneratedId);
       assert.equal(toAscii(returnValue[1]), "BMW X5");
       assert.equal(toAscii(returnValue[2]), "photo_url");
       assert.equal(toAscii(returnValue[3]), "document_url");
