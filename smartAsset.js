@@ -11,18 +11,16 @@ contract('SmartAsset', function(accounts) {
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.createAsset("abc", "X5", "BMW", 2011, "Black");
-    }).then(function(returnValue) {
-      return smartAsset.getAssetByVin.call("abc");
+      return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
+    }).then(function(assertId) {
+      return smartAsset.getAssetById.call(1);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.equal(toAscii(returnValue[0]), "abc");
-      assert.equal(toAscii(returnValue[1]), "X5");
-      assert.equal(toAscii(returnValue[2]), "BMW");
-      assert.equal(returnValue[3].c, 2011);
-      assert.equal(toAscii(returnValue[4]), "Black");
-      assert.equal(returnValue[5].c, 0);
-    })
+      assert.equal(returnValue[0], 1);
+      assert.equal(toAscii(returnValue[1]), "BMW X5");
+      assert.equal(toAscii(returnValue[2]), "photo_url");
+      assert.equal(toAscii(returnValue[3]), "document_url");
+    });
   });
 
   it("Should return my assets", function() {
@@ -30,7 +28,7 @@ contract('SmartAsset', function(accounts) {
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.createAsset("second", "A8", "Audi", 2012, "White");
+      return smartAsset.createAsset("Audi A8", "a_photo", "a_document");
     }).then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call();
     }).then(function(returnValue) {
@@ -39,36 +37,34 @@ contract('SmartAsset', function(accounts) {
     }).then(function(returnValue) {
       console.log(returnValue);
 
-      var vins = returnValue[0];
-      assert.equal(toAscii(vins[0]), "abc");
-      assert.equal(toAscii(vins[1]), "second");
+      var ids = returnValue[0];
+      assert.equal(ids[0], 1);
+      assert.equal(ids[1], 2);
 
-      var models = returnValue[1];
-      assert.equal(toAscii(models[0]), "X5");
-      assert.equal(toAscii(models[1]), "A8");
+      var descriptions = returnValue[1];
+      assert.equal(toAscii(descriptions[0]), "BMW X5");
+      assert.equal(toAscii(descriptions[1]), "Audi A8");
 
-      var brands = returnValue[2];
-      assert.equal(toAscii(brands[0]), "BMW");
-      assert.equal(toAscii(brands[1]), "Audi");
+      var photoUrl = returnValue[2];
+      assert.equal(toAscii(photoUrl[0]), "photo_url");
+      assert.equal(toAscii(photoUrl[1]), "a_photo");
 
-      var years = returnValue[3];
-      assert.equal(years[0], 2011);
-      assert.equal(years[1], 2012);
-
-      var colors = returnValue[4];
-      assert.equal(toAscii(colors[0]), "Black");
-      assert.equal(toAscii(colors[1]), "White");
+      var documents = returnValue[3];
+      assert.equal(toAscii(documents[0]), "document_url");
+      assert.equal(toAscii(documents[1]), "a_document");
     });
   });
 
   it("Should remove asset", function() {
     var smartAsset;
 
+    var assetIdToRemove = 1;
+
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.removeAsset("abc");
+      return smartAsset.removeAsset(assetIdToRemove);
     }).then(function(returnValue) {
-      return smartAsset.getAssetByVin.call("abc");
+      return smartAsset.getAssetById.call(assetIdToRemove);
     }).then(function(returnValue) {
       assert(false, "Throw was expected but didn't.");
     }).catch(function(error) {
@@ -83,7 +79,7 @@ contract('SmartAsset', function(accounts) {
 
   it("getAssetByVin have to throw expection if asset is absent", function() {
     return SmartAsset.deployed().then(function(instance) {
-      return instance.getAssetByVin.call("unknown");
+      return instance.getAssetById.call(3);
     }).then(function(returnValue) {
       assert(false, "Throw was expected but didn't.");
     }).catch(function(error) {
