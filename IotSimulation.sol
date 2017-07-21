@@ -34,7 +34,7 @@ contract IotSimulation {
      * @param id Vehicle identification number
      * @return result Execution result
      */
-    function generateIotOutput(uint id) returns (bool result) {
+    function generateIotOutput(uint id, uint salt) returns (bool result) {
         if (id == 0) {
             throw;
         }
@@ -42,7 +42,7 @@ contract IotSimulation {
             throw;
         }
 
-        uint number = id;
+        uint number = id + salt;
         SmartAsset asset = SmartAsset(smartAssetAddr);
         asset.updateViaIotSimulator(
             id,
