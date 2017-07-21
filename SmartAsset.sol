@@ -6,7 +6,7 @@ pragma solidity ^0.4.10;
  */
 contract SmartAsset {
     // Workflow stages
-    enum State { ManualDataAreEntered,  SensorDataAreCollected, PriceFromFormula1IsCalculated, OnSale }
+    enum State { ManualDataAreEntered,  SensorDataAreCollected, PriceFromFormula1IsCalculated, OnSale, FailedAssetModified }
 
     address iotSimulationAddr;
 
@@ -130,7 +130,6 @@ contract SmartAsset {
             uint,
             uint,
             bool,
-            address,
             State state)
     {
         SmartAssetData memory a = smartAssetById[id];
@@ -140,7 +139,7 @@ contract SmartAsset {
             throw;
         }
 
-        return (a.id, a.b1, a.b2, a.b3, a.u1, a.u2, a.bool1, a.owner, a.state);
+        return (a.id, a.b1, a.b2, a.b3, a.u1, a.u2, a.bool1, a.state);
     }
 
     /**
@@ -234,12 +233,21 @@ contract SmartAsset {
         bool smokingCar
     ) onlyIotSimulator()
     {
-        //validate if asset is present
-        _getAssetById(id);
+        //validates if asset is present
+        SmartAssetData memory asset = _getAssetById(id);
 
-        smartAssetById[id].u1 = millage;
-        smartAssetById[id].u2 = damaged;
-        smartAssetById[id].bool1 = smokingCar;
+        if (asset.state == State.ManualDataAreEntered) {
+            smartAssetById[id].u1 = millage;
+            smartAssetById[id].u2 = damaged;
+            smartAssetById[id].bool1 = smokingCar;
+            smartAssetById[id].state = State.SensorDataAreCollected;
+        } else if (asset.u1 != millage || asset.u2 != damaged || asset.bool1 != smokingCar) {
+            smartAssetById[id].state = State.FailedAssetModified;
+            //delete from available for sale
+            if (asset.state == State.OnSale) {
+                delete smartAssetsOnSale[asset.indexInSmartAssetsOnSale];
+            }
+        }
     }
 
     /**
