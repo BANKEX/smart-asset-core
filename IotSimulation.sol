@@ -9,7 +9,9 @@ contract SmartAsset {
         uint id,
         uint millage,
         uint damaged,
-        bool smokingCar);
+        bool smokingCar,
+        uint latitude,
+        uint longitude);
 }
 
 
@@ -48,7 +50,9 @@ contract IotSimulation {
             id,
             generateMillageResult(number),
             generateDamageResult(number),
-            generateSmokingCarResult(number)
+            generateSmokingCarResult(number),
+            generateLatitudeResult(number),
+            generateLongitudeResult(number)
         );
         return true;
     }
@@ -90,6 +94,24 @@ contract IotSimulation {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @dev Generates latitude result base on provided number
+     * @param num Number that is used for result calculation
+     * @return latitude Latitude value
+     */
+    function generateLatitudeResult(uint num) constant private returns (uint latitude) {
+        return num * num * num;
+    }
+
+    /**
+     * @dev Generates longitude result base on provided number
+     * @param num Number that is used for result calculation
+     * @return longitude Longitude value
+     */
+    function generateLongitudeResult(uint num) constant private returns (uint longitude) {
+        return num * num;
     }
 
     /**

@@ -30,6 +30,8 @@ contract SmartAsset {
         bytes32 b3;
         uint u1;
         uint u2;
+        uint u3;
+        uint u4;
         bool bool1;
         State state;
         address owner;
@@ -78,6 +80,8 @@ contract SmartAsset {
             b1,
             b2,
             b3,
+            0,
+            0,
             0,
             0,
             false,
@@ -129,8 +133,11 @@ contract SmartAsset {
             bytes32,
             uint,
             uint,
+            uint,
+            uint,
             bool,
-            State state)
+            State state,
+            address)
     {
         SmartAssetData memory a = smartAssetById[id];
 
@@ -139,7 +146,7 @@ contract SmartAsset {
             throw;
         }
 
-        return (a.id, a.b1, a.b2, a.b3, a.u1, a.u2, a.bool1, a.state);
+        return (a.id, a.b1, a.b2, a.b3, a.u1, a.u2, a.u3, a.u4, a.bool1, a.state, a.owner);
     }
 
     /**
@@ -230,7 +237,9 @@ contract SmartAsset {
         uint id,
         uint millage,
         uint damaged,
-        bool smokingCar
+        bool smokingCar,
+        uint longitude,
+        uint latitude
     ) onlyIotSimulator()
     {
         //validates if asset is present
@@ -240,6 +249,8 @@ contract SmartAsset {
             smartAssetById[id].u1 = millage;
             smartAssetById[id].u2 = damaged;
             smartAssetById[id].bool1 = smokingCar;
+            smartAssetById[id].u3 = longitude;
+            smartAssetById[id].u4 = latitude;
             smartAssetById[id].state = State.SensorDataAreCollected;
         } else if (asset.u1 != millage || asset.u2 != damaged || asset.bool1 != smokingCar) {
             smartAssetById[id].state = State.FailedAssetModified;
