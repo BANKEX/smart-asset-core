@@ -39,7 +39,9 @@ contract('IotSimulation', function(accounts) {
                 assert.equal(toAscii(returnValue[3]), "document_url");
                 assert.isAbove(returnValue[4], 0, 'millage should be bigger than 0');
                 assert.isAbove(returnValue[5], 0, 'damage should be bigger than 0');
-                assert.equal(returnValue[7], 4, 'State should be equal to number of SensorDataAreCollected state in the state enum list');
+                assert.isAbove(returnValue[6], 0, 'latitude should be bigger than 0');
+                assert.isAbove(returnValue[7], 0, 'longitude should be bigger than 0');
+                assert.equal(returnValue[9], 4, 'State should be equal to number of SensorDataAreCollected state in the state enum list');
              });
      });
 });

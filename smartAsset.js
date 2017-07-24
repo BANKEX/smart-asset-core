@@ -22,6 +22,7 @@ contract('SmartAsset', function(accounts) {
       assert.equal(toAscii(returnValue[1]), "BMW X5");
       assert.equal(toAscii(returnValue[2]), "photo_url");
       assert.equal(toAscii(returnValue[3]), "document_url");
+      assert.equal(returnValue[10], accounts[0]);
     });
   });
 
