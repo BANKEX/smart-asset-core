@@ -252,7 +252,7 @@ contract SmartAsset {
             smartAssetById[id].u3 = longitude;
             smartAssetById[id].u4 = latitude;
             smartAssetById[id].state = State.SensorDataAreCollected;
-        } else if (asset.u1 != millage || asset.u2 != damaged || asset.bool1 != smokingCar) {
+        } else if (asset.u1 != millage || asset.u2 != damaged || asset.bool1 != smokingCar || asset.u3 != longitude || asset.u4 != latitude) {
             smartAssetById[id].state = State.FailedAssetModified;
             //delete from available for sale
             if (asset.state == State.OnSale) {
