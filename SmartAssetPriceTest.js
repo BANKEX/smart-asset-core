@@ -9,7 +9,7 @@ function toAscii(input) {
 
 contract('IotSimulation', function(accounts) {
 
-    it("Simulation of IoT change data. Should change status to FailedAssetModified", function() {
+    it("Check that price is calculated after IoT simulation step", function() {
          var smartAssetGeneratedId;
          var smartAsset;
          var simulator;
@@ -29,24 +29,23 @@ contract('IotSimulation', function(accounts) {
                  return SmartAssetPrice.deployed();
              })
              .then(function(instance) {
-                 return instance.setSmartAssetAddr(SmartAsset.address);
+                 smartAssetPrice = instance;
+                 return smartAssetPrice.setSmartAssetAddr(SmartAsset.address);
              })
              .then(function(result) {
                  return simulator.generateIotOutput(smartAssetGeneratedId, 0);
              })
              .then(function(result) {
-                 return simulator.generateIotOutput(smartAssetGeneratedId, 1921);
+                 return smartAssetPrice.getSmartAssetPrice(smartAssetGeneratedId);
+             })
+             .then(function(returnValue) {
+                assert.isAbove(returnValue, 0, 'price should be bigger than 0');
              })
              .then(function(result) {
                  return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(returnValue[0], smartAssetGeneratedId);
-                assert.equal(toAscii(returnValue[1]), "BMW X5");
-                assert.equal(toAscii(returnValue[2]), "photo_url");
-                assert.equal(toAscii(returnValue[3]), "document_url");
-                assert.isAbove(returnValue[4], 0, 'millage should be bigger than 0');
-                assert.isAbove(returnValue[5], 0, 'damage should be bigger than 0');
+                 assert.equal(returnValue[7], 1, 'state should be PriceFromFormula1IsCalculated = position 1 in State enum list');
              });
      });
 });
