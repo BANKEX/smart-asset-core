@@ -102,7 +102,7 @@ contract IotSimulation {
      * @return latitude Latitude value
      */
     function generateLatitudeResult(uint num) constant private returns (uint latitude) {
-        return num * num * num;
+        return num * num * num % hundred;
     }
 
     /**
@@ -111,7 +111,7 @@ contract IotSimulation {
      * @return longitude Longitude value
      */
     function generateLongitudeResult(uint num) constant private returns (uint longitude) {
-        return num * num;
+        return num * num % hundred;
     }
 
     /**
