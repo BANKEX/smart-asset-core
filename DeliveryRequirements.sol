@@ -20,43 +20,40 @@ contract DeliveryRequirements {
         _;
     }
 
-    mapping(bytes32 => LatLong) countryMapping;
-    bytes32[] countries;
+    mapping(bytes32 => LatLong) cityMapping;
+    bytes32[] cities;
     SmartAsset smartAsset;
     address owner;
     uint coefficient;
     uint DEFAULT_COEFFICIENT = 2226389000000000;
 
-    function DeliveryRequirements(address _address) {
+    function DeliveryRequirements(address _smartAssetAddress) {
         owner = msg.sender;
-        smartAsset = SmartAsset(_address);
+        smartAsset = SmartAsset(_smartAssetAddress);
 
-        countryMapping["Russia, Moscow"] = LatLong(55, 37);
-        countries.push("Russia, Moscow");
+        cityMapping["Moscow"] = LatLong(55, 37);
+        cities.push("Moscow");
 
-        countryMapping["Russia, Saint-Petersburg"] = LatLong(59, 30);
-        countries.push("Russia, Saint-Petersburg");
+        cityMapping["Saint-Petersburg"] = LatLong(59, 30);
+        cities.push("Saint-Petersburg");
 
 
-        countryMapping["Ukraine, Kiev"] = LatLong(50, 30);
-        countries.push("Ukraine, Kiev");
+        cityMapping["Kiev"] = LatLong(50, 30);
+        cities.push("Kiev");
 
-        countryMapping["Ukraine, Kiev"] = LatLong(50, 30);
-        countries.push("Ukraine, Kiev");
+        cityMapping["Lviv"] = LatLong(49, 24);
+        cities.push("Lviv");
 
-        countryMapping["Ukraine, Lviv"] = LatLong(49, 24);
-        countries.push("Ukraine, Lviv");
-
-        countryMapping["Poland, Lublin"] = LatLong(51, 22);
-        countries.push("Poland, Lublin");
+        cityMapping["Lublin"] = LatLong(51, 22);
+        cities.push("Lublin");
     }
 
-    function getAvailableCountries() constant returns(bytes32[]) {
-        return countries;
+    function getAvailableCities() constant returns(bytes32[]) {
+        return cities;
     }
 
-    function calculatePrice(uint id, bytes32 country) constant returns(uint) {
-        LatLong latLong = countryMapping[country];
+    function calculatePrice(uint id, bytes32 cityName) constant returns(uint) {
+        LatLong latLong = cityMapping[cityName];
 
         var (lat2, long2) = smartAsset.getAssetLocationById(id);
 
@@ -67,8 +64,8 @@ contract DeliveryRequirements {
 
     }
 
-    function addCountry(bytes32 country, uint lat, uint long) onlyOwner() {
-        countryMapping[country] = LatLong(lat, long);
+    function addCity(bytes32 cityName, uint lat, uint long) onlyOwner() {
+        cityMapping[cityName] = LatLong(lat, long);
     }
 
     function setCoefficientInWei(uint _wei) onlyOwner() {
