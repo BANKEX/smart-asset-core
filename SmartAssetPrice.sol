@@ -81,7 +81,7 @@ contract SmartAssetPrice {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) =  asset.getAssetById(assetId);
         //check scenario when there is no id in map
-        return sha256(id, b1, b2, b3, u1, u2, bool1) == smartAssetPriceById[assetId].hash;
+        return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == smartAssetPriceById[assetId].hash;
     }
 
     /**
