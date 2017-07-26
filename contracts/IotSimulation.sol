@@ -14,6 +14,15 @@ contract SmartAsset {
         uint longitude);
 }
 
+/**
+ * Interface for SmartAssetAvailability contract
+ */
+contract SmartAssetAvailability {
+    function updateViaIotSimulator(
+        uint id,
+        bool availability);
+}
+
 
 /**
  * @title IotSimulation contract
@@ -53,6 +62,27 @@ contract IotSimulation {
             generateSmokingCarResult(number),
             generateLatitudeResult(number),
             generateLongitudeResult(number)
+        );
+        return true;
+    }
+
+    /**
+     * @dev Generates IoT availability for specified vinId and stores it using SmartAsset interface
+     * @param id Vehicle identification number
+     * @return result Execution result
+     */
+    function generateIotAvailability(uint id, bool salt) returns (bool result) {
+        if (id == 0) {
+            throw;
+        }
+        if (smartAssetAddr == address(0)) {
+            throw;
+        }
+
+        SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAddr);
+        smartAssetAvailability.updateViaIotSimulator(
+            id,
+            salt
         );
         return true;
     }
