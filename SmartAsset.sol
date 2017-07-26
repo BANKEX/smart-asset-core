@@ -2,13 +2,22 @@ pragma solidity ^0.4.10;
 
 
 /**
+ * Interface for SmartAssetPrice contract
+ */
+contract SmartAssetPrice {
+    function calculateAssetPrice(uint assetId)  returns (bool result);
+}
+
+
+/**
  * @title Smart asset contract
  */
 contract SmartAsset {
     // Workflow stages
-    enum State { ManualDataAreEntered,  SensorDataAreCollected, PriceFromFormula1IsCalculated, OnSale, FailedAssetModified }
+    enum State { ManualDataAreEntered, PriceFromFormula1IsCalculated, OnSale, FailedAssetModified }
 
-    address iotSimulationAddr;
+    address private iotSimulationAddr;
+    address private smartAssetPriceAddr;
 
     // Next identifier
     uint nextId;
@@ -50,12 +59,18 @@ contract SmartAsset {
     /**
      * @dev Constructor to check and set up IotSimulator contract address
      * @param iotSimulationAddress Address of deployed IotSimulator contract
+     * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
      */
-    function SmartAsset(address iotSimulationAddress) {
+    function SmartAsset(address iotSimulationAddress, address smartAssetPriceAddress) {
         if (iotSimulationAddress == address(0)) {
             throw;
         } else {
             iotSimulationAddr = iotSimulationAddress;
+        }
+        if (smartAssetPriceAddress == address(0)) {
+            throw;
+        } else {
+            smartAssetPriceAddr = smartAssetPriceAddress;
         }
     }
 
@@ -233,6 +248,9 @@ contract SmartAsset {
         delete smartAssetsOnSale[smartAssetData.indexInSmartAssetsOnSale];
     }
 
+    /**
+     * @dev Function to updates Smart Asset IoT params and generate asset price
+     */
     function updateViaIotSimulator(
         uint id,
         uint millage,
@@ -245,19 +263,19 @@ contract SmartAsset {
         //validates if asset is present
         SmartAssetData memory asset = _getAssetById(id);
 
-        if (asset.state == State.ManualDataAreEntered) {
+        if (asset.state < State.OnSale) {
             smartAssetById[id].u1 = millage;
             smartAssetById[id].u2 = damaged;
             smartAssetById[id].bool1 = smokingCar;
             smartAssetById[id].u3 = longitude;
             smartAssetById[id].u4 = latitude;
-            smartAssetById[id].state = State.SensorDataAreCollected;
-        } else if (asset.u1 != millage || asset.u2 != damaged || asset.bool1 != smokingCar || asset.u3 != longitude || asset.u4 != latitude) {
-            smartAssetById[id].state = State.FailedAssetModified;
-            //delete from available for sale
-            if (asset.state == State.OnSale) {
-                delete smartAssetsOnSale[asset.indexInSmartAssetsOnSale];
-            }
+
+            SmartAssetPrice assetPrice = SmartAssetPrice(smartAssetPriceAddr);
+            assetPrice.calculateAssetPrice(id);
+            smartAssetById[id].state = State.PriceFromFormula1IsCalculated;
+        } else {
+            // Wrong step of the flow
+            throw;
         }
     }
 
