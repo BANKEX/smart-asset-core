@@ -1,5 +1,7 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
+var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
+
 
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
@@ -23,6 +25,12 @@ contract('IotSimulation', function(accounts) {
                  simulator = instance;
                  return simulator.setSmartAssetAddr(SmartAsset.address);
              })
+             .then(function() {
+                 return SmartAssetPrice.deployed();
+             })
+             .then(function(instance) {
+                 return instance.setSmartAssetAddr(SmartAsset.address);
+             })
              .then(function(result) {
                  return simulator.generateIotOutput(smartAssetGeneratedId, 0);
              })
@@ -41,7 +49,6 @@ contract('IotSimulation', function(accounts) {
                 assert.isAbove(returnValue[5], 0, 'damage should be bigger than 0');
                 assert.isAbove(returnValue[6], 0, 'latitude should be bigger than 0');
                 assert.isAbove(returnValue[7], 0, 'longitude should be bigger than 0');
-                assert.equal(returnValue[9], 4, 'State should be equal to number of SensorDataAreCollected state in the state enum list');
              });
      });
 });
