@@ -72,7 +72,7 @@ contract IotSimulation {
      * @param id Vehicle identification number
      * @return result Execution result
      */
-    function generateIotAvailability(uint id, bool salt) returns (bool result) {
+    function generateIotAvailability(uint id, bool availability) returns (bool result) {
         if (id == 0) {
             throw;
         }
@@ -83,7 +83,7 @@ contract IotSimulation {
         SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAvailabilityAddr);
         smartAssetAvailability.updateViaIotSimulator(
             id,
-            salt
+            availability
         );
         return true;
     }
