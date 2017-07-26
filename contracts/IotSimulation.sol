@@ -30,6 +30,7 @@ contract SmartAssetAvailability {
 contract IotSimulation {
     address public owner = msg.sender;
     address private smartAssetAddr;
+    address private smartAssetAvailabilityAddr;
     uint private hundred = 100;
     uint private thousand = 1000;
 
@@ -75,11 +76,11 @@ contract IotSimulation {
         if (id == 0) {
             throw;
         }
-        if (smartAssetAddr == address(0)) {
+        if (smartAssetAvailabilityAddr == address(0)) {
             throw;
         }
 
-        SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAddr);
+        SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAvailabilityAddr);
         smartAssetAvailability.updateViaIotSimulator(
             id,
             salt
@@ -155,6 +156,21 @@ contract IotSimulation {
             throw;
         } else {
             smartAssetAddr = contractAddress;
+            return true;
+        }
+    }
+
+    /**
+     * @dev Setter for SmartAssetAvailability contract address.
+     * @param contractAddress address to be set
+     * @return result Execution result
+     */
+    function setSmartAssetAvailabilityAddr(address contractAddress) onlyOwner returns (bool result) {
+        smartAssetAvailabilityAddr = contractAddress;
+        if (contractAddress == address(0)) {
+            throw;
+        } else {
+            smartAssetAvailabilityAddr = contractAddress;
             return true;
         }
     }

@@ -45,7 +45,6 @@ contract SmartAssetAvailability {
      * @param id Id of smart asset
      */
     function getSmartAssetAvailability(uint id) constant returns (bool availability) {
-        //check scenario when there is no id in map
         return smartAssetAvailabilityById[id].availability;
     }
 
