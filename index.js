@@ -7,4 +7,4 @@ TestRPC
         logger: console
     })
     .listen(config.networks.development, (err, blockchain) =>
-        spawn('npm', ['run', 'deploy'], { stdio: 'inherit' }));
+        spawn('npm', ['run', 'deploy'], { stdio: 'inherit', detached: true }));
