@@ -12,7 +12,6 @@ contract('IotSimulation', function(accounts) {
     it("Should update params of SmartAsset", function() {
         var smartAssetGeneratedId;
         var smartAsset;
-        var simulator;
 
         SmartAsset.deployed()
             .then(function(instance) {
@@ -24,17 +23,7 @@ contract('IotSimulation', function(accounts) {
                 return IotSimulation.deployed();
             })
             .then(function(instance) {
-                simulator = instance;
-                return simulator.setSmartAssetAddr(SmartAsset.address);
-            })
-            .then(function() {
-                return SmartAssetPrice.deployed();
-            })
-            .then(function(instance) {
-                return instance.setSmartAssetAddr(SmartAsset.address);
-            })
-            .then(function(result) {
-                return simulator.generateIotOutput(smartAssetGeneratedId, 0);
+                return instance.generateIotOutput(smartAssetGeneratedId, 0);
             })
             .then(function(result) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
@@ -69,56 +58,23 @@ contract('IotSimulation', function(accounts) {
                 return IotSimulation.deployed();
             })
             .then(function(instance) {
-                simulator = instance;
-                return SmartAssetAvailability.deployed(IotSimulation.address);
+                return instance.generateIotAvailability(smartAssetGeneratedId, true);
+            })
+            .then(function(result) {
+                return SmartAssetAvailability.deployed();
             })
             .then(function(instance) {
-                smartAssetAvailability = instance;
-                return simulator.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
-            })
-            .then(function(result) {
-                return simulator.generateIotAvailability(smartAssetGeneratedId, true);
-            })
-            .then(function(result) {
-                return smartAssetAvailability.getSmartAssetAvailability.call(smartAssetGeneratedId);
+                return instance.getSmartAssetAvailability.call(smartAssetGeneratedId);
             })
             .then(function(returnValue) {
                 assert.equal(returnValue, true);
             });
     });
 
-    it("generateIotOutput have to throw exception if SmartAsset contract address is absent", function() {
-        return IotSimulation.deployed()
-        .then(function(instance) {
-            return instance.generateIotOutput(0, 0);
-        })
-        .then(function(returnValue) {
-            assert(false, "Throw was expected but didn't.");
-        }).catch(function(error) {
-            console.log('Expected error. Got it');
-        });
-    });
-
-    it("generateIotAvailability have to throw exception if SmartAssetAvailability contract address is absent", function() {
-        return IotSimulation.deployed()
-        .then(function(instance) {
-            return instance.generateIotAvailability(0, 0);
-        })
-        .then(function(returnValue) {
-            assert(false, "Throw was expected but didn't.");
-        }).catch(function(error) {
-            console.log('Expected error. Got it');
-        });
-    });
-
     it("generateIotOutput have to throw exception if id param is absent", function() {
         return IotSimulation.deployed()
             .then(function(instance) {
-                simulator = instance;
-                return simulator.setSmartAssetAddr(SmartAsset.address);
-            })
-            .then(function(result) {
-                return simulator.generateIotOutput(0, 0);
+                return instance.generateIotOutput(0, 0);
             })
             .then(function(returnValue) {
                 assert(false, "Throw was expected but didn't.");
@@ -130,11 +86,7 @@ contract('IotSimulation', function(accounts) {
     it("generateIotAvailability have to throw exception if id param is absent", function() {
         return IotSimulation.deployed()
             .then(function(instance) {
-                simulator = instance;
-                return simulator.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
-            })
-            .then(function(result) {
-                return simulator.generateIotAvailability(0, true);
+                return instance.generateIotAvailability(0, true);
             })
             .then(function(returnValue) {
                 assert(false, "Throw was expected but didn't.");
@@ -146,12 +98,8 @@ contract('IotSimulation', function(accounts) {
     it("generateIotOutput have to throw exception if asset with such id is absent", function() {
         return IotSimulation.deployed()
             .then(function(instance) {
-                simulator = instance;
-                return simulator.setSmartAssetAddr(SmartAsset.address);
-            })
-            .then(function(result) {
                 maxUint32 = 4294967295;
-                return simulator.generateIotOutput(maxUint32, 0);
+                return instance.generateIotOutput(maxUint32, 0);
             })
             .then(function(returnValue) {
                 assert(false, "Throw was expected but didn't.");
@@ -163,12 +111,8 @@ contract('IotSimulation', function(accounts) {
     it("generateIotAvailability have to throw exception if asset with such id is absent", function() {
         return IotSimulation.deployed()
             .then(function(instance) {
-                simulator = instance;
-                return simulator.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
-            })
-            .then(function(result) {
                 maxUint32 = 4294967295;
-                return simulator.generateIotAvailability(maxUint32, true);
+                return instance.generateIotAvailability(maxUint32, true);
             })
             .then(function(returnValue) {
                 assert(false, "Throw was expected but didn't.");

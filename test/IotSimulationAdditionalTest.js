@@ -23,15 +23,6 @@ contract('IotSimulation', function(accounts) {
              })
              .then(function(instance) {
                  simulator = instance;
-                 return simulator.setSmartAssetAddr(SmartAsset.address);
-             })
-             .then(function() {
-                 return SmartAssetPrice.deployed();
-             })
-             .then(function(instance) {
-                 return instance.setSmartAssetAddr(SmartAsset.address);
-             })
-             .then(function(result) {
                  return simulator.generateIotOutput(smartAssetGeneratedId, 0);
              })
              .then(function(result) {
