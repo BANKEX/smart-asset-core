@@ -12,7 +12,6 @@ contract('IotSimulation', function(accounts) {
     it("Check that price is calculated after IoT simulation step", function() {
          var smartAssetGeneratedId;
          var smartAsset;
-         var simulator;
 
          SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
@@ -22,21 +21,13 @@ contract('IotSimulation', function(accounts) {
                  return IotSimulation.deployed();
              })
              .then(function(instance) {
-                 simulator = instance;
-                 return simulator.setSmartAssetAddr(SmartAsset.address);
+                 return instance.generateIotOutput(smartAssetGeneratedId, 0);
              })
              .then(function() {
                  return SmartAssetPrice.deployed();
              })
              .then(function(instance) {
-                 smartAssetPrice = instance;
-                 return smartAssetPrice.setSmartAssetAddr(SmartAsset.address);
-             })
-             .then(function(result) {
-                 return simulator.generateIotOutput(smartAssetGeneratedId, 0);
-             })
-             .then(function(result) {
-                 return smartAssetPrice.getSmartAssetPrice(smartAssetGeneratedId);
+                 return instance.getSmartAssetPrice(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
                 assert.isAbove(returnValue, 0, 'price should be bigger than 0');
@@ -63,16 +54,6 @@ contract('IotSimulation', function(accounts) {
               })
               .then(function(instance) {
                   simulator = instance;
-                  return simulator.setSmartAssetAddr(SmartAsset.address);
-              })
-              .then(function() {
-                  return SmartAssetPrice.deployed();
-              })
-              .then(function(instance) {
-                  smartAssetPrice = instance;
-                  return smartAssetPrice.setSmartAssetAddr(SmartAsset.address);
-              })
-              .then(function(result) {
                   return simulator.generateIotOutput(smartAssetGeneratedId, 0);
               })
               .then(function(result) {
@@ -88,28 +69,10 @@ contract('IotSimulation', function(accounts) {
               });
       });
 
-     it("Check exception will be thrown in case asset is in step OnSale or after", function() {
-          var smartAssetGeneratedId;
-          var smartAsset;
-          var simulator;
-
-          SmartAsset.deployed()
-              .then(function(result) {
-                  return IotSimulation.deployed();
-              })
+     it("Check exception will be thrown in id is not present", function() {
+          SmartAssetPrice.deployed()
               .then(function(instance) {
-                  simulator = instance;
-                  return simulator.setSmartAssetAddr(SmartAsset.address);
-              })
-              .then(function() {
-                  return SmartAssetPrice.deployed();
-              })
-              .then(function(instance) {
-                  smartAssetPrice = instance;
-                  return smartAssetPrice.setSmartAssetAddr(SmartAsset.address);
-              })
-              .then(function(result) {
-                  return smartAssetPrice.checkSmartAssetModification(10000);
+                  return instance.checkSmartAssetModification(10000);
               })
               .then(function(returnValue) {
                   assert(false, "Throw was expected but didn't.");
