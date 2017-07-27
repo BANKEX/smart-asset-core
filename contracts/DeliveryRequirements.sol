@@ -65,6 +65,11 @@ contract DeliveryRequirements {
     }
 
     function addCity(bytes32 cityName, uint lat, uint long) onlyOwner() {
+        LatLong latLong = cityMapping[cityName];
+        if(latLong.lat == 0x0 && latLong.long == 0x0) {
+            cities.push(cityName);
+        }
+
         cityMapping[cityName] = LatLong(lat, long);
     }
 
