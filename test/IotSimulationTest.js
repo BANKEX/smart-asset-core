@@ -1,6 +1,7 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
+var SmartAssetAvailability = artifacts.require("./SmartAssetAvailability.sol");
 
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
@@ -52,6 +53,40 @@ contract('IotSimulation', function(accounts) {
             });
     });
 
+    it("Should update params of SmartAssetAvailability", function() {
+        var smartAssetGeneratedId;
+        var smartAsset;
+        var simulator;
+        var smartAssetAvailability;
+
+        SmartAsset.deployed()
+            .then(function(instance) {
+                smartAsset = instance;
+                return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
+            })
+            .then(function(result) {
+                smartAssetGeneratedId = result.logs[0].args.id.c[0];
+                return IotSimulation.deployed();
+            })
+            .then(function(instance) {
+                simulator = instance;
+                return SmartAssetAvailability.deployed(IotSimulation.address);
+            })
+            .then(function(instance) {
+                smartAssetAvailability = instance;
+                return simulator.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
+            })
+            .then(function(result) {
+                return simulator.generateIotAvailability(smartAssetGeneratedId, true);
+            })
+            .then(function(result) {
+                return smartAssetAvailability.getSmartAssetAvailability.call(smartAssetGeneratedId);
+            })
+            .then(function(returnValue) {
+                assert.equal(returnValue, true);
+            });
+    });
+
     it("generateIotOutput have to throw exception if SmartAsset contract address is absent", function() {
         return IotSimulation.deployed()
         .then(function(instance) {
@@ -64,6 +99,17 @@ contract('IotSimulation', function(accounts) {
         });
     });
 
+    it("generateIotAvailability have to throw exception if SmartAssetAvailability contract address is absent", function() {
+        return IotSimulation.deployed()
+        .then(function(instance) {
+            return instance.generateIotAvailability(0, 0);
+        })
+        .then(function(returnValue) {
+            assert(false, "Throw was expected but didn't.");
+        }).catch(function(error) {
+            console.log('Expected error. Got it');
+        });
+    });
 
     it("generateIotOutput have to throw exception if id param is absent", function() {
         return IotSimulation.deployed()
@@ -81,6 +127,22 @@ contract('IotSimulation', function(accounts) {
             });
     });
 
+    it("generateIotAvailability have to throw exception if id param is absent", function() {
+        return IotSimulation.deployed()
+            .then(function(instance) {
+                simulator = instance;
+                return simulator.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
+            })
+            .then(function(result) {
+                return simulator.generateIotAvailability(0, true);
+            })
+            .then(function(returnValue) {
+                assert(false, "Throw was expected but didn't.");
+            }).catch(function(error) {
+                console.log('Expected error. Got it');
+            });
+    });
+
     it("generateIotOutput have to throw exception if asset with such id is absent", function() {
         return IotSimulation.deployed()
             .then(function(instance) {
@@ -90,6 +152,23 @@ contract('IotSimulation', function(accounts) {
             .then(function(result) {
                 maxUint32 = 4294967295;
                 return simulator.generateIotOutput(maxUint32, 0);
+            })
+            .then(function(returnValue) {
+                assert(false, "Throw was expected but didn't.");
+            }).catch(function(error) {
+                console.log('Expected error. Got it');
+            });
+    });
+
+    it("generateIotAvailability have to throw exception if asset with such id is absent", function() {
+        return IotSimulation.deployed()
+            .then(function(instance) {
+                simulator = instance;
+                return simulator.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
+            })
+            .then(function(result) {
+                maxUint32 = 4294967295;
+                return simulator.generateIotAvailability(maxUint32, true);
             })
             .then(function(returnValue) {
                 assert(false, "Throw was expected but didn't.");

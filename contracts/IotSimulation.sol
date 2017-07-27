@@ -14,6 +14,15 @@ contract SmartAsset {
         uint longitude);
 }
 
+/**
+ * Interface for SmartAssetAvailability contract
+ */
+contract SmartAssetAvailability {
+    function updateViaIotSimulator(
+        uint id,
+        bool availability);
+}
+
 
 /**
  * @title IotSimulation contract
@@ -21,6 +30,7 @@ contract SmartAsset {
 contract IotSimulation {
     address public owner = msg.sender;
     address private smartAssetAddr;
+    address private smartAssetAvailabilityAddr;
     uint private hundred = 100;
     uint private thousand = 1000;
 
@@ -53,6 +63,27 @@ contract IotSimulation {
             generateSmokingCarResult(number),
             generateLatitudeResult(number),
             generateLongitudeResult(number)
+        );
+        return true;
+    }
+
+    /**
+     * @dev Generates IoT availability for specified vinId and stores it using SmartAsset interface
+     * @param id Vehicle identification number
+     * @return result Execution result
+     */
+    function generateIotAvailability(uint id, bool availability) returns (bool result) {
+        if (id == 0) {
+            throw;
+        }
+        if (smartAssetAvailabilityAddr == address(0)) {
+            throw;
+        }
+
+        SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAvailabilityAddr);
+        smartAssetAvailability.updateViaIotSimulator(
+            id,
+            availability
         );
         return true;
     }
@@ -102,7 +133,7 @@ contract IotSimulation {
      * @return latitude Latitude value
      */
     function generateLatitudeResult(uint num) constant private returns (uint latitude) {
-        return num * num * num;
+        return num * num * num % hundred;
     }
 
     /**
@@ -111,7 +142,7 @@ contract IotSimulation {
      * @return longitude Longitude value
      */
     function generateLongitudeResult(uint num) constant private returns (uint longitude) {
-        return num * num;
+        return num * num % hundred;
     }
 
     /**
@@ -125,6 +156,21 @@ contract IotSimulation {
             throw;
         } else {
             smartAssetAddr = contractAddress;
+            return true;
+        }
+    }
+
+    /**
+     * @dev Setter for SmartAssetAvailability contract address.
+     * @param contractAddress address to be set
+     * @return result Execution result
+     */
+    function setSmartAssetAvailabilityAddr(address contractAddress) onlyOwner returns (bool result) {
+        smartAssetAvailabilityAddr = contractAddress;
+        if (contractAddress == address(0)) {
+            throw;
+        } else {
+            smartAssetAvailabilityAddr = contractAddress;
             return true;
         }
     }

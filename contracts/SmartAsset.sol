@@ -302,4 +302,14 @@ contract SmartAsset {
     function isAssetEmpty(SmartAssetData smartAssetData) constant private returns (bool isEmpty) {
         return smartAssetData.id == 0;
     }
+
+    /**
+        *@dev Returns longitude lattitude of a smart asset
+        *@params  id smart asset id
+        *@return lattitude longitude
+        */
+    function getAssetLocationById(uint id) constant returns (uint, uint) {
+        SmartAssetData memory asset = _getAssetById(id);
+        return (asset.u4, asset.u3);
+    }
 }
