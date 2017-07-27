@@ -20,17 +20,7 @@ contract('DeliveryRequirements', function(accounts) {
             return IotSimulation.deployed();
 
         }).then(function(instance) {
-            iotSimulationInstance = instance;
-            iotSimulationInstance.setSmartAssetAddr(SmartAsset.address);
-
-        }).then(function() {
-            return SmartAssetPrice.deployed();
-
-        }).then(function(instance) {
-            instance.setSmartAssetAddr(SmartAsset.address);
-
-        }).then(function() {
-            iotSimulationInstance.generateIotOutput(smartAssetId, 10);
+            instance.generateIotOutput(smartAssetId, 10);
 
         }).then(function() {
             return DeliveryRequirements.deployed()
@@ -108,19 +98,8 @@ contract('DeliveryRequirements', function(accounts) {
             smartAssetId = result.logs[0].args.id.c[0];
 
             return IotSimulation.deployed();
-
         }).then(function(instance) {
-            iotSimulationInstance = instance;
-            iotSimulationInstance.setSmartAssetAddr(SmartAsset.address);
-
-        }).then(function() {
-            return SmartAssetPrice.deployed();
-
-        }).then(function(instance) {
-            instance.setSmartAssetAddr(SmartAsset.address);
-
-        }).then(function() {
-            iotSimulationInstance.generateIotOutput(smartAssetId, 100);
+            instance.generateIotOutput(smartAssetId, 100);
 
         }).then(function() {
             return DeliveryRequirements.deployed()
