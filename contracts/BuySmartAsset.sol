@@ -93,7 +93,7 @@ contract BuySmartAsset {
 	function buyAsset(uint assetId, bytes32 cityName) payable {
 		uint totalPrice = getTotalPrice(assetId, cityName);
 
-		if (totalPrice < msg.value) {
+		if (msg.value < totalPrice) {
 			// Not enough founds to buy the asset
 			throw;
 		}

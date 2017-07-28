@@ -1,27 +1,56 @@
+var IotSimulation = artifacts.require("./IotSimulation.sol");
+var SmartAsset = artifacts.require("./SmartAsset.sol");
+var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 
 contract('BuySmartAsset', function(accounts) {
+    it("Should sell asset", function() {
+         var smartAssetGeneratedId;
+         var smartAsset;
+         var expectedAssetTotalPrice;
+         var buySmartAsset;
+         var deliveryCity = "Lublin";
 
-    it("Should return total price", function() {
-        var buySmartAsset;
-
-        BuySmartAsset.deployed().then(function(instance) {
-           console.log("Hello");
-           buySmartAsset = instance;
-           return buySmartAsset.getTotalPrice(1, "Lublin");
-       }).then(function(result) {
-           assert.equal(returnValue, 12345);
-       });
-   });
-
-    /*it("Should buy asset", function() {
-        var buySmartAsset;
-
-        BuySmartAsset.deployed().then(function(instance) {
-           buySmartAsset = instance;
-           return buySmartAsset.buyAsset(1, "Lublin");
-       }).then(function(result) {
-           assert.equal(returnValue, 12345);
-       });
-});*/
+         SmartAsset.deployed().then(function(instance) {
+                 smartAsset = instance;
+                 return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
+             }).then(function(result) {
+                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
+                 return IotSimulation.deployed();
+             })
+             .then(function(instance) {
+                 return instance.generateIotOutput(smartAssetGeneratedId, 0);
+             })
+             .then(function() {
+                 return SmartAssetPrice.deployed();
+             })
+             .then(function(instance) {
+                 return instance.getSmartAssetPrice(smartAssetGeneratedId);
+             })
+             .then(function(returnValue) {
+                assert.isAbove(returnValue, 0, 'price should be bigger than 0');
+                return smartAsset.makeOnSale(smartAssetGeneratedId);
+             })
+             .then(function(result) {
+                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
+             })
+             .then(function(returnValue) {
+                 assert.equal(returnValue[9], 2, 'state should be OnSale = position 2 in State enum list');
+             })
+             .then(function(returnValue) {
+                return BuySmartAsset.deployed();
+             })
+             .then(function(instance) {
+                buySmartAsset = instance;
+                return buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
+             }).then(function(calculatedTotalPrice) {
+                assert.equal(calculatedTotalPrice, 162526397000006467);
+                return buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, {from : accounts[1], value: calculatedTotalPrice});
+             }).then(function(returnValue) {
+                return smartAsset.getAssetById.call(smartAssetGeneratedId);
+             }).then(function(returnValue) {
+                assert.equal(returnValue[9], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
+                assert.equal(returnValue[10], accounts[1]);
+             });
+      });
 });

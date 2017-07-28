@@ -260,10 +260,10 @@ contract SmartAsset {
             throw;
         }
 
-        smartAssetData.state = State.OnSale;
-        smartAssetData.indexInSmartAssetsOnSale = smartAssetsOnSale.length;
+        smartAssetById[id].state = State.OnSale;
+        smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale.length;
 
-        smartAssetsOnSale.push(smartAssetData);
+        smartAssetsOnSale.push(smartAssetById[id]);
     }
 
     /**
