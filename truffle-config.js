@@ -11,5 +11,13 @@ module.exports = {
             network_id: '3',
             gas: '4700000'
         }
-    }
+    },
+
+        mocha: {
+            reporter: "spec",
+            reporterOptions: {
+                mochaFile: "junitresults.xml"
+            }
+        }
+
 };
