@@ -1,15 +1,17 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
+var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
 
 contract('BuySmartAsset', function(accounts) {
     it("Should sell asset", function() {
          var smartAssetGeneratedId;
-         var smartAsset;
          var expectedAssetTotalPrice;
-         var buySmartAsset;
          var deliveryCity = "Lublin";
+
+         var smartAsset;
+         var iotSimulation;
+         var buySmartAsset;
 
          SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
@@ -19,7 +21,11 @@ contract('BuySmartAsset', function(accounts) {
                  return IotSimulation.deployed();
              })
              .then(function(instance) {
-                 return instance.generateIotOutput(smartAssetGeneratedId, 0);
+                 iotSimulation = instance;
+                 return iotSimulation.generateIotOutput(smartAssetGeneratedId, 0);
+             })
+             .then(function() {
+                return iotSimulation.generateIotAvailability(smartAssetGeneratedId, true);
              })
              .then(function() {
                  return SmartAssetPrice.deployed();

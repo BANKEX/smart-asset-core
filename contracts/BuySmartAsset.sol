@@ -90,7 +90,13 @@ contract BuySmartAsset {
      * @param assetId Id of smart asset
      * @param cityName City name of destination/delivery city
      */
-	function buyAsset(uint assetId, bytes32 cityName) payable {
+	function buyAsset(uint assetId, bytes32 cityName) payable {		
+		SmartAssetAvailabilityInterface SmartAssetAvailability = SmartAssetAvailabilityInterface(smartAssetAvailabilityAddr);
+		if (!SmartAssetAvailability.getSmartAssetAvailability(assetId)) {
+			// Asset is not avaiable via IoT sensor
+			throw;
+		}
+
 		uint totalPrice = getTotalPrice(assetId, cityName);
 
 		if (msg.value < totalPrice) {
