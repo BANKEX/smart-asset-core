@@ -32,10 +32,18 @@ contract('BuySmartAsset', function(accounts) {
                 return smartAsset.makeOnSale(smartAssetGeneratedId);
              })
              .then(function(result) {
-                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
+                return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                 assert.equal(returnValue[9], 2, 'state should be OnSale = position 2 in State enum list');
+                assert.equal(returnValue[9], 2, 'state should be OnSale = position 2 in State enum list');
+                return smartAsset.makeOffSale(smartAssetGeneratedId);
+             })
+             .then(function(result) {
+                return smartAsset.getAssetById.call(smartAssetGeneratedId);
+             })
+             .then(function(returnValue) {
+                assert.equal(returnValue[9], 1, 'state should be PriceFromFormula1IsCalculated = position 1 in State enum list');
+                return smartAsset.makeOnSale(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
                 return BuySmartAsset.deployed();

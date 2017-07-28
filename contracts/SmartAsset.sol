@@ -278,7 +278,7 @@ contract SmartAsset {
             throw;
         }
 
-        smartAssetData.state = State.PriceFromFormula1IsCalculated;
+        smartAssetById[id].state = State.PriceFromFormula1IsCalculated;
 
         delete smartAssetsOnSale[smartAssetData.indexInSmartAssetsOnSale];
     }
