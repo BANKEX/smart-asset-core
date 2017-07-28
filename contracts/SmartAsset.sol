@@ -6,6 +6,7 @@ pragma solidity ^0.4.10;
  */
 contract SmartAssetPrice {
     function calculateAssetPrice(uint assetId)  returns (bool result);
+    function removeAssetPrice(uint assetId);
 }
 
 
@@ -369,6 +370,9 @@ contract SmartAsset {
         
         SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner];
         smartAssetDatasOfOwner.push(asset);
+
+        SmartAssetPrice assetPrice = SmartAssetPrice(smartAssetPriceAddr);
+        assetPrice.removeAssetPrice(id);
     }
 
     /**
