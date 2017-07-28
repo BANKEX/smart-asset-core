@@ -124,7 +124,7 @@ contract('SmartAsset', function(accounts) {
 
           }).then(function(result){
 
-              assert.equal(tokensAmount, parseInt(result) + newBKXFeeForTransaction);
+              assert.equal(parseInt(result), tokensAmount - newBKXFeeForTransaction);
               done();
           })
       })

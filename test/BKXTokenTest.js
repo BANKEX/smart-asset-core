@@ -5,7 +5,7 @@ var SmartAsset = artifacts.require("./SmartAsset.sol");
 contract('BKXToken', function(accounts) {
 
     var bkxToken;
-    var initialAmountBKX = 3000000;
+    var initialAmountBKX;
     var amountToDeductForAssetCreation = 1;
 
 
@@ -15,7 +15,7 @@ contract('BKXToken', function(accounts) {
             return bkxToken.balanceOf(web3.eth.accounts[0]);
 
         }).then(function(result){
-            assert.equal(initialAmountBKX, parseInt(result));
+            initialAmountBKX = parseInt(result);
 
         }).then(function(){
             return SmartAsset.deployed();
@@ -28,7 +28,7 @@ contract('BKXToken', function(accounts) {
 
         }).then(function(result){
 
-            assert.equal(initialAmountBKX,  parseInt(result) + amountToDeductForAssetCreation);
+            assert.equal(parseInt(result), initialAmountBKX - amountToDeductForAssetCreation);
             done();
         })
 
