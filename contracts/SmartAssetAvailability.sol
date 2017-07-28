@@ -1,3 +1,8 @@
+pragma solidity ^0.4.10;
+
+/**
+ * @title Smart asset availability contract
+ */
 contract SmartAssetAvailability {
 	address private iotSimulationAddr;
 

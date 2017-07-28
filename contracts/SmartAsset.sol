@@ -16,13 +16,30 @@ contract SmartAsset {
     // Workflow stages
     enum State { ManualDataAreEntered, PriceFromFormula1IsCalculated, OnSale, FailedAssetModified }
 
+    address public owner = msg.sender;
+
     address private iotSimulationAddr;
     address private smartAssetPriceAddr;
+    address private buyAssetAddr;
 
     // Next identifier
     uint nextId;
 
     event NewSmartAsset(uint id);
+
+    /**
+     * Check whether BuyAsset contract executes method or not
+     */
+    modifier onlyBuyAsset {
+        if (msg.sender != buyAssetAddr) {throw;} else {_;}
+    }
+
+    /**
+     * Check whether contract owner executes method or not
+     */
+    modifier onlyOwner {
+        if (msg.sender != owner) {throw;} else {_;}
+    }
 
     /**
      * Check whether IotSimulator contract executes method or not
@@ -134,6 +151,24 @@ contract SmartAsset {
 
         delete smartAssetsByOwner[owner];
         delete smartAssetById[id];
+    }
+
+    /**
+     * @dev Returns Smart asset owner
+     * @param id Smart asset identification number
+     * @return Smart asset owner
+     */
+    function getAssetOwnerById(uint id) constant
+    returns (address)
+    {
+        SmartAssetData memory a = smartAssetById[id];
+
+        if (isAssetEmpty(a)) {
+            // Owner doesn't have specified smart asset
+            throw;
+        }
+
+        return a.owner;
     }
 
     /**
@@ -312,4 +347,42 @@ contract SmartAsset {
         SmartAssetData memory asset = _getAssetById(id);
         return (asset.u4, asset.u3);
     }
+
+    function sellAsset(uint id, address newOwner) onlyBuyAsset {
+        SmartAssetData memory asset = _getAssetById(id);
+
+        if (asset.owner == msg.sender) {
+            // Owner cannot buy its own asset
+            throw;
+        }
+
+        if (asset.state != State.OnSale) {
+            // Asset is not on-sale
+            throw;
+        }       
+
+        delete smartAssetsOnSale[asset.indexInSmartAssetsOnSale];
+        delete smartAssetsByOwner[asset.owner][asset.indexInSmartAssetsByOwner];
+
+        smartAssetById[id].owner = newOwner;
+        smartAssetById[id].state = State.ManualDataAreEntered;
+        
+        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner];
+        smartAssetDatasOfOwner.push(asset);
+    }
+
+    /**
+     * @dev Setter for the BuyAsset contract address
+     * @param contractAddress Address of the BuyAsset contract
+     */
+    function setBuyAssetAddr(address contractAddress) onlyOwner returns (bool result) {
+        buyAssetAddr = contractAddress;
+        if (contractAddress == address(0)) {
+            throw;
+        } else {
+            buyAssetAddr = contractAddress;
+            return true;
+        }
+    }
+
 }
