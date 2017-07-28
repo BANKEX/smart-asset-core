@@ -28,14 +28,18 @@ contract('SmartAsset', function(accounts) {
 
   it("Should return my assets", function() {
     var smartAsset;
+    var initialMyAssetsCount;
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
+      return smartAsset.getMyAssetsCount.call();
+    }).then(function(returnValue) {
+      initialMyAssetsCount = returnValue;
       return smartAsset.createAsset("Audi A8", "a_photo", "a_document");
     }).then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call();
     }).then(function(returnValue) {
-      assert.equal(returnValue, 2);
+      assert.notEqual(returnValue, initialMyAssetsCount);
       return smartAsset.getMyAssets.call(1, 0);
     }).then(function(returnValue) {
       console.log(returnValue);
@@ -82,7 +86,7 @@ contract('SmartAsset', function(accounts) {
 
   it("getAssetByVin have to throw expection if asset is absent", function() {
     return SmartAsset.deployed().then(function(instance) {
-      return instance.getAssetById.call(3);
+      return instance.getAssetById.call(999);
     }).then(function(returnValue) {
       assert(false, "Throw was expected but didn't.");
     }).catch(function(error) {
