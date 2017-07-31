@@ -10,6 +10,15 @@ contract SmartAssetPrice {
 
 
 /**
+*Interface for BKXToken contract
+*/
+contract BKXTokenInterface {
+    function balanceOf(address _address) constant returns (uint balance);
+    function burn(address _address, uint amount);
+}
+
+
+/**
  * @title Smart asset contract
  */
 contract SmartAsset {
@@ -19,8 +28,13 @@ contract SmartAsset {
     address private iotSimulationAddr;
     address private smartAssetPriceAddr;
 
+    BKXTokenInterface bkxToken;
+    uint bkxPriceForTransaction = 1;
+
     // Next identifier
     uint nextId;
+    //owner address
+    address owner;
 
     event NewSmartAsset(uint id);
 
@@ -29,6 +43,13 @@ contract SmartAsset {
      */
     modifier onlyIotSimulator {
         if (msg.sender != iotSimulationAddr) {throw;} else {_;}
+    }
+
+    /**
+     * Check whether owner executes method or not
+     */
+    modifier onlyOwner {
+        if (msg.sender != owner) {throw;} else {_;}
     }
 
     // Definition of Smart asset
@@ -62,6 +83,8 @@ contract SmartAsset {
      * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
      */
     function SmartAsset(address iotSimulationAddress, address smartAssetPriceAddress) {
+        owner = msg.sender;
+
         if (iotSimulationAddress == address(0)) {
             throw;
         } else {
@@ -75,6 +98,22 @@ contract SmartAsset {
     }
 
     /**
+    *@dev Sets BKXToken contract address for this contract
+    *@param _bkxTokenAddress BKXToken contract address
+    */
+    function setBKXTokenAddress(address _bkxTokenAddress) onlyOwner() {
+        bkxToken = BKXTokenInterface(_bkxTokenAddress);
+    }
+
+    /**
+   *@dev Sets amount BKX tokens to be paid for transactions
+   *@param _bkxTokenAddress BKXToken contract address
+   */
+    function setBKXPriceForTransaction(uint _bkxPriceForTransaction) onlyOwner() {
+        bkxPriceForTransaction = _bkxPriceForTransaction;
+    }
+
+    /**
      * @dev Creates/stores new Smart asset
      * @param b1 Generic byte32 parameter #1
      * @param b2 Generic byte32 parameter #2
@@ -85,6 +124,12 @@ contract SmartAsset {
         bytes32 b2,
         bytes32 b3
     ) {
+        if(bkxToken == address(0) || bkxToken.balanceOf(msg.sender) < bkxPriceForTransaction) {
+            throw;
+        }
+
+        bkxToken.burn(msg.sender, bkxPriceForTransaction);
+
         address owner = msg.sender;
         uint id = ++nextId;
 

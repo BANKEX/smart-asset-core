@@ -1,4 +1,5 @@
 var SmartAsset = artifacts.require("./SmartAsset.sol");
+var BKXToken = artifacts.require("./BKXToken.sol");
 
 function toAscii(input) {
   return web3.toAscii(input).replace(/\u0000/g, '');
@@ -94,4 +95,39 @@ contract('SmartAsset', function(accounts) {
       }
     });
   });
+
+  it('Should change bkxPrice for transaction', function(done){
+
+      var bkxToken;
+      var tokensAmount;
+      var smartAsset;
+      var newBKXFeeForTransaction = 10;
+
+      SmartAsset.deployed().then(function(instance) {
+          smartAsset = instance;
+          return smartAsset.setBKXPriceForTransaction(newBKXFeeForTransaction);
+
+      }).then(function(){
+
+          BKXToken.deployed().then(function(instance){
+              bkxToken = instance;
+              return bkxToken.balanceOf(web3.eth.accounts[0]);
+
+          }).then(function(result){
+              tokensAmount = parseInt(result);
+
+          }).then(function(){
+              smartAsset.createAsset('bmw x5', 'photo', 'document');
+
+          }).then(function() {
+              return bkxToken.balanceOf(web3.eth.accounts[0]);
+
+          }).then(function(result){
+
+              assert.equal(parseInt(result), tokensAmount - newBKXFeeForTransaction);
+              done();
+          })
+      })
+
+  })
 });
