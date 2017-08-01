@@ -37,8 +37,6 @@ contract SmartAsset {
 
     // Next identifier
     uint nextId;
-    //owner address
-    address owner;
 
     event NewSmartAsset(uint id);
 
@@ -61,13 +59,6 @@ contract SmartAsset {
      */
     modifier onlyIotSimulator {
         if (msg.sender != iotSimulationAddr) {throw;} else {_;}
-    }
-
-    /**
-     * Check whether owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
     }
 
     // Definition of Smart asset
@@ -101,7 +92,6 @@ contract SmartAsset {
      * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
      */
     function SmartAsset(address iotSimulationAddress, address smartAssetPriceAddress) {
-        owner = msg.sender;
 
         if (iotSimulationAddress == address(0)) {
             throw;
@@ -405,14 +395,14 @@ contract SmartAsset {
         if (asset.state != State.OnSale) {
             // Asset is not on-sale
             throw;
-        }       
+        }
 
         delete smartAssetsOnSale[asset.indexInSmartAssetsOnSale];
         delete smartAssetsByOwner[asset.owner][asset.indexInSmartAssetsByOwner];
 
         smartAssetById[id].owner = newOwner;
         smartAssetById[id].state = State.ManualDataAreEntered;
-        
+
         SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner];
         smartAssetDatasOfOwner.push(asset);
 

@@ -8,7 +8,7 @@ contract('IotSimulation', function(accounts) {
          var smartAssetGeneratedId;
          var smartAsset;
 
-         SmartAsset.deployed().then(function(instance) {
+         return SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
                  return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
              }).then(function(result) {
@@ -40,7 +40,7 @@ contract('IotSimulation', function(accounts) {
           var smartAsset;
           var simulator;
 
-          SmartAsset.deployed().then(function(instance) {
+          return SmartAsset.deployed().then(function(instance) {
                   smartAsset = instance;
                   return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
               }).then(function(result) {
@@ -65,7 +65,7 @@ contract('IotSimulation', function(accounts) {
       });
 
      it("Check exception will be thrown in id is not present", function() {
-          SmartAssetPrice.deployed()
+          return SmartAssetPrice.deployed()
               .then(function(instance) {
                   return instance.checkSmartAssetModification(10000);
               })

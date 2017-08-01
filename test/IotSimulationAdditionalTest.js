@@ -14,7 +14,7 @@ contract('IotSimulation', function(accounts) {
          var smartAsset;
          var simulator;
 
-         SmartAsset.deployed().then(function(instance) {
+         return SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
                  return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
              }).then(function(result) {
