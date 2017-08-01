@@ -57,6 +57,14 @@ contract SmartAssetPrice {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
+    function removeAssetPrice(uint assetId)  onlySmartAsset {
+        delete smartAssetPriceById[assetId];
+    }
+
+    /**
+     * @dev Calculates price base on formula1
+     * @param assetId Id of smart asset
+     */
     function calculateAssetPrice(uint assetId)  onlySmartAsset {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) =  asset.getAssetById(assetId);
