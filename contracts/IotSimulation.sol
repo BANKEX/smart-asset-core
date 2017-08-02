@@ -4,14 +4,15 @@ pragma solidity ^0.4.10;
 /**
  * Interface for SmartAsset contract
  */
-contract SmartAsset {
-    function updateViaIotSimulator(
-        uint id,
-        uint millage,
-        uint damaged,
-        bool smokingCar,
-        uint latitude,
-        uint longitude);
+contract CarAssetLogicInterface {
+    function updatePriceViaIotSimulator(
+    uint id,
+    uint millage,
+    uint damaged,
+    bool smokingCar,
+    uint longitude,
+    uint latitude
+    );
 }
 
 /**
@@ -29,7 +30,7 @@ contract SmartAssetAvailability {
  */
 contract IotSimulation {
     address public owner = msg.sender;
-    address private smartAssetAddr;
+    address private carAssetLogicAddr;
     address private smartAssetAvailabilityAddr;
     uint private hundred = 100;
     uint private thousand = 1000;
@@ -50,19 +51,19 @@ contract IotSimulation {
         if (id == 0) {
             throw;
         }
-        if (smartAssetAddr == address(0)) {
+        if (carAssetLogicAddr == address(0)) {
             throw;
         }
 
         uint number = id + salt;
-        SmartAsset asset = SmartAsset(smartAssetAddr);
-        asset.updateViaIotSimulator(
+        CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
+        carAssetLogic.updatePriceViaIotSimulator(
             id,
             generateMillageResult(number),
             generateDamageResult(number),
             generateSmokingCarResult(number),
-            generateLatitudeResult(number),
-            generateLongitudeResult(number)
+            generateLongitudeResult(number),
+            generateLatitudeResult(number)
         );
         return true;
     }
@@ -150,12 +151,12 @@ contract IotSimulation {
      * @param contractAddress address to be set
      * @return result Execution result
      */
-    function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
-        smartAssetAddr = contractAddress;
+    function setCarAssetLogicAddr(address contractAddress) onlyOwner returns (bool result) {
+        carAssetLogicAddr = contractAddress;
         if (contractAddress == address(0)) {
             throw;
         } else {
-            smartAssetAddr = contractAddress;
+            carAssetLogicAddr = contractAddress;
             return true;
         }
     }

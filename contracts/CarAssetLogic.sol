@@ -21,7 +21,7 @@ contract SmartAssetInterface {
 
     function getAssetLocationById(uint id) constant returns (uint, uint);
 
-    function updateViaIotSimulator(uint id, uint millage, uint damaged, bool smokingCar, uint longitude, uint latitude);
+    function updateAsset(uint id, uint millage, uint damaged, bool smokingCar, uint longitude, uint latitude);
 }
 
 
@@ -221,7 +221,7 @@ contract CarAssetLogic {
     ) onlyIotSimulator()
     {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        asset.updateViaIotSimulator(id, millage, damaged, smokingCar, longitude, latitude);
+        asset.updateAsset(id, millage, damaged, smokingCar, longitude, latitude);
     }
 
     /**

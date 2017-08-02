@@ -79,7 +79,7 @@ contract SmartAsset {
     SmartAssetData[] smartAssetsOnSale;
 
     /**
-     * @dev Constructor to check and set up IotSimulator contract address
+     * @dev Constructor to check and set up SmartAssetPrice contract address
      * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
      */
     function SmartAsset(address smartAssetPriceAddress) {
@@ -305,9 +305,9 @@ contract SmartAsset {
     }
 
     /**
-     * @dev Function to updates Smart Asset IoT params and generate asset price
+     * @dev Function to updates Smart Asset params and generate asset price
      */
-    function updateViaIotSimulator(
+    function updateAsset(
         uint id,
         uint millage,
         uint damaged,
