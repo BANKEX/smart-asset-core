@@ -5,23 +5,18 @@ contract SmartAssetMetadata {
 
     address owner = msg.sender;
 
-    mapping(bytes32 => AssetContractsData) contractsMetaData;
+    mapping(bytes32 => address) smartAssetLogicAddresses;
 
     bytes32[] assetTypes;
-
-    struct AssetContractsData {
-        address smartAssetAddress;
-        address smartAssetLogic;
-    }
 
     modifier onlyOwner {
         if (msg.sender != owner) throw;
         _;
     }
 
-    function addSmartAssetType(bytes32 newType, address smartAssetAddress, address smartAssetLogic) onlyOwner() {
+    function addSmartAssetType(bytes32 newType, address smartAssetLogic) onlyOwner() {
 
-        contractsMetaData[newType] = AssetContractsData(smartAssetAddress,  smartAssetLogic);
+        smartAssetLogicAddresses[newType] = smartAssetLogic;
 
         assetTypes.push(newType);
 
@@ -32,18 +27,10 @@ contract SmartAssetMetadata {
     }
 
     function getAssetLogicAddress(bytes32 assetType) constant returns(address) {
-        return contractsMetaData[assetType].smartAssetLogic;
-    }
-
-    function getSmartAssetAddress(bytes32 assetType) constant returns(address) {
-        return contractsMetaData[assetType].smartAssetAddress;
+        return smartAssetLogicAddresses[assetType];
     }
 
     function updateAssetLogicAddress(bytes32 assetType, address _assetLogicAddress) onlyOwner() {
-        contractsMetaData[assetType].smartAssetLogic = _assetLogicAddress;
-    }
-
-    function updateSmartAssetAddress(bytes32 assetType, address _smartAssetAddress) onlyOwner() {
-        contractsMetaData[assetType].smartAssetAddress = _smartAssetAddress;
+        smartAssetLogicAddresses[assetType] = _assetLogicAddress;
     }
 }
