@@ -21,6 +21,7 @@ contract SmartAssetInterface {
 
     function getAssetLocationById(uint id) constant returns (uint, uint);
 
+    function updateViaIotSimulator(uint id, uint millage, uint damaged, bool smokingCar, uint longitude, uint latitude);
 }
 
 
@@ -29,9 +30,13 @@ contract SmartAssetInterface {
  */
 contract CarAssetLogic {
     uint private BASE_CAR_PRICE = 10000;
+
     uint private MIN_CAR_PRICE = 100;
+
     address public owner = msg.sender;
+
     address private smartAssetAddr;
+
     address private iotSimulationAddr;
 
 
@@ -79,27 +84,31 @@ contract CarAssetLogic {
     mapping (uint => SmartAssetAvailabilityData) smartAssetAvailabilityById;
 
     // Mapping city to its latitude longitude pair
-    mapping(bytes32 => LatLong) cityMapping;
+    mapping (bytes32 => LatLong) cityMapping;
 
     /**
      * Check whether contract owner executes method or not
      */
     modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
+        if (msg.sender != owner) {throw;}
+        else {_;}
     }
 
     /**
      * Check whether SmartAsset contract executes method or not
      */
     modifier onlySmartAsset {
-        if (msg.sender != smartAssetAddr) {throw;} else {_;}
+        if (msg.sender != smartAssetAddr) {throw;}
+        else {_;}
     }
 
     /**
      * Check whether IotSimulator contract executes method or not
      */
+    //TODO: null iotSimulator
     modifier onlyIotSimulator {
-        if (msg.sender != iotSimulationAddr) {throw;} else {_;}
+        if (msg.sender != iotSimulationAddr) {throw;}
+        else {_;}
     }
 
 
@@ -126,7 +135,7 @@ contract CarAssetLogic {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function removeAssetPrice(uint assetId)  onlySmartAsset {
+    function removeAssetPrice(uint assetId) onlySmartAsset {
         delete smartAssetPriceById[assetId];
     }
 
@@ -134,9 +143,9 @@ contract CarAssetLogic {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function calculateAssetPrice(uint assetId)  onlySmartAsset {
+    function calculateAssetPrice(uint assetId) onlySmartAsset {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) =  asset.getAssetById(assetId);
+        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = asset.getAssetById(assetId);
         SmartAssetPriceData memory smartAssetPriceData = SmartAssetPriceData(_calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
         smartAssetPriceById[id] = smartAssetPriceData;
     }
@@ -156,7 +165,7 @@ contract CarAssetLogic {
      */
     function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) =  asset.getAssetById(assetId);
+        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = asset.getAssetById(assetId);
         //check scenario when there is no id in map
         return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == smartAssetPriceById[assetId].hash;
     }
@@ -165,7 +174,7 @@ contract CarAssetLogic {
         * Gets all cities that have been added to this contract
         *@return cities all cities that have been added to this contract
         */
-    function getAvailableCities() constant returns(bytes32[]) {
+    function getAvailableCities() constant returns (bytes32[]) {
         return cities;
     }
 
@@ -175,7 +184,7 @@ contract CarAssetLogic {
     *@param cityName name of the city where smart asset should be delivered to
     *@return delivery price
     */
-    function calculateDeliveryPrice(uint id, bytes32 cityName) constant returns(uint) {
+    function calculateDeliveryPrice(uint id, bytes32 cityName) constant returns (uint) {
         LatLong latLong = cityMapping[cityName];
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
@@ -191,12 +200,28 @@ contract CarAssetLogic {
     /**
      * @dev Function to updates Smart Asset IoT availability
      */
-    function updateViaIotSimulator(
+    function updateAvailabilityViaIotSimulator(
     uint id,
     bool availability
     ) onlyIotSimulator()
     {
         smartAssetAvailabilityById[id].availability = availability;
+    }
+
+    /**
+     * @dev Function to updates Smart Asset IoT params and generate asset price
+     */
+    function updatePriceViaIotSimulator(
+    uint id,
+    uint millage,
+    uint damaged,
+    bool smokingCar,
+    uint longitude,
+    uint latitude
+    ) onlyIotSimulator()
+    {
+        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
+        asset.updateViaIotSimulator(id, millage, damaged, smokingCar, longitude, latitude);
     }
 
     /**
@@ -239,7 +264,8 @@ contract CarAssetLogic {
     function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
         if (contractAddress == address(0)) {
             throw;
-        } else {
+        }
+        else {
             smartAssetAddr = contractAddress;
             return true;
         }
@@ -252,7 +278,8 @@ contract CarAssetLogic {
     function setIotSimulationAddr(address contractAddress) onlyOwner returns (bool result) {
         if (contractAddress == address(0)) {
             throw;
-        } else {
+        }
+        else {
             iotSimulationAddr = contractAddress;
             return true;
         }
