@@ -10,7 +10,7 @@ module.exports = function(deployer) {
     deployer
     .deploy(DeliveryRequirements, SmartAsset.address)
     .then(function() {
-            return deployer.deploy(BuySmartAsset, SmartAssetPrice.address, SmartAssetAvailability.address, DeliveryRequirements.address, SmartAsset.address);
+            return deployer.deploy(BuySmartAsset, SmartAsset.address);
         }).then(function() {
         	return SmartAsset.deployed();
 		}).then(function(instance) {

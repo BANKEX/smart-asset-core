@@ -8,6 +8,14 @@ contract SmartAssetInterface {
     function removeAssetPrice(uint assetId);
 
     function calculateAssetPrice(uint assetId);
+
+    function getSmartAssetPrice(uint id) returns (uint);
+
+    function checkSmartAssetModification(uint id) returns (bool);
+
+    function calculateDeliveryPrice(uint id, bytes32 city) returns (uint);
+
+    function getSmartAssetAvailability(uint id) returns (bool);
 }
 
 
@@ -40,6 +48,22 @@ contract SmartAssetRouter {
      */
     function calculateAssetPrice(uint assetId) onlySmartAsset {
         _getSmartAssetImpl(assetId).calculateAssetPrice(assetId);
+    }
+
+    function getSmartAssetPrice(uint id) returns (uint) {
+        return _getSmartAssetImpl(id).getSmartAssetPrice(id);
+    }
+
+    function checkSmartAssetModification(uint id) returns (bool) {
+        return _getSmartAssetImpl(id).checkSmartAssetModification(id);
+    }
+
+    function calculateDeliveryPrice(uint id, bytes32 city) returns (uint) {
+        return _getSmartAssetImpl(id).calculateDeliveryPrice(id, city);
+    }
+
+    function getSmartAssetAvailability(uint id) returns (bool) {
+        return _getSmartAssetImpl(id).getSmartAssetAvailability(id);
     }
 
     function setAssetType(uint assetId, bytes32 assetType) {

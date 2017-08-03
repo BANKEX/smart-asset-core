@@ -1,26 +1,13 @@
 pragma solidity ^0.4.10;
 
+import './SmartAssetRouter.sol';
 
 /**
  * Interface for SmartAsset contract
  */
-contract SmartAssetInterface {
+contract SmartAssetI {
     function sellAsset(uint id, address newOwner);
     function getAssetOwnerById(uint id) constant returns (address);
-    function getAssetTypeById(uint id) constant returns (bytes32);
-}
-
-
-contract BaseSmartAssetLogic {
-    function getSmartAssetPrice(uint id) returns(uint);
-    function checkSmartAssetModification(uint id) returns (bool);
-    function calculateDeliveryPrice(uint id, bytes32 city) returns(uint);
-    function getSmartAssetAvailability(uint id) returns (bool);
-}
-
-
-contract SmartAssetMetaInterface {
-    function getAssetLogicAddress(bytes32 assetType) constant returns(address);
 }
 
 
@@ -30,7 +17,8 @@ contract SmartAssetMetaInterface {
 contract BuySmartAsset {
     address public owner = msg.sender;
     address private smartAssetAddr;
-    address private smartAssetMetaAddr;
+
+    SmartAssetRouter smartAssetRouter = new SmartAssetRouter();
 
     /**
      * Check whether contract owner executes method or not
@@ -42,14 +30,9 @@ contract BuySmartAsset {
     /**
      * @dev Constructor to check and set up dependencies contract address
      * @param smartAssetAddress Address of deployed SmartAssetAddress contract
-     * @param _smartAssetMetaAddr Address of deployed SmartAssetMetadata contract
      */
-    function BuySmartAsset(address smartAssetAddress, address _smartAssetMetaAddr) {
-        if (smartAssetAddress == address(0) || _smartAssetMetaAddr == address(0)) {
-            throw;
-        }
-
-        smartAssetMetaAddr = _smartAssetMetaAddr;
+    function BuySmartAsset(address smartAssetAddress) {
+        require(smartAssetAddress != address(0));
         smartAssetAddr = smartAssetAddress;
     }
 
@@ -59,16 +42,12 @@ contract BuySmartAsset {
      * @param cityName City name of destination/delivery city
      */
     function getTotalPrice(uint assetId, bytes32 cityName) constant returns (uint totalPrice) {
-
-        BaseSmartAssetLogic baseSmartAssetLogic = getBaseAssetLogic(assetId);
-
-
-        if (!baseSmartAssetLogic.checkSmartAssetModification(assetId)) {
+        if (!smartAssetRouter.checkSmartAssetModification(assetId)) {
             // Formula1 parameters were changed/mutated
             throw;
         }
 
-        return baseSmartAssetLogic.getSmartAssetPrice(assetId) + baseSmartAssetLogic.calculateDeliveryPrice(assetId, cityName);
+        return smartAssetRouter.getSmartAssetPrice(assetId) + smartAssetRouter.calculateDeliveryPrice(assetId, cityName);
     }
 
     /**
@@ -78,9 +57,7 @@ contract BuySmartAsset {
      */
     function buyAsset(uint assetId, bytes32 cityName) payable {
 
-        BaseSmartAssetLogic baseSmartAssetLogic = getBaseAssetLogic(assetId);
-
-        if (!baseSmartAssetLogic.getSmartAssetAvailability(assetId)) {
+        if (!smartAssetRouter.getSmartAssetAvailability(assetId)) {
             throw;
         }
 
@@ -91,27 +68,12 @@ contract BuySmartAsset {
 			throw;
 		}
 
-		SmartAssetInterface smartAssetInterface = SmartAssetInterface(smartAssetAddr);
+		SmartAssetI smartAssetInterface = SmartAssetI(smartAssetAddr);
 		smartAssetInterface.getAssetOwnerById(assetId).transfer(totalPrice);
 
 		// Refund buyer if overpaid
 		msg.sender.transfer(msg.value - totalPrice);
 
         smartAssetInterface.sellAsset(assetId, msg.sender);
-    }
-
-    function getBaseAssetLogic(uint assetId) private returns(BaseSmartAssetLogic) {
-
-        SmartAssetInterface smartAssetInterface = SmartAssetInterface(smartAssetAddr);
-
-        bytes32 assetType = smartAssetInterface.getAssetTypeById(assetId);
-
-        SmartAssetMetaInterface smartAssetMetaInterface = SmartAssetMetaInterface(smartAssetMetaAddr);
-
-        address assetLogicAddress = smartAssetMetaInterface.getAssetLogicAddress(assetType);
-
-        BaseSmartAssetLogic baseSmartAssetLogic = BaseSmartAssetLogic(assetLogicAddress);
-
-        return baseSmartAssetLogic;
     }
 }
