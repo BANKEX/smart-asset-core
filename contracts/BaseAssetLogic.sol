@@ -71,27 +71,27 @@ contract BaseAssetLogic {
     /**
      * @param assetId Id of smart asset
      */
-    function calculateAssetPrice(uint assetId)  onlySmartAsset {
+    function calculateAssetPrice(uint assetId) {
     }
 
     /**
      * @param assetId Id of smart asset
      */
     function getSmartAssetPrice(uint assetId) constant returns (uint) {
-    return 0;
+        return 0;
     }
 
     /**
      * @param assetId Id of smart asset
      */
-    function getSmartAssetAvailability(uint assetId)  onlySmartAsset returns (bool) {
+    function getSmartAssetAvailability(uint assetId) returns (bool) {
         return true;
     }
 
     /**
      * @param assetId Id of smart asset
      */
-    function calculateDeliveryPrice(uint assetId, bytes32 param)  onlySmartAsset returns (uint){
+    function calculateDeliveryPrice(uint assetId, bytes32 param) returns (uint){
         return 0;
     }
 
@@ -99,7 +99,7 @@ contract BaseAssetLogic {
      * @dev Setter for the SmartAsset contract address
      * @param contractAddress Address of the SmartAsset contract
      */
-    function setSmartAssetAddr(address contractAddress) onlySmartAssetMetadata returns (bool result) {
+    function setSmartAssetAddr(address contractAddress) returns (bool result) {
         if (contractAddress == address(0)) {
             throw;
         } else {
