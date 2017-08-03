@@ -28,7 +28,6 @@ contract SmartAsset {
 
     address public owner = msg.sender;
 
-    address private iotSimulationAddr;
     address private smartAssetPriceAddr;
     address private buyAssetAddr;
 
@@ -52,13 +51,6 @@ contract SmartAsset {
      */
     modifier onlyOwner {
         if (msg.sender != owner) {throw;} else {_;}
-    }
-
-    /**
-     * Check whether IotSimulator contract executes method or not
-     */
-    modifier onlyIotSimulator {
-        if (msg.sender != iotSimulationAddr) {throw;} else {_;}
     }
 
     // Definition of Smart asset
@@ -87,17 +79,10 @@ contract SmartAsset {
     SmartAssetData[] smartAssetsOnSale;
 
     /**
-     * @dev Constructor to check and set up IotSimulator contract address
-     * @param iotSimulationAddress Address of deployed IotSimulator contract
+     * @dev Constructor to check and set up SmartAssetPrice contract address
      * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
      */
-    function SmartAsset(address iotSimulationAddress, address smartAssetPriceAddress) {
-
-        if (iotSimulationAddress == address(0)) {
-            throw;
-        } else {
-            iotSimulationAddr = iotSimulationAddress;
-        }
+    function SmartAsset(address smartAssetPriceAddress) {
         if (smartAssetPriceAddress == address(0)) {
             throw;
         } else {
@@ -320,16 +305,16 @@ contract SmartAsset {
     }
 
     /**
-     * @dev Function to updates Smart Asset IoT params and generate asset price
+     * @dev Function to updates Smart Asset params and generate asset price
      */
-    function updateViaIotSimulator(
+    function updateAsset(
         uint id,
         uint millage,
         uint damaged,
         bool smokingCar,
         uint longitude,
         uint latitude
-    ) onlyIotSimulator()
+    ) //TODO: only by cotract of corresponding type // onlyIotSimulator()
     {
         //validates if asset is present
         SmartAssetData memory asset = _getAssetById(id);

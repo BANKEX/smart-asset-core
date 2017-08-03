@@ -13,16 +13,12 @@ module.exports = function(deployer) {
             return deployer.deploy(SmartAssetAvailability, IotSimulation.address);
         })
         .then(function() {
-            return deployer.deploy(SmartAsset, IotSimulation.address, SmartAssetPrice.address);
+            return deployer.deploy(SmartAsset, SmartAssetPrice.address);
         })
         .then(function() {
             IotSimulation.deployed()
                 .then(function(instance) {
-                    simulation = instance;
-                    return simulation.setSmartAssetAddr(SmartAsset.address);
-                })
-                .then(function(instance) {
-                    return simulation.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
+                    return instance.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
                 })
                 .then(function() {
                     SmartAssetPrice.deployed()
