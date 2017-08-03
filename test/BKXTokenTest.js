@@ -21,7 +21,7 @@ contract('BKXToken', function(accounts) {
             return SmartAsset.deployed();
 
         }).then(function(instance){
-            instance.createAsset('bmw x5', 'photo', 'document')
+            instance.createAsset('bmw x5', 'photo', 'document', 'car')
 
         }).then(function(){
             return bkxToken.balanceOf(web3.eth.accounts[0]);

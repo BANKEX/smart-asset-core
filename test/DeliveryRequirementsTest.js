@@ -12,7 +12,7 @@ contract('DeliveryRequirements', function(accounts) {
     it("Should return price", function(done) {
 
         SmartAsset.deployed().then(function(instance){
-            return instance.createAsset("Description", "photo//", "document//");
+            return instance.createAsset("Description", "photo//", "document//", "car");
 
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];
@@ -92,7 +92,7 @@ contract('DeliveryRequirements', function(accounts) {
         var coefficientToSet = 2226389; // == (DEFAULT_COEFFICIENT / 10 to the 9th)
 
         SmartAsset.deployed().then(function(instance){
-            return instance.createAsset("Description", "photo//", "document//");
+            return instance.createAsset("Description", "photo//", "document//", "car");
 
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];

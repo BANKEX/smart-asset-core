@@ -1,14 +1,6 @@
 pragma solidity ^0.4.10;
 
-
-/**
- * Interface for SmartAssetPrice contract
- */
-contract SmartAssetPrice {
-    function calculateAssetPrice(uint assetId)  returns (bool result);
-    function removeAssetPrice(uint assetId);
-}
-
+import './SmartAssetRouter.sol';
 
 /**
 *Interface for BKXToken contract
@@ -28,7 +20,6 @@ contract SmartAsset {
 
     address public owner = msg.sender;
 
-    address private smartAssetPriceAddr;
     address private buyAssetAddr;
 
     BKXTokenInterface bkxToken;
@@ -78,17 +69,7 @@ contract SmartAsset {
     // Smart assets which are on-sale
     SmartAssetData[] smartAssetsOnSale;
 
-    /**
-     * @dev Constructor to check and set up SmartAssetPrice contract address
-     * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
-     */
-    function SmartAsset(address smartAssetPriceAddress) {
-        if (smartAssetPriceAddress == address(0)) {
-            throw;
-        } else {
-            smartAssetPriceAddr = smartAssetPriceAddress;
-        }
-    }
+    SmartAssetRouter smartAssetRouter = new SmartAssetRouter();
 
     /**
     *@dev Sets BKXToken contract address for this contract
@@ -115,7 +96,8 @@ contract SmartAsset {
     function createAsset(
         bytes32 b1,
         bytes32 b2,
-        bytes32 b3
+        bytes32 b3,
+        bytes32 assetType
     ) {
         if(bkxToken == address(0) || bkxToken.balanceOf(msg.sender) < bkxPriceForTransaction) {
             throw;
@@ -147,6 +129,7 @@ contract SmartAsset {
         smartAssetById[id] = smartAssetData;
 
         smartAssetDatasOfOwner.push(smartAssetData);
+        smartAssetRouter.setAssetType(id, assetType);
         NewSmartAsset(id);
     }
 
@@ -307,7 +290,7 @@ contract SmartAsset {
     /**
      * @dev Function to updates Smart Asset params and generate asset price
      */
-    function updateAsset(
+    function updateViaIotSimulator(
         uint id,
         uint millage,
         uint damaged,
@@ -326,8 +309,7 @@ contract SmartAsset {
             smartAssetById[id].u3 = longitude;
             smartAssetById[id].u4 = latitude;
 
-            SmartAssetPrice assetPrice = SmartAssetPrice(smartAssetPriceAddr);
-            assetPrice.calculateAssetPrice(id);
+            smartAssetRouter.calculateAssetPrice(id);
             smartAssetById[id].state = State.PriceFromFormula1IsCalculated;
         } else {
             // Wrong step of the flow
@@ -391,8 +373,7 @@ contract SmartAsset {
         SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner];
         smartAssetDatasOfOwner.push(asset);
 
-        SmartAssetPrice assetPrice = SmartAssetPrice(smartAssetPriceAddr);
-        assetPrice.removeAssetPrice(id);
+        smartAssetRouter.removeAssetPrice(id);
     }
 
     /**

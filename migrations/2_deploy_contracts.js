@@ -13,7 +13,7 @@ module.exports = function(deployer) {
             return deployer.deploy(SmartAssetAvailability, IotSimulation.address);
         })
         .then(function() {
-            return deployer.deploy(SmartAsset, SmartAssetPrice.address);
+            return deployer.deploy(SmartAsset);
         })
         .then(function() {
             IotSimulation.deployed()

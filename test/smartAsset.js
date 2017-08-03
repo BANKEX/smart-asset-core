@@ -13,7 +13,7 @@ contract('SmartAsset', function(accounts) {
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.createAsset("BMW X5", "photo_url", "document_url");
+      return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
     }).then(function(result) {
       smartAssetGeneratedId = result.logs[0].args.id.c[0];
       return smartAsset.getAssetById.call(smartAssetGeneratedId);
@@ -36,7 +36,7 @@ contract('SmartAsset', function(accounts) {
       return smartAsset.getMyAssetsCount.call();
     }).then(function(returnValue) {
       initialMyAssetsCount = returnValue;
-      return smartAsset.createAsset("Audi A8", "a_photo", "a_document");
+      return smartAsset.createAsset("Audi A8", "a_photo", "a_document", "car");
     }).then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call();
     }).then(function(returnValue) {
@@ -121,7 +121,7 @@ contract('SmartAsset', function(accounts) {
               tokensAmount = parseInt(result);
 
           }).then(function(){
-              smartAsset.createAsset('bmw x5', 'photo', 'document');
+              smartAsset.createAsset('bmw x5', 'photo', 'document', 'car');
 
           }).then(function() {
               return bkxToken.balanceOf(web3.eth.accounts[0]);
