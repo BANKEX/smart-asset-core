@@ -1,7 +1,5 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
-
 
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');

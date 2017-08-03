@@ -1,6 +1,5 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
 var SmartAssetAvailability = artifacts.require("./SmartAssetAvailability.sol");
 
 function toAscii(input) {

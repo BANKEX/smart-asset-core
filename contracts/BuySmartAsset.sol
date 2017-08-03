@@ -18,7 +18,7 @@ contract BuySmartAsset {
     address public owner = msg.sender;
     address private smartAssetAddr;
 
-    SmartAssetRouter smartAssetRouter = new SmartAssetRouter();
+    SmartAssetRouter smartAssetRouter;
 
     /**
      * Check whether contract owner executes method or not
@@ -31,9 +31,11 @@ contract BuySmartAsset {
      * @dev Constructor to check and set up dependencies contract address
      * @param smartAssetAddress Address of deployed SmartAssetAddress contract
      */
-    function BuySmartAsset(address smartAssetAddress) {
+    function BuySmartAsset(address smartAssetAddress, address routerAddress) {
         require(smartAssetAddress != address(0));
+        require(routerAddress != address(0));
         smartAssetAddr = smartAssetAddress;
+        smartAssetRouter = SmartAssetRouter(routerAddress);
     }
 
     /**

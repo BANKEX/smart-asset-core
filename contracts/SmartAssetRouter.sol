@@ -21,7 +21,7 @@ contract SmartAssetInterface {
 
 contract SmartAssetRouter {
 
-    SmartAssetMetadata smartAssetMetadata = new SmartAssetMetadata();
+    SmartAssetMetadata smartAssetMetadata;
 
     mapping (uint => bytes32) assetTypeById;
 
@@ -32,6 +32,11 @@ contract SmartAssetRouter {
         //TODO:
         //        if (msg.sender != smartAssetAddr) {throw;} else {_;}
         _;
+    }
+
+    function SmartAssetRouter(address metadataAddress) {
+        require(metadataAddress != address(0));
+        smartAssetMetadata = SmartAssetMetadata(metadataAddress);
     }
 
     /**

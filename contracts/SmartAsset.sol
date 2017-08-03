@@ -69,7 +69,12 @@ contract SmartAsset {
     // Smart assets which are on-sale
     SmartAssetData[] smartAssetsOnSale;
 
-    SmartAssetRouter smartAssetRouter = new SmartAssetRouter();
+    SmartAssetRouter smartAssetRouter;
+
+    function SmartAsset(address routerAddress) {
+        require(routerAddress != address(0));
+        smartAssetRouter = SmartAssetRouter(routerAddress);
+    }
 
     /**
     *@dev Sets BKXToken contract address for this contract

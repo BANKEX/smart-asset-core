@@ -1,6 +1,6 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
+var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
 contract('IotSimulation', function(accounts) {
 
@@ -19,7 +19,7 @@ contract('IotSimulation', function(accounts) {
                  return instance.generateIotOutput(smartAssetGeneratedId, 0);
              })
              .then(function() {
-                 return SmartAssetPrice.deployed();
+                 return CarAssetLogic.deployed();
              })
              .then(function(instance) {
                  return instance.getSmartAssetPrice(smartAssetGeneratedId);
@@ -65,7 +65,7 @@ contract('IotSimulation', function(accounts) {
       });
 
      it("Check exception will be thrown in id is not present", function() {
-          return SmartAssetPrice.deployed()
+          return CarAssetLogic.deployed()
               .then(function(instance) {
                   return instance.checkSmartAssetModification(10000);
               })

@@ -1,5 +1,6 @@
 var SmartAsset = artifacts.require("SmartAsset");
 var CarAssetLogic = artifacts.require("CarAssetLogic");
+var IotSimulation = artifacts.require("IotSimulation");
 
 module.exports = function(deployer) {
     deployer.deploy(CarAssetLogic).then(function(){
@@ -10,7 +11,7 @@ module.exports = function(deployer) {
         }).then(function() {
 
             IotSimulation.deployed().then(function(instance){
-                instance.setSmartAssetAddr(CarAssetLogic.address);
+                instance.setCarAssetLogicAddr(CarAssetLogic.address);
             });
         })
     });

@@ -1,33 +1,24 @@
-var DeliveryRequirements = artifacts.require("./DeliveryRequirements.sol");
+var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var IotSimulation = artifacts.require("./IotSimulation.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
 
-
-contract('DeliveryRequirements', function(accounts) {
+contract('CarAssetLogic', function(accounts) {
 
     var smartAssetId;
     var iotSimulationInstance;
 
     it("Should return price", function(done) {
-
         SmartAsset.deployed().then(function(instance){
             return instance.createAsset("Description", "photo//", "document//", "car");
-
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];
-
             return IotSimulation.deployed();
-
         }).then(function(instance) {
-            instance.generateIotOutput(smartAssetId, 10);
-
+            return instance.generateIotOutput(smartAssetId, 10);
         }).then(function() {
-            return DeliveryRequirements.deployed()
-
+            return CarAssetLogic.deployed()
         }).then(function(instance){
-            return instance.calculatePrice(smartAssetId, "Saint-Petersburg")
-
+            return instance.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
         }).then(function(result){
             assert.isAbove(result, 0);
             done();
@@ -36,22 +27,18 @@ contract('DeliveryRequirements', function(accounts) {
 
     it('Should add city', function(done) {
 
-        var deliveryRequirements;
+        var carAssetLogic;
         var citiesNumber;
 
-        DeliveryRequirements.deployed().then(function (instance) {
-            deliveryRequirements = instance;
-            return deliveryRequirements.getAvailableCities.call();
-
+        CarAssetLogic.deployed().then(function (instance) {
+            carAssetLogic = instance;
+            return carAssetLogic.getAvailableCities.call();
         }).then(function(result){
             citiesNumber = result.length;
-
         }).then(function(){
-            deliveryRequirements.addCity('London', 60, 60);
-
+            return carAssetLogic.addCity('London', 60, 60);
         }).then(function(){
-            return deliveryRequirements.getAvailableCities.call();
-
+            return carAssetLogic.getAvailableCities.call();
         }).then(function(result) {
             assert.notEqual(citiesNumber, result.length);
             done();
@@ -62,22 +49,18 @@ contract('DeliveryRequirements', function(accounts) {
 
     it('Should not add city', function(done) {
 
-        var deliveryRequirements;
+        var carAssetLogic;
         var citiesNumber;
 
-        DeliveryRequirements.deployed().then(function (instance) {
-            deliveryRequirements = instance;
-            return deliveryRequirements.getAvailableCities.call();
-
+        CarAssetLogic.deployed().then(function (instance) {
+            carAssetLogic = instance;
+            return carAssetLogic.getAvailableCities.call();
         }).then(function(result){
             citiesNumber = result.length;
-
         }).then(function(){
-            deliveryRequirements.addCity('Moscow', 60, 60);
-
+            return carAssetLogic.addCity('Moscow', 60, 60);
         }).then(function(){
-            return deliveryRequirements.getAvailableCities.call();
-
+            return carAssetLogic.getAvailableCities.call();
         }).then(function(result) {
             assert.equal(citiesNumber, result.length);
             done();
@@ -87,39 +70,29 @@ contract('DeliveryRequirements', function(accounts) {
 
     it("Should set coefficient", function(done) {
 
-        var deliveryRequirement;
+        var carAssetLogic;
         var priceInitial;
         var coefficientToSet = 2226389; // == (DEFAULT_COEFFICIENT / 10 to the 9th)
 
         SmartAsset.deployed().then(function(instance){
             return instance.createAsset("Description", "photo//", "document//", "car");
-
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];
-
             return IotSimulation.deployed();
         }).then(function(instance) {
             instance.generateIotOutput(smartAssetId, 100);
-
         }).then(function() {
-            return DeliveryRequirements.deployed()
-
+            return CarAssetLogic.deployed()
         }).then(function(instance){
-
-            deliveryRequirement = instance;
-            return deliveryRequirement.calculatePrice(smartAssetId, "Saint-Petersburg")
-
+            carAssetLogic = instance;
+            return carAssetLogic.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
         }).then(function(result){
             priceInitial = result;
-
         }).then(function() {
-            deliveryRequirement.setCoefficientInWei(coefficientToSet);
-
+            return carAssetLogic.setCoefficientInWei(coefficientToSet);
         }).then(function() {
-            return deliveryRequirement.calculatePrice(smartAssetId, "Saint-Petersburg")
-
+            return carAssetLogic.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
         }).then(function(result){
-
             assert.equal(priceInitial/Math.pow(10, 9), result);
             done();
         });

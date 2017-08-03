@@ -1,11 +1,16 @@
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
+var SmartAssetRouter = artifacts.require("./SmartAssetRouter.sol");
+
 var SmartAssetAvailability = artifacts.require("./SmartAssetAvailability.sol");
 var IotSimulation = artifacts.require("./IotSimulation.sol");
+var SmartAssetMetadata = artifacts.require("./SmartAssetMetadata.sol");
 
 module.exports = function(deployer) {
     deployer
-        .deploy(SmartAssetPrice)
+        .deploy(SmartAssetMetadata)
+        .then(function() {
+            return deployer.deploy(SmartAssetRouter, SmartAssetMetadata.address);
+        })
         .then(function() {
             return deployer.deploy(IotSimulation);
         })
@@ -13,18 +18,12 @@ module.exports = function(deployer) {
             return deployer.deploy(SmartAssetAvailability, IotSimulation.address);
         })
         .then(function() {
-            return deployer.deploy(SmartAsset);
+            return deployer.deploy(SmartAsset, SmartAssetRouter.address);
         })
         .then(function() {
             IotSimulation.deployed()
                 .then(function(instance) {
                     return instance.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
-                })
-                .then(function() {
-                    SmartAssetPrice.deployed()
-                        .then(function(instance) {
-                            return instance.setSmartAssetAddr(SmartAsset.address);
-                        });
                 });
         });
 };

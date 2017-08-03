@@ -1,7 +1,7 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
-var SmartAssetPrice = artifacts.require("./SmartAssetPrice.sol");
+var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
 contract('BuySmartAsset', function(accounts) {
     it("Should sell asset", function() {
@@ -28,7 +28,7 @@ contract('BuySmartAsset', function(accounts) {
                 return iotSimulation.generateIotAvailability(smartAssetGeneratedId, true);
              })
              .then(function() {
-                 return SmartAssetPrice.deployed();
+                 return CarAssetLogic.deployed();
              })
              .then(function(instance) {
                  return instance.getSmartAssetPrice(smartAssetGeneratedId);
