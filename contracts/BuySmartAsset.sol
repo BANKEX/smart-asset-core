@@ -41,10 +41,8 @@ contract BuySmartAsset {
 
     /**
      * @dev Constructor to check and set up dependencies contract address
-     * @param smartAssetPriceAddress Address of deployed SmartAssetPriceAddress contract
-     * @param smartAssetAvailabilityAddress Address of deployed SmartAssetAvailabilityAddress contract
-     * @param deliveryRequirementsAddress Address of deployed DeliveryRequirementsAddress contract
      * @param smartAssetAddress Address of deployed SmartAssetAddress contract
+     * @param _smartAssetMetaAddr Address of deployed SmartAssetMetadata contract
      */
     function BuySmartAsset(address smartAssetAddress, address _smartAssetMetaAddr) {
         if (smartAssetAddress == address(0) || _smartAssetMetaAddr == address(0)) {
