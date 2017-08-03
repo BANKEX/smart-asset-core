@@ -1,9 +1,12 @@
-var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetRouter = artifacts.require("./SmartAssetRouter.sol");
+var SmartAssetMetadata = artifacts.require("SmartAssetMetadata.sol");
+var SmartAssetRouter = artifacts.require("SmartAssetRouter.sol");
+var IotSimulation = artifacts.require("IotSimulation.sol");
+var SmartAssetAvailability = artifacts.require("SmartAssetAvailability.sol");
+var SmartAsset = artifacts.require("SmartAsset.sol");
+var BuySmartAsset = artifacts.require("BuySmartAsset.sol");
+var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
+var BKXToken = artifacts.require("BKXToken.sol");
 
-var SmartAssetAvailability = artifacts.require("./SmartAssetAvailability.sol");
-var IotSimulation = artifacts.require("./IotSimulation.sol");
-var SmartAssetMetadata = artifacts.require("./SmartAssetMetadata.sol");
 
 module.exports = function(deployer) {
     deployer
@@ -20,10 +23,69 @@ module.exports = function(deployer) {
         .then(function() {
             return deployer.deploy(SmartAsset, SmartAssetRouter.address);
         })
+
         .then(function() {
-            IotSimulation.deployed()
-                .then(function(instance) {
-                    return instance.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
-                });
+            return IotSimulation.deployed();
+        })
+        .then(function(iotSimulation) {
+            return iotSimulation.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
+        })
+
+        .then(function() {
+             return deployer.deploy(BuySmartAsset, SmartAsset.address, SmartAssetRouter.address)
+        })
+
+        .then(function() {
+            return SmartAsset.deployed();
+        })
+        .then(function(smartAsset) {
+            return smartAsset.setBuyAssetAddr(BuySmartAsset.address);
+        })
+
+
+        .then(function() {
+            return deployer.deploy(CarAssetLogic)
+        })
+        .then(function(){
+             return CarAssetLogic.deployed();
+        })
+        .then(function(instance){
+             return instance.setSmartAssetAddr(SmartAsset.address);
+        })
+        .then(function(){
+            return CarAssetLogic.deployed();
+        })
+        .then(function(instance){
+            return instance.setIotSimulationAddr(IotSimulation.address);
+        })
+
+        .then(function() {
+             return IotSimulation.deployed()
+        })
+        .then(function(instance){
+            return instance.setCarAssetLogicAddr(CarAssetLogic.address);
+        })
+
+        .then(function(){
+            return SmartAssetMetadata.deployed()
+        })
+        .then(function(instance){
+            return instance.addSmartAssetType("car", CarAssetLogic.address);
+        })
+
+        .then(function(){
+            return deployer.deploy(BKXToken)
+        })
+        .then(function(){
+            return BKXToken.deployed()
+        })
+        .then(function(instance){
+            return instance.setSmartAssetContract(SmartAsset.address);
+        })
+        .then(function() {
+            return SmartAsset.deployed();
+        })
+        .then(function(instance){
+            return instance.setBKXTokenAddress(BKXToken.address);
         });
 };
