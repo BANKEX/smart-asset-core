@@ -1,6 +1,6 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var SmartAssetAvailability = artifacts.require("./SmartAssetAvailability.sol");
+var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
@@ -60,7 +60,7 @@ contract('IotSimulation', function(accounts) {
                 return instance.generateIotAvailability(smartAssetGeneratedId, true);
             })
             .then(function(result) {
-                return SmartAssetAvailability.deployed();
+                return CarAssetLogic.deployed();
             })
             .then(function(instance) {
                 return instance.getSmartAssetAvailability.call(smartAssetGeneratedId);

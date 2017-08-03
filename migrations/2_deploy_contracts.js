@@ -1,7 +1,6 @@
 var SmartAssetMetadata = artifacts.require("SmartAssetMetadata.sol");
 var SmartAssetRouter = artifacts.require("SmartAssetRouter.sol");
 var IotSimulation = artifacts.require("IotSimulation.sol");
-var SmartAssetAvailability = artifacts.require("SmartAssetAvailability.sol");
 var SmartAsset = artifacts.require("SmartAsset.sol");
 var BuySmartAsset = artifacts.require("BuySmartAsset.sol");
 var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
@@ -18,17 +17,11 @@ module.exports = function(deployer) {
             return deployer.deploy(IotSimulation);
         })
         .then(function() {
-            return deployer.deploy(SmartAssetAvailability, IotSimulation.address);
-        })
-        .then(function() {
             return deployer.deploy(SmartAsset, SmartAssetRouter.address);
         })
 
         .then(function() {
             return IotSimulation.deployed();
-        })
-        .then(function(iotSimulation) {
-            return iotSimulation.setSmartAssetAvailabilityAddr(SmartAssetAvailability.address);
         })
 
         .then(function() {

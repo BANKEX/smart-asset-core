@@ -9,20 +9,27 @@ contract('SmartAssetMetadata', function(accounts) {
     var meta;
     var assetType = "Car Tokenization";
     var smartAssetLogicAddress = '0x586Bfe2c9a8A69727549e92326642301389771B8';
+    var assetTypesInitial;
 
     it("Should add new asset type", function() {
 
         return SmartAssetMetadata.deployed().then(function(instance) {
 
             meta = instance;
+            return meta.getAssetTypes();
+
+        }).then(function(result) {
+            assetTypesInitial = result.length;
+
+        }).then(function() {
             return meta.addSmartAssetType(assetType, smartAssetLogicAddress);
 
         }).then(function() {
             return meta.getAssetTypes();
 
         }).then(function(result) {
-            assert.equal(1, result.length);
-            assert.equal(assetType, toAscii(result[0]));
+            assert.equal(assetTypesInitial + 1, result.length);
+            assert.equal(assetType, toAscii(result[assetTypesInitial]));
         })
     });
 

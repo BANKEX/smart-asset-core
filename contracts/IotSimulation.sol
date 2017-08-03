@@ -13,17 +13,9 @@ contract CarAssetLogicInterface {
     uint longitude,
     uint latitude
     );
-}
 
-/**
- * Interface for SmartAssetAvailability contract
- */
-contract SmartAssetAvailability {
-    function updateViaIotSimulator(
-        uint id,
-        bool availability);
+    function updateAvailabilityViaIotSimulator(uint id, bool availability);
 }
-
 
 /**
  * @title IotSimulation contract
@@ -31,7 +23,6 @@ contract SmartAssetAvailability {
 contract IotSimulation {
     address public owner = msg.sender;
     address private carAssetLogicAddr;
-    address private smartAssetAvailabilityAddr;
     uint private hundred = 100;
     uint private thousand = 1000;
 
@@ -77,12 +68,12 @@ contract IotSimulation {
         if (id == 0) {
             throw;
         }
-        if (smartAssetAvailabilityAddr == address(0)) {
+        if (carAssetLogicAddr == address(0)) {
             throw;
         }
 
-        SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAvailabilityAddr);
-        smartAssetAvailability.updateViaIotSimulator(
+        CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
+        carAssetLogic.updateAvailabilityViaIotSimulator(
             id,
             availability
         );
@@ -157,21 +148,6 @@ contract IotSimulation {
             throw;
         } else {
             carAssetLogicAddr = contractAddress;
-            return true;
-        }
-    }
-
-    /**
-     * @dev Setter for SmartAssetAvailability contract address.
-     * @param contractAddress address to be set
-     * @return result Execution result
-     */
-    function setSmartAssetAvailabilityAddr(address contractAddress) onlyOwner returns (bool result) {
-        smartAssetAvailabilityAddr = contractAddress;
-        if (contractAddress == address(0)) {
-            throw;
-        } else {
-            smartAssetAvailabilityAddr = contractAddress;
             return true;
         }
     }
