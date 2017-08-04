@@ -103,8 +103,7 @@ contract CarAssetLogic is BaseAssetLogic {
      * @param assetId Id of smart asset
      */
     function calculateAssetPrice(uint assetId)  {
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = asset.getAssetById(assetId);
+        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         SmartAssetPriceData memory smartAssetPriceData = SmartAssetPriceData(_calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
         smartAssetPriceById[id] = smartAssetPriceData;
     }
@@ -123,8 +122,7 @@ contract CarAssetLogic is BaseAssetLogic {
      * @param assetId Id of smart asset
      */
     function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = asset.getAssetById(assetId);
+        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         //check scenario when there is no id in map
         return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == smartAssetPriceById[assetId].hash;
     }
@@ -145,14 +143,13 @@ contract CarAssetLogic is BaseAssetLogic {
     */
     function calculateDeliveryPrice(uint id, bytes32 cityName) constant returns (uint) {
         LatLong latLong = cityMapping[cityName];
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
-        var (lat2, long2) = asset.getAssetLocationById(id);
+        var (assetId, b1, b2, b3, u1, u2, long, lat, bool1, state, owner) = getById(id);
 
         if (coefficient == 0)
         coefficient = DEFAULT_COEFFICIENT;
 
-        return ((max(latLong.lat, lat2)) + (max(latLong.long, long2))) * coefficient * 1 wei;
+        return ((max(latLong.lat, lat)) + (max(latLong.long, long))) * coefficient * 1 wei;
 
     }
 

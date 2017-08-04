@@ -19,10 +19,7 @@ contract SmartAssetInterface {
     uint,
     address);
 
-
-    function getAssetLocationById(uint id) constant returns (uint, uint);
-
-    function updateViaIotSimulator(uint id, uint millage, uint damaged, bool smokingCar, uint longitude, uint latitude);
+    function updateViaIotSimulator(uint id, uint u1, uint u2, bool bool1, uint u3, uint u4);
 }
 
 

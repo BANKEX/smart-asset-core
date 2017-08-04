@@ -348,16 +348,6 @@ contract SmartAsset {
         return smartAssetData.id == 0;
     }
 
-    /**
-        *@dev Returns longitude lattitude of a smart asset
-        *@params  id smart asset id
-        *@return lattitude longitude
-        */
-    function getAssetLocationById(uint id) constant returns (uint, uint) {
-        SmartAssetData memory asset = _getAssetById(id);
-        return (asset.u4, asset.u3);
-    }
-
     function sellAsset(uint id, address newOwner) onlyBuyAsset {
         SmartAssetData memory asset = _getAssetById(id);
 
