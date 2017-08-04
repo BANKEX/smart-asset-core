@@ -29,18 +29,21 @@ contract('SmartAsset', function(accounts) {
 
   it("Should return my assets", function() {
     var smartAsset;
-    var initialMyAssetsCount;
+    var initialMyAssetsCarCount;
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
       return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
-      initialMyAssetsCount = returnValue;
+      initialMyAssetsCarCount = returnValue;
       return smartAsset.createAsset("Audi A8", "a_photo", "a_document", "car");
     }).then(function(returnValue) {
+      return smartAsset.createAsset("Field", "a_photo", "a_document", "notCar");
+      })
+    .then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
-      assert.notEqual(returnValue, initialMyAssetsCount);
+      assert.equal(parseInt(returnValue), parseInt(initialMyAssetsCarCount) +1);
       return smartAsset.getMyAssets.call("car", 1, 0);
     }).then(function(returnValue) {
       console.log(returnValue);
