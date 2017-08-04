@@ -28,6 +28,9 @@ contract('BuySmartAsset', function(accounts) {
                 return iotSimulation.generateIotAvailability(smartAssetGeneratedId, true);
              })
              .then(function() {
+                 return smartAsset.calculateAssetPrice(smartAssetGeneratedId);
+             })
+             .then(function() {
                  return smartAsset.getSmartAssetPrice(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
@@ -38,14 +41,14 @@ contract('BuySmartAsset', function(accounts) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(returnValue[9], 2, 'state should be OnSale = position 2 in State enum list');
+                assert.equal(returnValue[9], 3, 'state should be OnSale = position 3 in State enum list');
                 return smartAsset.makeOffSale(smartAssetGeneratedId);
              })
              .then(function(result) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(returnValue[9], 1, 'state should be PriceFromFormula1IsCalculated = position 1 in State enum list');
+                assert.equal(returnValue[9], 2, 'state should be PriceCalculated = position 2 in State enum list');
                 return smartAsset.makeOnSale(smartAssetGeneratedId);
              })
              .then(function(returnValue) {

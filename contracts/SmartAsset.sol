@@ -17,7 +17,7 @@ contract BKXTokenInterface {
  */
 contract SmartAsset {
     // Workflow stages
-    enum State { ManualDataAreEntered, PriceFromFormula1IsCalculated, OnSale, FailedAssetModified }
+    enum State { ManualDataAreEntered, IotDataCollected, PriceCalculated, OnSale, FailedAssetModified }
 
     address public owner = msg.sender;
 
@@ -269,7 +269,7 @@ contract SmartAsset {
     function makeOnSale(uint id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
-        if (smartAssetData.owner != msg.sender || smartAssetData.state != State.PriceFromFormula1IsCalculated) {
+        if (smartAssetData.owner != msg.sender || smartAssetData.state != State.PriceCalculated) {
             // Asset doesn't belong to sender or is partially filled or is already On Sale
             throw;
         }
@@ -293,7 +293,7 @@ contract SmartAsset {
             throw;
         }
 
-        smartAssetById[id].state = State.PriceFromFormula1IsCalculated;
+        smartAssetById[id].state = State.PriceCalculated;
         bytes32 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
     }
@@ -323,8 +323,7 @@ contract SmartAsset {
             smartAssetById[id].u3 = longitude;
             smartAssetById[id].u4 = latitude;
 
-            smartAssetRouter.calculateAssetPrice(id);
-            smartAssetById[id].state = State.PriceFromFormula1IsCalculated;
+            smartAssetById[id].state = State.IotDataCollected;
         } else {
             // Wrong step of the flow
             throw;
@@ -337,6 +336,7 @@ contract SmartAsset {
 
     function calculateAssetPrice(uint assetId) {
         smartAssetRouter.calculateAssetPrice(assetId);
+        smartAssetById[assetId].state = State.PriceCalculated;
     }
 
     function getSmartAssetPrice(uint assetId) constant returns (uint) {
