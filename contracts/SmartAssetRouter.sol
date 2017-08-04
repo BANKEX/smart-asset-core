@@ -39,6 +39,10 @@ contract SmartAssetRouter {
         smartAssetMetadata = SmartAssetMetadata(metadataAddress);
     }
 
+    function getAssetType(uint assetId) constant returns (bytes32) {
+        return assetTypeById[assetId];
+    }
+
     /**
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset

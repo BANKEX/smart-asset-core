@@ -33,15 +33,15 @@ contract('SmartAsset', function(accounts) {
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.getMyAssetsCount.call();
+      return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
       initialMyAssetsCount = returnValue;
       return smartAsset.createAsset("Audi A8", "a_photo", "a_document", "car");
     }).then(function(returnValue) {
-      return smartAsset.getMyAssetsCount.call();
+      return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
       assert.notEqual(returnValue, initialMyAssetsCount);
-      return smartAsset.getMyAssets.call(1, 0);
+      return smartAsset.getMyAssets.call("car", 1, 0);
     }).then(function(returnValue) {
       console.log(returnValue);
 

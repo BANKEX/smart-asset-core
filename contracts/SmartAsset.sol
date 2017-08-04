@@ -63,11 +63,11 @@ contract SmartAsset {
 
     // Smart asset by its identifier
     mapping (uint => SmartAssetData) smartAssetById;
-    // All smart assets by their owner
-    mapping (address => SmartAssetData[]) smartAssetsByOwner;
-
-    // Smart assets which are on-sale
-    SmartAssetData[] smartAssetsOnSale;
+    // All smart assets by their owner by type
+    mapping (address => mapping (bytes32 => SmartAssetData[])) smartAssetsByOwner;
+    // Smart assets which are on-sale by type
+    //TODO: store only ids?
+    mapping (bytes32 => SmartAssetData[]) smartAssetsOnSale;
 
     SmartAssetRouter smartAssetRouter;
 
@@ -113,7 +113,7 @@ contract SmartAsset {
         address owner = msg.sender;
         uint id = ++nextId;
 
-        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[owner];
+        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[owner][assetType];
 
         SmartAssetData memory smartAssetData = SmartAssetData(
             id,
@@ -151,14 +151,15 @@ contract SmartAsset {
             // Asset doesn't belong to sender
             throw;
         }
-
-        delete smartAssetsByOwner[owner][smartAssetData.indexInSmartAssetsByOwner];
+        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        delete smartAssetsByOwner[owner][assetType][smartAssetData.indexInSmartAssetsByOwner];
 
         if (smartAssetData.state == State.OnSale) {
-            delete smartAssetsOnSale[smartAssetData.indexInSmartAssetsOnSale];
+            delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
         }
 
-        delete smartAssetsByOwner[owner];
+    //Todo; why delete is present
+//        delete smartAssetsByOwner[owner];
         delete smartAssetById[id];
     }
 
@@ -212,8 +213,8 @@ contract SmartAsset {
      * @dev Returns quantity/count of smart assets owned by invoker/caller
      * @return count value / quantity/count of smart assets
      */
-    function getMyAssetsCount() returns (uint) {
-        return smartAssetsByOwner[msg.sender].length;
+    function getMyAssetsCount(bytes32 assetType) returns (uint) {
+        return smartAssetsByOwner[msg.sender][assetType].length;
     }
 
     /**
@@ -223,7 +224,7 @@ contract SmartAsset {
      * @return id Identification numbers
      * @return rest of Smart asset definition/entity
      */
-    function getMyAssets(uint lastIndex, uint firstIndex) constant
+    function getMyAssets(bytes32 assetType, uint lastIndex, uint firstIndex) constant
     returns (uint[] memory id,
             bytes32[] memory b1,
             bytes32[] memory b2,
@@ -243,7 +244,7 @@ contract SmartAsset {
         bool1 = new bool[](size);
 
         for (uint i = firstIndex; i <= lastIndex; i++) {
-            SmartAssetData memory smartAssetData = smartAssetsByOwner[msg.sender][i];
+            SmartAssetData memory smartAssetData = smartAssetsByOwner[msg.sender][assetType][i];
 
             id[i] = smartAssetData.id;
             b1[i] = smartAssetData.b1;
@@ -268,11 +269,12 @@ contract SmartAsset {
             // Asset doesn't belong to sender or is partially filled or is already On Sale
             throw;
         }
+        bytes32 assetType = smartAssetRouter.getAssetType(id);
 
         smartAssetById[id].state = State.OnSale;
-        smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale.length;
+        smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale[assetType].length;
 
-        smartAssetsOnSale.push(smartAssetById[id]);
+        smartAssetsOnSale[assetType].push(smartAssetById[id]);
     }
 
     /**
@@ -288,8 +290,8 @@ contract SmartAsset {
         }
 
         smartAssetById[id].state = State.PriceFromFormula1IsCalculated;
-
-        delete smartAssetsOnSale[smartAssetData.indexInSmartAssetsOnSale];
+        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
     }
 
     /**
@@ -369,13 +371,16 @@ contract SmartAsset {
             throw;
         }
 
-        delete smartAssetsOnSale[asset.indexInSmartAssetsOnSale];
-        delete smartAssetsByOwner[asset.owner][asset.indexInSmartAssetsByOwner];
+        bytes32 assetType = smartAssetRouter.getAssetType(id);
+
+
+        delete smartAssetsOnSale[assetType][asset.indexInSmartAssetsOnSale];
+        delete smartAssetsByOwner[asset.owner][assetType][asset.indexInSmartAssetsByOwner];
 
         smartAssetById[id].owner = newOwner;
         smartAssetById[id].state = State.ManualDataAreEntered;
 
-        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner];
+        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner][assetType];
         smartAssetDatasOfOwner.push(asset);
 
         smartAssetRouter.removeAssetPrice(id);
