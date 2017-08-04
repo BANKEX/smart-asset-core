@@ -331,6 +331,30 @@ contract SmartAsset {
         }
     }
 
+    function removeAssetPrice(uint assetId) {
+        smartAssetRouter.removeAssetPrice(assetId);
+    }
+
+    function calculateAssetPrice(uint assetId) {
+        smartAssetRouter.calculateAssetPrice(assetId);
+    }
+
+    function getSmartAssetPrice(uint assetId) constant returns (uint) {
+        return smartAssetRouter.getSmartAssetPrice(assetId);
+    }
+
+    function getSmartAssetAvailability(uint assetId) constant returns (bool) {
+        return smartAssetRouter.getSmartAssetAvailability(assetId);
+    }
+
+    function calculateDeliveryPrice(uint assetId, bytes32 param) constant returns (uint) {
+        return smartAssetRouter.calculateDeliveryPrice(assetId, param);
+    }
+
+    function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
+        return smartAssetRouter.checkSmartAssetModification(assetId);
+    }
+
     /**
      * @dev Returns Smart asset
      * @param smartAsset Smart asset structure/entity

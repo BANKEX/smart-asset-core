@@ -28,10 +28,7 @@ contract('BuySmartAsset', function(accounts) {
                 return iotSimulation.generateIotAvailability(smartAssetGeneratedId, true);
              })
              .then(function() {
-                 return CarAssetLogic.deployed();
-             })
-             .then(function(instance) {
-                 return instance.getSmartAssetPrice(smartAssetGeneratedId);
+                 return smartAsset.getSmartAssetPrice(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
                 assert.isAbove(returnValue, 0, 'price should be bigger than 0');

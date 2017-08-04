@@ -59,11 +59,8 @@ contract('IotSimulation', function(accounts) {
             .then(function(instance) {
                 return instance.generateIotAvailability(smartAssetGeneratedId, true);
             })
-            .then(function(result) {
-                return CarAssetLogic.deployed();
-            })
             .then(function(instance) {
-                return instance.getSmartAssetAvailability.call(smartAssetGeneratedId);
+                return smartAsset.getSmartAssetAvailability.call(smartAssetGeneratedId);
             })
             .then(function(returnValue) {
                 assert.equal(returnValue, true);

@@ -28,7 +28,6 @@ contract SmartAssetInterface {
  */
 contract BaseAssetLogic {
     address smartAssetAddr;
-    address smartAssetMetadataAddr;
     address public owner = msg.sender;
 
     /**
@@ -36,13 +35,6 @@ contract BaseAssetLogic {
      */
     modifier onlyOwner {
         if (msg.sender != owner) {throw;} else {_;}
-    }
-
-    /**
-     * Check whether metadataContract executes method or not
-     */
-    modifier onlySmartAssetMetadata {
-        if (msg.sender != smartAssetMetadataAddr) {throw;} else {_;}
     }
 
     /**
@@ -75,7 +67,7 @@ contract BaseAssetLogic {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function removeAssetPrice(uint assetId) onlySmartAsset {
+    function removeAssetPrice(uint assetId) {
 
     }
 
@@ -123,19 +115,6 @@ contract BaseAssetLogic {
             throw;
         } else {
             smartAssetAddr = contractAddress;
-            return true;
-        }
-    }
-
-    /**
-     * @dev Setter for the SmartAsset contract address
-     * @param contractAddress Address of the SmartAssetMetadata contract
-     */
-    function setSmartAssetMetadataAddr(address contractAddress) onlyOwner returns (bool result) {
-        if (contractAddress == address(0)) {
-            throw;
-        } else {
-            smartAssetMetadataAddr = contractAddress;
             return true;
         }
     }

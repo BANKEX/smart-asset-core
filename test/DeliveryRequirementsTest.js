@@ -5,20 +5,20 @@ var IotSimulation = artifacts.require("./IotSimulation.sol");
 contract('CarAssetLogic', function(accounts) {
 
     var smartAssetId;
+    var smartAsset;
     var iotSimulationInstance;
 
     it("Should return price", function(done) {
         SmartAsset.deployed().then(function(instance){
-            return instance.createAsset("Description", "photo//", "document//", "car");
+            smartAsset = instance;
+            return smartAsset.createAsset("Description", "photo//", "document//", "car");
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];
             return IotSimulation.deployed();
         }).then(function(instance) {
             return instance.generateIotOutput(smartAssetId, 10);
-        }).then(function() {
-            return CarAssetLogic.deployed()
-        }).then(function(instance){
-            return instance.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+        }).then(function(){
+            return smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
         }).then(function(result){
             assert.isAbove(result, 0);
             done();
@@ -71,11 +71,13 @@ contract('CarAssetLogic', function(accounts) {
     it("Should set coefficient", function(done) {
 
         var carAssetLogic;
+        var smartAsset;
         var priceInitial;
         var coefficientToSet = 2226389; // == (DEFAULT_COEFFICIENT / 10 to the 9th)
 
         SmartAsset.deployed().then(function(instance){
-            return instance.createAsset("Description", "photo//", "document//", "car");
+            smartAsset = instance;
+            return smartAsset.createAsset("Description", "photo//", "document//", "car");
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];
             return IotSimulation.deployed();
@@ -85,13 +87,13 @@ contract('CarAssetLogic', function(accounts) {
             return CarAssetLogic.deployed()
         }).then(function(instance){
             carAssetLogic = instance;
-            return carAssetLogic.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+            return smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
         }).then(function(result){
             priceInitial = result;
         }).then(function() {
             return carAssetLogic.setCoefficientInWei(coefficientToSet);
         }).then(function() {
-            return carAssetLogic.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+            return smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
         }).then(function(result){
             assert.equal(priceInitial/Math.pow(10, 9), result);
             done();
