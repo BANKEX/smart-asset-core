@@ -18,6 +18,11 @@ contract SmartAssetInterface {
     bool,
     uint,
     address);
+
+
+    function getAssetLocationById(uint id) constant returns (uint, uint);
+
+    function updateViaIotSimulator(uint id, uint millage, uint damaged, bool smokingCar, uint longitude, uint latitude);
 }
 
 
@@ -25,8 +30,8 @@ contract SmartAssetInterface {
  * @title Base smart asset logic contract
  */
 contract BaseAssetLogic {
-    address private smartAssetAddr;
-    address private smartAssetMetadataAddr;
+    address smartAssetAddr;
+    address smartAssetMetadataAddr;
     address public owner = msg.sender;
 
     /**
@@ -68,6 +73,15 @@ contract BaseAssetLogic {
         return asset.getAssetById(assetId);
     }
 
+
+    /**
+     * @dev Calculates price base on formula1
+     * @param assetId Id of smart asset
+     */
+    function removeAssetPrice(uint assetId) onlySmartAsset {
+
+    }
+
     /**
      * @param assetId Id of smart asset
      */
@@ -84,22 +98,30 @@ contract BaseAssetLogic {
     /**
      * @param assetId Id of smart asset
      */
-    function getSmartAssetAvailability(uint assetId) returns (bool) {
+    function getSmartAssetAvailability(uint assetId) constant returns (bool) {
         return true;
     }
 
     /**
      * @param assetId Id of smart asset
      */
-    function calculateDeliveryPrice(uint assetId, bytes32 param) returns (uint){
+    function calculateDeliveryPrice(uint assetId, bytes32 param) constant returns (uint) {
         return 0;
+    }
+
+    /**
+    * @dev Check whether smart asset was modified without hash modification or not
+    * @param assetId Id of smart asset
+    */
+    function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
+        return false;
     }
 
     /**
      * @dev Setter for the SmartAsset contract address
      * @param contractAddress Address of the SmartAsset contract
      */
-    function setSmartAssetAddr(address contractAddress) returns (bool result) {
+    function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
         if (contractAddress == address(0)) {
             throw;
         } else {

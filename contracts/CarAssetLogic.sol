@@ -1,41 +1,15 @@
 pragma solidity ^0.4.10;
 
-
-/**
- * Interface for SmartAsset contract
- */
-contract SmartAssetInterface {
-    function getAssetById(uint id) constant
-    returns (
-    uint,
-    bytes32,
-    bytes32,
-    bytes32,
-    uint,
-    uint,
-    uint,
-    uint,
-    bool,
-    uint,
-    address);
-
-    function getAssetLocationById(uint id) constant returns (uint, uint);
-
-    function updateViaIotSimulator(uint id, uint millage, uint damaged, bool smokingCar, uint longitude, uint latitude);
-}
+import "./BaseAssetLogic.sol";
 
 
 /**
  * @title Car smart asset logic  contract
  */
-contract CarAssetLogic {
+contract CarAssetLogic is BaseAssetLogic {
     uint private BASE_CAR_PRICE = 10000;
 
     uint private MIN_CAR_PRICE = 100;
-
-    address public owner = msg.sender;
-
-    address private smartAssetAddr;
 
     address private iotSimulationAddr;
 
@@ -86,21 +60,6 @@ contract CarAssetLogic {
     // Mapping city to its latitude longitude pair
     mapping (bytes32 => LatLong) cityMapping;
 
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;}
-        else {_;}
-    }
-
-    /**
-     * Check whether SmartAsset contract executes method or not
-     */
-    modifier onlySmartAsset {
-        if (msg.sender != smartAssetAddr) {throw;}
-        else {_;}
-    }
 
     /**
      * Check whether IotSimulator contract executes method or not
@@ -257,19 +216,6 @@ contract CarAssetLogic {
         coefficient = _wei;
     }
 
-    /**
-     * @dev Setter for the SmartAsset contract address
-     * @param contractAddress Address of the SmartAsset contract
-     */
-    function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
-        if (contractAddress == address(0)) {
-            throw;
-        }
-        else {
-            smartAssetAddr = contractAddress;
-            return true;
-        }
-    }
 
     /**
      * @dev Setter for the SmartAsset contract address
