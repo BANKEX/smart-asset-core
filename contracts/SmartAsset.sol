@@ -1,6 +1,7 @@
 pragma solidity ^0.4.10;
 
 import './SmartAssetRouter.sol';
+import './SmartAssetMetadata.sol';
 
 /**
 *Interface for BKXToken contract
@@ -70,10 +71,13 @@ contract SmartAsset {
     mapping (bytes32 => SmartAssetData[]) smartAssetsOnSale;
 
     SmartAssetRouter smartAssetRouter;
+    SmartAssetMetadata smartAssetMetadata;
 
-    function SmartAsset(address routerAddress) {
+    function SmartAsset(address routerAddress, address metadataAddress) {
         require(routerAddress != address(0));
+        require(metadataAddress != address(0));
         smartAssetRouter = SmartAssetRouter(routerAddress);
+        smartAssetMetadata = SmartAssetMetadata(metadataAddress);
     }
 
     /**
@@ -304,8 +308,11 @@ contract SmartAsset {
         bool smokingCar,
         uint longitude,
         uint latitude
-    ) //TODO: only by cotract of corresponding type // onlyIotSimulator()
+    )
     {
+        //checks that function is executed from correct contract
+        require(msg.sender == smartAssetMetadata.getAssetLogicAddress(smartAssetRouter.getAssetType(id)));
+
         //validates if asset is present
         SmartAssetData memory asset = _getAssetById(id);
 

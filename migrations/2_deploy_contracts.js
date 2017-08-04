@@ -17,7 +17,14 @@ module.exports = function(deployer) {
             return deployer.deploy(IotSimulation);
         })
         .then(function() {
-            return deployer.deploy(SmartAsset, SmartAssetRouter.address);
+            return deployer.deploy(SmartAsset, SmartAssetRouter.address, SmartAssetMetadata.address);
+        })
+
+        .then(function() {
+            return SmartAssetRouter.deployed();
+        })
+        .then(function(smartAssetRouter) {
+            return smartAssetRouter.setSmartAssetAddress(SmartAsset.address);
         })
 
         .then(function() {

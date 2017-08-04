@@ -20,18 +20,25 @@ contract SmartAssetInterface {
 
 
 contract SmartAssetRouter {
+    address public owner = msg.sender;
+    address private smartAssetAddr;
 
     SmartAssetMetadata smartAssetMetadata;
 
     mapping (uint => bytes32) assetTypeById;
 
     /**
+     * Check whether contract owner executes method or not
+     */
+    modifier onlyOwner {
+        if (msg.sender != owner) {throw;} else {_;}
+    }
+
+    /**
      * Check whether SmartAsset contract executes method or not
      */
     modifier onlySmartAsset {
-        //TODO:
-        //        if (msg.sender != smartAssetAddr) {throw;} else {_;}
-        _;
+          if (msg.sender != smartAssetAddr) {throw;} else {_;}
     }
 
     function SmartAssetRouter(address metadataAddress) {
@@ -75,12 +82,20 @@ contract SmartAssetRouter {
         return _getSmartAssetImpl(id).getSmartAssetAvailability(id);
     }
 
-    function setAssetType(uint assetId, bytes32 assetType) {
+    function setAssetType(uint assetId, bytes32 assetType) onlySmartAsset {
         assetTypeById[assetId] = assetType;
     }
 
-    // TODO: visibility
-    function _getSmartAssetImpl(uint assetId) constant returns (SmartAssetInterface smartAssetInterface){
+    /**
+     * @dev Setter for the SmartAsset contract address
+     * @param contractAddress Address of the SmartAsset contract
+     */
+    function setSmartAssetAddress(address contractAddress) onlyOwner {
+        require(contractAddress != address(0));
+        smartAssetAddr = contractAddress;
+    }
+
+    function _getSmartAssetImpl(uint assetId) constant private returns (SmartAssetInterface smartAssetInterface){
         bytes32 assetType = assetTypeById[assetId];
         address implAddress = smartAssetMetadata.getAssetLogicAddress(assetType);
         return SmartAssetInterface(implAddress);
