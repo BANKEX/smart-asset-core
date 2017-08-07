@@ -1,22 +1,8 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.10;
 
 
 import './SmartAssetMetadata.sol';
-
-
-contract SmartAssetLogicInterface {
-    function onAssetSold(uint assetId);
-
-    function calculateAssetPrice(uint assetId) returns (uint);
-
-    function getSmartAssetPrice(uint id) constant returns (uint);
-
-    function checkSmartAssetModification(uint id) constant returns (bool modified);
-
-    function calculateDeliveryPrice(uint id, bytes32 city) constant returns (uint);
-
-    function getSmartAssetAvailability(uint id) constant returns (bool);
-}
+import './SmartAssetLogicInterface.sol';
 
 
 contract SmartAssetRouter {
@@ -70,8 +56,8 @@ contract SmartAssetRouter {
         return _getSmartAssetImpl(id).getSmartAssetPrice(id);
     }
 
-    function checkSmartAssetModification(uint id) returns (bool) {
-        return _getSmartAssetImpl(id).checkSmartAssetModification(id);
+    function isAssetTheSameState(uint id) returns (bool) {
+        return _getSmartAssetImpl(id).isAssetTheSameState(id);
     }
 
     function calculateDeliveryPrice(uint id, bytes32 city) returns (uint) {

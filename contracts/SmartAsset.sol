@@ -30,6 +30,8 @@ contract SmartAsset {
     uint nextId;
 
     event NewSmartAsset(uint id);
+    event AssetPutOnSale(uint id);
+    event AssetTakenOffSale(uint id);
 
     /**
      * Check whether BuyAsset contract executes method or not
@@ -286,6 +288,8 @@ contract SmartAsset {
         smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale[assetType].length;
 
         smartAssetsOnSale[assetType].push(smartAssetById[id]);
+
+        AssetPutOnSale(id);
     }
 
     /**
@@ -303,12 +307,14 @@ contract SmartAsset {
         smartAssetById[id].state = State.PriceCalculated;
         bytes32 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
+
+        AssetTakenOffSale(id);
     }
 
     /**
      * @dev Function to updates Smart Asset params and generate asset price
      */
-    function updateViaIotSimulator(
+    function updateFromExternalSource(
         uint id,
         uint u1,
         uint u2,
@@ -358,8 +364,8 @@ contract SmartAsset {
         return smartAssetRouter.calculateDeliveryPrice(assetId, param);
     }
 
-    function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
-        return smartAssetRouter.checkSmartAssetModification(assetId);
+    function isAssetTheSameState(uint assetId) constant returns (bool modified) {
+        return smartAssetRouter.isAssetTheSameState(assetId);
     }
 
     /**

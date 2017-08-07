@@ -20,6 +20,8 @@ contract BuySmartAsset {
 
     SmartAssetRouter smartAssetRouter;
 
+    event AssetSoldTo(uint id, address newOwner);
+
     /**
      * Check whether contract owner executes method or not
      */
@@ -44,7 +46,7 @@ contract BuySmartAsset {
      * @param cityName City name of destination/delivery city
      */
     function getTotalPrice(uint assetId, bytes32 cityName) constant returns (uint totalPrice) {
-        if (!smartAssetRouter.checkSmartAssetModification(assetId)) {
+        if (!smartAssetRouter.isAssetTheSameState(assetId)) {
             // Formula1 parameters were changed/mutated
             throw;
         }
@@ -77,5 +79,7 @@ contract BuySmartAsset {
 		msg.sender.transfer(msg.value - totalPrice);
 
         smartAssetInterface.sellAsset(assetId, msg.sender);
+
+        AssetSoldTo(assetId, msg.sender);
     }
 }

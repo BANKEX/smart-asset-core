@@ -1,6 +1,8 @@
 pragma solidity ^0.4.10;
 
 
+import './SmartAssetLogicInterface.sol';
+
 /**
  * Interface for SmartAsset contract
  */
@@ -18,14 +20,14 @@ contract SmartAssetInterface {
     uint,
     address);
 
-    function updateViaIotSimulator(uint id, uint u1, uint u2, bool bool1, uint u3, uint u4);
+    function updateFromExternalSource(uint id, uint u1, uint u2, bool bool1, uint u3, uint u4);
 }
 
 
 /**
  * @title Base smart asset logic contract
  */
-contract BaseAssetLogic {
+contract BaseAssetLogic is SmartAssetLogicInterface {
     address smartAssetAddr;
     address public owner = msg.sender;
 
@@ -100,7 +102,7 @@ contract BaseAssetLogic {
     * @dev Check whether smart asset was modified without hash modification or not
     * @param assetId Id of smart asset
     */
-    function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
+    function isAssetTheSameState(uint assetId) constant returns (bool sameState) {
         return true;
     }
 

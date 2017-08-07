@@ -6,10 +6,10 @@ import "./BaseAssetLogic.sol";
 contract RealEstateAssetLogic is BaseAssetLogic {
 
 
-    function updatePriceViaIotSimulator(uint id, uint u1, uint u2, bool smoker , uint u3, uint u4) {
+    function updateViaIotSimulator(uint id, uint u1, uint u2, bool smoker , uint u3, uint u4) {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
-        asset.updateViaIotSimulator(id, u1, u2, smoker, u3, u4);
+        asset.updateFromExternalSource(id, u1, u2, smoker, u3, u4);
     }
 
     function onAssetSold(uint assetId) {
@@ -26,7 +26,7 @@ contract RealEstateAssetLogic is BaseAssetLogic {
         return u1*u2 - u3*u4;
     }
 
-    function checkSmartAssetModification(uint id) constant returns (bool modified) {
+    function isAssetTheSameState(uint id) constant returns (bool modified) {
         return true;
     }
 

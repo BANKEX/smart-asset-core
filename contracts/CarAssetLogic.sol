@@ -122,7 +122,7 @@ contract CarAssetLogic is BaseAssetLogic {
      * @dev Check whether smart asset was modified without hash modification or not
      * @param assetId Id of smart asset
      */
-    function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
+    function isAssetTheSameState(uint assetId) constant returns (bool modified) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         //check scenario when there is no id in map
         return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == smartAssetPriceById[assetId].hash;
@@ -178,7 +178,7 @@ contract CarAssetLogic is BaseAssetLogic {
     ) onlyIotSimulator()
     {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        asset.updateViaIotSimulator(id, millage, damaged, smokingCar, longitude, latitude);
+        asset.updateFromExternalSource(id, millage, damaged, smokingCar, longitude, latitude);
     }
 
     /**
