@@ -17,12 +17,12 @@ contract RealEstateAssetLogic is BaseAssetLogic {
     }
 
     function calculateAssetPrice(uint assetId) returns (uint) {
-        var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
+        var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         return u1*u2 - u3*u4;
     }
 
     function getSmartAssetPrice(uint id) constant returns (uint) {
-        var(assetId, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(id);
+        var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(id);
         return u1*u2 - u3*u4;
     }
 

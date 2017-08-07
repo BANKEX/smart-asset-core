@@ -7,7 +7,6 @@ pragma solidity ^0.4.10;
 contract SmartAssetInterface {
     function getAssetById(uint id) constant
     returns (
-    uint,
     bytes32,
     bytes32,
     bytes32,
@@ -46,7 +45,6 @@ contract BaseAssetLogic {
 
     function getById(uint assetId)
     returns (
-    uint,
     bytes32,
     bytes32,
     bytes32,

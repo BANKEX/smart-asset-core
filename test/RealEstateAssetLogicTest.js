@@ -31,7 +31,7 @@ contract('RealEstateAssetLogic', function(accounts) {
             return smartAsset.getAssetById(id);
 
         }).then(function(result) {
-            assert.equal(accounts[0], result[10]);
+            assert.equal(accounts[0], result[9]);
 
 
         }).then(function() {
@@ -69,7 +69,7 @@ contract('RealEstateAssetLogic', function(accounts) {
             return smartAsset.getAssetById(id);
 
         }).then(function(result) {
-            assert.equal(accounts[1], result[10]);
+            assert.equal(accounts[1], result[9]);
 
         });
     })

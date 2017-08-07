@@ -30,14 +30,15 @@ contract('IotSimulation', function(accounts) {
                  return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(returnValue[0], smartAssetGeneratedId);
-                assert.equal(toAscii(returnValue[1]), "BMW X5");
-                assert.equal(toAscii(returnValue[2]), "photo_url");
-                assert.equal(toAscii(returnValue[3]), "document_url");
-                assert.isAbove(returnValue[4], 0, 'millage should be bigger than 0');
-                assert.isAbove(returnValue[5], 0, 'damage should be bigger than 0');
-                assert.isAbove(returnValue[6], 0, 'latitude should be bigger than 0');
-                assert.isAbove(returnValue[7], 0, 'longitude should be bigger than 0');
+                assert.equal(toAscii(returnValue[0]), "BMW X5");
+                assert.equal(toAscii(returnValue[1]), "photo_url");
+                assert.equal(toAscii(returnValue[2]), "document_url");
+                assert.isAbove(returnValue[3], 0, 'millage should be bigger than 0');
+                assert.isAbove(returnValue[4], 0, 'damage should be bigger than 0');
+                assert.isAbove(returnValue[5], 0, 'latitude should be bigger than 0');
+                assert.isAbove(returnValue[6], 0, 'longitude should be bigger than 0');
+
+                assert.equal(toAscii(returnValue[10]), "car");
              });
      });
 });

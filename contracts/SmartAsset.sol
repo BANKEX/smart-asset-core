@@ -196,7 +196,7 @@ contract SmartAsset {
      * @return Smart asset tuple
      */
     function getAssetById(uint id) constant
-    returns (uint,
+    returns (
             bytes32,
             bytes32,
             bytes32,
@@ -205,8 +205,9 @@ contract SmartAsset {
             uint,
             uint,
             bool,
-            State state,
-            address)
+            State,
+            address,
+            bytes32)
     {
         SmartAssetData memory a = smartAssetById[id];
 
@@ -214,8 +215,9 @@ contract SmartAsset {
             // Owner doesn't have specified smart asset
             throw;
         }
+        bytes32 assetType = smartAssetRouter.getAssetType(id);
 
-        return (a.id, a.b1, a.b2, a.b3, a.u1, a.u2, a.u3, a.u4, a.bool1, a.state, a.owner);
+        return (a.b1, a.b2, a.b3, a.u1, a.u2, a.u3, a.u4, a.bool1, a.state, a.owner, assetType);
     }
 
     /**

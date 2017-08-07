@@ -34,21 +34,21 @@ contract('BuySmartAsset', function(accounts) {
                  return smartAsset.getSmartAssetPrice(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.isAbove(returnValue, 0, 'price should be bigger than 0');
+                assert.isAbove(parseInt(returnValue), 0, 'price should be bigger than 0');
                 return smartAsset.makeOnSale(smartAssetGeneratedId);
              })
              .then(function(result) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(returnValue[9], 3, 'state should be OnSale = position 3 in State enum list');
+                assert.equal(returnValue[8], 3, 'state should be OnSale = position 3 in State enum list');
                 return smartAsset.makeOffSale(smartAssetGeneratedId);
              })
              .then(function(result) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(returnValue[9], 2, 'state should be PriceCalculated = position 2 in State enum list');
+                assert.equal(returnValue[8], 2, 'state should be PriceCalculated = position 2 in State enum list');
                 return smartAsset.makeOnSale(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
@@ -63,8 +63,8 @@ contract('BuySmartAsset', function(accounts) {
              }).then(function(returnValue) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
              }).then(function(returnValue) {
-                assert.equal(returnValue[9], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
-                assert.equal(returnValue[10], accounts[1]);
+                assert.equal(returnValue[8], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
+                assert.equal(returnValue[9], accounts[1]);
              });
       });
 });

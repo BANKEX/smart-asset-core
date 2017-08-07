@@ -19,11 +19,11 @@ contract('SmartAsset', function(accounts) {
       return smartAsset.getAssetById.call(smartAssetGeneratedId);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.equal(returnValue[0], smartAssetGeneratedId);
-      assert.equal(toAscii(returnValue[1]), "BMW X5");
-      assert.equal(toAscii(returnValue[2]), "photo_url");
-      assert.equal(toAscii(returnValue[3]), "document_url");
-      assert.equal(returnValue[10], accounts[0]);
+      assert.equal(toAscii(returnValue[0]), "BMW X5");
+      assert.equal(toAscii(returnValue[1]), "photo_url");
+      assert.equal(toAscii(returnValue[2]), "document_url");
+      assert.equal(returnValue[9], accounts[0]);
+      assert.equal(toAscii(returnValue[10]), "car");
     });
   });
 
