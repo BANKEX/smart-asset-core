@@ -103,7 +103,8 @@ contract('SmartAsset', function(accounts) {
     });
   });
 
-  it('Should change bkxPrice for transaction', function(done){
+  //skip it due to the logic currently being commented out in SmartAsset contract
+  xit('Should change bkxPrice for transaction', function(done) {
 
       var bkxToken;
       var tokensAmount;

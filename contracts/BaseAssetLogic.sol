@@ -67,14 +67,14 @@ contract BaseAssetLogic {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function removeAssetPrice(uint assetId) {
+    function onAssetSold(uint assetId) {
 
     }
 
     /**
      * @param assetId Id of smart asset
      */
-    function calculateAssetPrice(uint assetId) {
+    function calculateAssetPrice(uint assetId) returns (uint) {
     }
 
     /**

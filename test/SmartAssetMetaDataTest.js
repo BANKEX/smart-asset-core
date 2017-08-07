@@ -7,7 +7,7 @@ function toAscii(input) {
 contract('SmartAssetMetadata', function(accounts) {
 
     var meta;
-    var assetType = "Car Tokenization";
+    var assetType = "New Asset Type";
     var smartAssetLogicAddress = '0x586Bfe2c9a8A69727549e92326642301389771B8';
     var assetTypesInitial;
 

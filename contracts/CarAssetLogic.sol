@@ -94,7 +94,7 @@ contract CarAssetLogic is BaseAssetLogic {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function removeAssetPrice(uint assetId)  {
+    function onAssetSold(uint assetId)  {
         delete smartAssetPriceById[assetId];
     }
 
@@ -102,10 +102,11 @@ contract CarAssetLogic is BaseAssetLogic {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function calculateAssetPrice(uint assetId)  {
+    function calculateAssetPrice(uint assetId)  returns (uint) {
         var(id, b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         SmartAssetPriceData memory smartAssetPriceData = SmartAssetPriceData(_calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
         smartAssetPriceById[id] = smartAssetPriceData;
+        return _calculateAssetPrice(u1, u2, bool1);
     }
 
     /**

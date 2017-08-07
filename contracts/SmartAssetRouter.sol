@@ -4,18 +4,18 @@ pragma solidity ^0.4.0;
 import './SmartAssetMetadata.sol';
 
 
-contract SmartAssetInterface {
-    function removeAssetPrice(uint assetId);
+contract SmartAssetLogicInterface {
+    function onAssetSold(uint assetId);
 
-    function calculateAssetPrice(uint assetId);
+    function calculateAssetPrice(uint assetId) returns (uint);
 
-    function getSmartAssetPrice(uint id) returns (uint);
+    function getSmartAssetPrice(uint id) constant returns (uint);
 
-    function checkSmartAssetModification(uint id) returns (bool);
+    function checkSmartAssetModification(uint id) constant returns (bool modified);
 
-    function calculateDeliveryPrice(uint id, bytes32 city) returns (uint);
+    function calculateDeliveryPrice(uint id, bytes32 city) constant returns (uint);
 
-    function getSmartAssetAvailability(uint id) returns (bool);
+    function getSmartAssetAvailability(uint id) constant returns (bool);
 }
 
 
@@ -54,8 +54,8 @@ contract SmartAssetRouter {
      * @dev Calculates price base on formula1
      * @param assetId Id of smart asset
      */
-    function removeAssetPrice(uint assetId) onlySmartAsset {
-        _getSmartAssetImpl(assetId).removeAssetPrice(assetId);
+    function onAssetSold(uint assetId) onlySmartAsset {
+        _getSmartAssetImpl(assetId).onAssetSold(assetId);
     }
 
     /**
@@ -87,17 +87,17 @@ contract SmartAssetRouter {
     }
 
     /**
-     * @dev Setter for the SmartAsset contract address
-     * @param contractAddress Address of the SmartAsset contract
-     */
+       * @dev Setter for the SmartAsset contract address
+       * @param contractAddress Address of the SmartAsset contract
+       */
     function setSmartAssetAddress(address contractAddress) onlyOwner {
         require(contractAddress != address(0));
         smartAssetAddr = contractAddress;
     }
 
-    function _getSmartAssetImpl(uint assetId) constant private returns (SmartAssetInterface smartAssetInterface){
+    function _getSmartAssetImpl(uint assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface){
         bytes32 assetType = assetTypeById[assetId];
         address implAddress = smartAssetMetadata.getAssetLogicAddress(assetType);
-        return SmartAssetInterface(implAddress);
+        return SmartAssetLogicInterface(implAddress);
     }
 }

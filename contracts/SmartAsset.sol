@@ -108,11 +108,16 @@ contract SmartAsset {
         bytes32 b3,
         bytes32 assetType
     ) {
-        if(bkxToken == address(0) || bkxToken.balanceOf(msg.sender) < bkxPriceForTransaction) {
+
+    //This piece is commented out due to the fact that not all those using the prototype application
+    //will have BKX tokens at their disposal. This logic is to remain here until needed.
+    //todo
+
+        /*if(bkxToken == address(0) || bkxToken.balanceOf(msg.sender) < bkxPriceForTransaction) {
             throw;
         }
 
-        bkxToken.burn(msg.sender, bkxPriceForTransaction);
+        bkxToken.burn(msg.sender, bkxPriceForTransaction);*/
 
         address owner = msg.sender;
         uint id = ++nextId;
@@ -303,11 +308,11 @@ contract SmartAsset {
      */
     function updateViaIotSimulator(
         uint id,
-        uint millage,
-        uint damaged,
-        bool smokingCar,
-        uint longitude,
-        uint latitude
+        uint u1,
+        uint u2,
+        bool bool1,
+        uint u3,
+        uint u4
     )
     {
         //checks that function is executed from correct contract
@@ -317,11 +322,11 @@ contract SmartAsset {
         SmartAssetData memory asset = _getAssetById(id);
 
         if (asset.state < State.OnSale) {
-            smartAssetById[id].u1 = millage;
-            smartAssetById[id].u2 = damaged;
-            smartAssetById[id].bool1 = smokingCar;
-            smartAssetById[id].u3 = longitude;
-            smartAssetById[id].u4 = latitude;
+            smartAssetById[id].u1 = u1;
+            smartAssetById[id].u2 = u2;
+            smartAssetById[id].bool1 = bool1;
+            smartAssetById[id].u3 = u3;
+            smartAssetById[id].u4 = u4;
 
             smartAssetById[id].state = State.IotDataCollected;
         } else {
@@ -330,8 +335,8 @@ contract SmartAsset {
         }
     }
 
-    function removeAssetPrice(uint assetId) {
-        smartAssetRouter.removeAssetPrice(assetId);
+    function onAssetSold(uint assetId) {
+        smartAssetRouter.onAssetSold(assetId);
     }
 
     function calculateAssetPrice(uint assetId) {
@@ -404,7 +409,7 @@ contract SmartAsset {
         SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner][assetType];
         smartAssetDatasOfOwner.push(asset);
 
-        smartAssetRouter.removeAssetPrice(id);
+        smartAssetRouter.onAssetSold(id);
     }
 
     /**
