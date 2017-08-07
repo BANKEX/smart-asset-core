@@ -103,7 +103,7 @@ contract BaseAssetLogic {
     * @param assetId Id of smart asset
     */
     function checkSmartAssetModification(uint assetId) constant returns (bool modified) {
-        return false;
+        return true;
     }
 
     /**
