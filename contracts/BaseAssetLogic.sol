@@ -63,53 +63,29 @@ contract BaseAssetLogic is SmartAssetLogicInterface {
     }
 
 
-    /**
-     * @dev Calculates price base on formula1
-     * @param assetId Id of smart asset
-     */
     function onAssetSold(uint assetId) {
 
     }
 
-    /**
-     * @param assetId Id of smart asset
-     */
     function calculateAssetPrice(uint assetId) returns (uint) {
     }
 
-    /**
-     * @param assetId Id of smart asset
-     */
     function getSmartAssetPrice(uint assetId) constant returns (uint) {
         return 0;
     }
 
-    /**
-     * @param assetId Id of smart asset
-     */
     function getSmartAssetAvailability(uint assetId) constant returns (bool) {
         return true;
     }
 
-    /**
-     * @param assetId Id of smart asset
-     */
     function calculateDeliveryPrice(uint assetId, bytes32 param) constant returns (uint) {
         return 0;
     }
 
-    /**
-    * @dev Check whether smart asset was modified without hash modification or not
-    * @param assetId Id of smart asset
-    */
     function isAssetTheSameState(uint assetId) constant returns (bool sameState) {
         return true;
     }
 
-    /**
-     * @dev Setter for the SmartAsset contract address
-     * @param contractAddress Address of the SmartAsset contract
-     */
     function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
         if (contractAddress == address(0)) {
             throw;

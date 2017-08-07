@@ -43,7 +43,7 @@ contract CarAssetLogic is BaseAssetLogic {
     }
 
     /**
-        * Construct encapsulating latitude and longitude pair
+     * Construct encapsulating latitude and longitude pair
      */
     struct LatLong {
     uint lat;
@@ -88,19 +88,10 @@ contract CarAssetLogic is BaseAssetLogic {
         cities.push("Lublin");
     }
 
-
-    /**
-     * @dev Calculates price base on formula1
-     * @param assetId Id of smart asset
-     */
     function onAssetSold(uint assetId)  {
         delete smartAssetPriceById[assetId];
     }
 
-    /**
-     * @dev Calculates price base on formula1
-     * @param assetId Id of smart asset
-     */
     function calculateAssetPrice(uint assetId)  returns (uint) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         SmartAssetPriceData memory smartAssetPriceData = SmartAssetPriceData(_calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
@@ -108,19 +99,11 @@ contract CarAssetLogic is BaseAssetLogic {
         return _calculateAssetPrice(u1, u2, bool1);
     }
 
-    /**
-     * @dev Returns price of the asset
-     * @param id Id of smart asset
-     */
     function getSmartAssetPrice(uint id) constant returns (uint price) {
         //check scenario when there is no id in map
         return smartAssetPriceById[id].price;
     }
 
-    /**
-     * @dev Check whether smart asset was modified without hash modification or not
-     * @param assetId Id of smart asset
-     */
     function isAssetTheSameState(uint assetId) constant returns (bool modified) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         //check scenario when there is no id in map
@@ -135,12 +118,6 @@ contract CarAssetLogic is BaseAssetLogic {
         return cities;
     }
 
-    /**
-    * Calculates delivery price based the smart asset id and city to which delivery is needed
-    *@param id smart asset id
-    *@param cityName name of the city where smart asset should be delivered to
-    *@return delivery price
-    */
     function calculateDeliveryPrice(uint id, bytes32 cityName) constant returns (uint) {
         LatLong latLong = cityMapping[cityName];
 
@@ -180,10 +157,6 @@ contract CarAssetLogic is BaseAssetLogic {
         asset.updateFromExternalSource(id, millage, damaged, smokingCar, longitude, latitude);
     }
 
-    /**
-     * @dev Returns IoT availability of the asset
-     * @param id Id of smart asset
-     */
     function getSmartAssetAvailability(uint id) constant returns (bool availability) {
         return smartAssetAvailabilityById[id].availability;
     }
