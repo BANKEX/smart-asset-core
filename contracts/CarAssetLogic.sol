@@ -64,7 +64,6 @@ contract CarAssetLogic is BaseAssetLogic {
     /**
      * Check whether IotSimulator contract executes method or not
      */
-    //TODO: null iotSimulator
     modifier onlyIotSimulator {
         if (msg.sender != iotSimulationAddr) {throw;}
         else {_;}
