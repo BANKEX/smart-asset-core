@@ -168,9 +168,6 @@ contract SmartAsset {
         if (smartAssetData.state == State.OnSale) {
             delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
         }
-
-    //Todo; why delete is present
-//        delete smartAssetsByOwner[owner];
         delete smartAssetById[id];
     }
 
