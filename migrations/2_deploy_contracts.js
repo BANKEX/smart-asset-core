@@ -9,6 +9,9 @@ var RealEstateAssetLogic = artifacts.require("RealEstateAssetLogic.sol");
 
 
 module.exports = function(deployer) {
+
+    var smartAssetMetadata;
+
     deployer
         .deploy(SmartAssetMetadata)
         .then(function() {
@@ -43,7 +46,6 @@ module.exports = function(deployer) {
             return smartAsset.setBuyAssetAddr(BuySmartAsset.address);
         })
 
-
         .then(function() {
             return deployer.deploy(CarAssetLogic)
         })
@@ -71,7 +73,8 @@ module.exports = function(deployer) {
             return SmartAssetMetadata.deployed()
         })
         .then(function(instance){
-            return instance.addSmartAssetType("car", CarAssetLogic.address);
+            smartAssetMetadata = instance;
+            return smartAssetMetadata.addSmartAssetType("car", CarAssetLogic.address);
         })
 
         .then(function(){
@@ -98,6 +101,10 @@ module.exports = function(deployer) {
         })
         .then(function(instance){
             instance.setSmartAssetAddr(SmartAsset.address);
-    });
+        })
+        .then(function() {
+            smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
+        })
+    ;
 
 };
