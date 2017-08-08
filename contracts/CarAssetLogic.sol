@@ -65,8 +65,8 @@ contract CarAssetLogic is BaseAssetLogic {
      * Check whether IotSimulator contract executes method or not
      */
     modifier onlyIotSimulator {
-        if (msg.sender != iotSimulationAddr) {throw;}
-        else {_;}
+        require(msg.sender == iotSimulationAddr);
+        _;
     }
 
 
@@ -192,13 +192,9 @@ contract CarAssetLogic is BaseAssetLogic {
      * @param contractAddress Address of the IotSimulation contract
      */
     function setIotSimulationAddr(address contractAddress) onlyOwner returns (bool result) {
-        if (contractAddress == address(0)) {
-            throw;
-        }
-        else {
-            iotSimulationAddr = contractAddress;
-            return true;
-        }
+        require(contractAddress != address(0));
+        iotSimulationAddr = contractAddress;
+        return true;
     }
 
     /**

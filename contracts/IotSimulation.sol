@@ -33,12 +33,8 @@ contract IotSimulation is Destructible{
      * @return result Execution result
      */
     function generateIotOutput(uint id, uint salt) returns (bool result) {
-        if (id == 0) {
-            throw;
-        }
-        if (carAssetLogicAddr == address(0)) {
-            throw;
-        }
+        require(id != 0);
+        require(carAssetLogicAddr != address(0));
 
         uint number = id + salt;
         CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
@@ -59,12 +55,8 @@ contract IotSimulation is Destructible{
      * @return result Execution result
      */
     function generateIotAvailability(uint id, bool availability) returns (bool result) {
-        if (id == 0) {
-            throw;
-        }
-        if (carAssetLogicAddr == address(0)) {
-            throw;
-        }
+        require(id != 0);
+        require(carAssetLogicAddr != address(0));
 
         CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
         carAssetLogic.updateAvailabilityViaIotSimulator(
@@ -137,12 +129,8 @@ contract IotSimulation is Destructible{
      * @return result Execution result
      */
     function setCarAssetLogicAddr(address contractAddress) onlyOwner returns (bool result) {
+        require(contractAddress != address(0));
         carAssetLogicAddr = contractAddress;
-        if (contractAddress == address(0)) {
-            throw;
-        } else {
-            carAssetLogicAddr = contractAddress;
-            return true;
-        }
+        return true;
     }
 }

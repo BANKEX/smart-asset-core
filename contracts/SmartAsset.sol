@@ -36,7 +36,8 @@ contract SmartAsset is Destructible{
      * Check whether BuyAsset contract executes method or not
      */
     modifier onlyBuyAsset {
-        if (msg.sender != buyAssetAddr) {throw;} else {_;}
+        require(msg.sender == buyAssetAddr);
+        _;
     }
 
     // Definition of Smart asset
@@ -147,13 +148,10 @@ contract SmartAsset is Destructible{
      */
     function removeAsset(uint id) {
         address owner = msg.sender;
-
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
-        if (smartAssetData.owner != owner) {
-            // Asset doesn't belong to sender
-            throw;
-        }
+        require(smartAssetData.owner == owner);
+
         bytes32 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsByOwner[owner][assetType][smartAssetData.indexInSmartAssetsByOwner];
 
@@ -172,12 +170,7 @@ contract SmartAsset is Destructible{
     returns (address)
     {
         SmartAssetData memory a = smartAssetById[id];
-
-        if (isAssetEmpty(a)) {
-            // Owner doesn't have specified smart asset
-            throw;
-        }
-
+        require(!isAssetEmpty(a));
         return a.owner;
     }
 
@@ -201,11 +194,7 @@ contract SmartAsset is Destructible{
             bytes32)
     {
         SmartAssetData memory a = smartAssetById[id];
-
-        if (isAssetEmpty(a)) {
-            // Owner doesn't have specified smart asset
-            throw;
-        }
+        require(!isAssetEmpty(a));
         bytes32 assetType = smartAssetRouter.getAssetType(id);
 
         return (a.b1, a.b2, a.b3, a.u1, a.u2, a.u3, a.u4, a.bool1, a.state, a.owner, assetType);
@@ -267,10 +256,7 @@ contract SmartAsset is Destructible{
     function makeOnSale(uint id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
-        if (smartAssetData.owner != msg.sender || smartAssetData.state != State.PriceCalculated) {
-            // Asset doesn't belong to sender or is partially filled or is already On Sale
-            throw;
-        }
+        require(smartAssetData.owner == msg.sender && smartAssetData.state == State.PriceCalculated);
         bytes32 assetType = smartAssetRouter.getAssetType(id);
 
         smartAssetById[id].state = State.OnSale;
@@ -288,10 +274,7 @@ contract SmartAsset is Destructible{
     function makeOffSale(uint id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
-        if (smartAssetData.owner != msg.sender || smartAssetData.state != State.OnSale) {
-            // Asset doesn't belong to sender or is not On Sale
-            throw;
-        }
+        require(smartAssetData.owner == msg.sender && smartAssetData.state == State.OnSale);
 
         smartAssetById[id].state = State.PriceCalculated;
         bytes32 assetType = smartAssetRouter.getAssetType(id);
@@ -318,18 +301,15 @@ contract SmartAsset is Destructible{
         //validates if asset is present
         SmartAssetData memory asset = _getAssetById(id);
 
-        if (asset.state < State.OnSale) {
-            smartAssetById[id].u1 = u1;
-            smartAssetById[id].u2 = u2;
-            smartAssetById[id].bool1 = bool1;
-            smartAssetById[id].u3 = u3;
-            smartAssetById[id].u4 = u4;
+        require(asset.state < State.OnSale);
 
-            smartAssetById[id].state = State.IotDataCollected;
-        } else {
-            // Wrong step of the flow
-            throw;
-        }
+        smartAssetById[id].u1 = u1;
+        smartAssetById[id].u2 = u2;
+        smartAssetById[id].bool1 = bool1;
+        smartAssetById[id].u3 = u3;
+        smartAssetById[id].u4 = u4;
+
+        smartAssetById[id].state = State.IotDataCollected;
     }
 
     function onAssetSold(uint assetId) {
@@ -364,11 +344,7 @@ contract SmartAsset is Destructible{
     function _getAssetById(uint id) constant private returns (SmartAssetData smartAsset) {
         SmartAssetData memory smartAssetData = smartAssetById[id];
 
-        if (isAssetEmpty(smartAssetData)) {
-            // Owner doesn't have specified smart asset
-            throw;
-        }
-
+        require(!isAssetEmpty(smartAssetData));
         return smartAssetData;
     }
 
@@ -384,15 +360,8 @@ contract SmartAsset is Destructible{
     function sellAsset(uint id, address newOwner) onlyBuyAsset {
         SmartAssetData memory asset = _getAssetById(id);
 
-        if (asset.owner == msg.sender) {
-            // Owner cannot buy its own asset
-            throw;
-        }
-
-        if (asset.state != State.OnSale) {
-            // Asset is not on-sale
-            throw;
-        }
+        require(asset.owner != msg.sender);// Owner cannot buy its own asset
+        require(asset.state == State.OnSale);
 
         bytes32 assetType = smartAssetRouter.getAssetType(id);
 
@@ -414,13 +383,9 @@ contract SmartAsset is Destructible{
      * @param contractAddress Address of the BuyAsset contract
      */
     function setBuyAssetAddr(address contractAddress) onlyOwner returns (bool result) {
+        require(contractAddress != address(0));
         buyAssetAddr = contractAddress;
-        if (contractAddress == address(0)) {
-            throw;
-        } else {
-            buyAssetAddr = contractAddress;
-            return true;
-        }
+        return true;
     }
 
 }

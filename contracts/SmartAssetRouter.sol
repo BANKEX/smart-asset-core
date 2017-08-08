@@ -17,7 +17,8 @@ contract SmartAssetRouter is Destructible{
      * Check whether SmartAsset contract executes method or not
      */
     modifier onlySmartAsset {
-          if (msg.sender != smartAssetAddr) {throw;} else {_;}
+        require(msg.sender == smartAssetAddr);
+        _;
     }
 
     function SmartAssetRouter(address metadataAddress) {

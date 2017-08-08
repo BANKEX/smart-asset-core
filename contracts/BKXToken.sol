@@ -30,8 +30,14 @@ contract BKXToken is Destructible {
     mapping (address => uint256) balanceFor;
 
     // Modifiers
-    modifier PBKXcontractOnly { if (msg.sender == PBKXcontract) _; }
-    modifier smartAssetContractOnly { if (msg.sender == smartAssetContract) _; }
+    modifier PBKXcontractOnly {
+        require(msg.sender == PBKXcontract);
+        _;
+    }
+    modifier smartAssetContractOnly {
+        require(msg.sender == smartAssetContract);
+        _;
+    }
 
     /**
      * @dev ICO contract constructor
@@ -63,9 +69,7 @@ contract BKXToken is Destructible {
      * @param amount the amount to deduct
      */
     function burn(address _address, uint amount) smartAssetContractOnly() {
-        if (balanceFor[_address] < amount) {
-            throw;
-        }
+        require(balanceFor[_address] >= amount);
         balanceFor[_address] -= amount;
     }
 
@@ -106,10 +110,8 @@ contract BKXToken is Destructible {
      * @return success/failure of transfer
      */
     function transfer(address _from, address _to, uint256 _value) private returns (bool success) {
-        if (balanceFor[_from] < _value)
-        throw;           // Check if the sender has enough
-        if (balanceFor[_to] + _value < balanceFor[_to])
-        throw; // Check for overflows
+        require(balanceFor[_from] >= _value);// Check if the sender has enough
+        require(balanceFor[_to] + _value >= balanceFor[_to]);// Check for overflows
         balanceFor[_from] -= _value;                     // Subtract from the sender
         balanceFor[_to] += _value;                            // Add the same to the recipient
         return true;
