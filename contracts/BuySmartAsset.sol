@@ -1,6 +1,7 @@
 pragma solidity ^0.4.10;
 
 import './SmartAssetRouter.sol';
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 /**
  * Interface for SmartAsset contract
@@ -14,20 +15,12 @@ contract SmartAssetI {
 /**
  * @title Buy smart asset contract
  */
-contract BuySmartAsset {
-    address public owner = msg.sender;
+contract BuySmartAsset is Destructible{
     address private smartAssetAddr;
 
     SmartAssetRouter smartAssetRouter;
 
     event AssetSoldTo(uint id, address newOwner);
-
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
-    }
 
     /**
      * @dev Constructor to check and set up dependencies contract address

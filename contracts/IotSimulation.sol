@@ -1,5 +1,6 @@
 pragma solidity ^0.4.10;
 
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 /**
  * Interface for SmartAsset contract
@@ -20,18 +21,11 @@ contract CarAssetLogicInterface {
 /**
  * @title IotSimulation contract
  */
-contract IotSimulation {
-    address public owner = msg.sender;
+contract IotSimulation is Destructible{
     address private carAssetLogicAddr;
     uint private hundred = 100;
     uint private thousand = 1000;
 
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
-    }
 
     /**
      * @dev Generates IoT data for specified vinId and stores it using SmartAsset interface

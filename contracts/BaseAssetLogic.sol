@@ -2,6 +2,7 @@ pragma solidity ^0.4.10;
 
 
 import './SmartAssetLogicInterface.sol';
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 /**
  * Interface for SmartAsset contract
@@ -27,16 +28,8 @@ contract SmartAssetInterface {
 /**
  * @title Base smart asset logic contract
  */
-contract BaseAssetLogic is SmartAssetLogicInterface {
+contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
     address smartAssetAddr;
-    address public owner = msg.sender;
-
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
-    }
 
     /**
      * Check whether SmartAsset contract executes method or not

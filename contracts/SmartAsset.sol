@@ -2,6 +2,7 @@ pragma solidity ^0.4.10;
 
 import './SmartAssetRouter.sol';
 import './SmartAssetMetadata.sol';
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 /**
 *Interface for BKXToken contract
@@ -15,11 +16,9 @@ contract BKXTokenInterface {
 /**
  * @title Smart asset contract
  */
-contract SmartAsset {
+contract SmartAsset is Destructible{
     // Workflow stages
     enum State { ManualDataAreEntered, IotDataCollected, PriceCalculated, OnSale, FailedAssetModified }
-
-    address public owner = msg.sender;
 
     address private buyAssetAddr;
 
@@ -38,13 +37,6 @@ contract SmartAsset {
      */
     modifier onlyBuyAsset {
         if (msg.sender != buyAssetAddr) {throw;} else {_;}
-    }
-
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
     }
 
     // Definition of Smart asset

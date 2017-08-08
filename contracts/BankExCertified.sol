@@ -1,8 +1,8 @@
 pragma solidity ^0.4.10;
 
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
-contract BankExCertified is Ownable {
+contract BankExCertified is Destructible  {
 
     mapping(address => bool) private certified;
 

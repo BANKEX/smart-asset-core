@@ -1,18 +1,13 @@
 pragma solidity ^0.4.10;
 
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
-contract SmartAssetMetadata {
 
-    address owner = msg.sender;
+contract SmartAssetMetadata is Destructible {
 
     mapping(bytes32 => address) smartAssetLogicAddresses;
 
     bytes32[] assetTypes;
-
-    modifier onlyOwner {
-        if (msg.sender != owner) throw;
-        _;
-    }
 
     function addSmartAssetType(bytes32 newType, address smartAssetLogic) onlyOwner() {
 

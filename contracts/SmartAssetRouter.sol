@@ -3,22 +3,15 @@ pragma solidity ^0.4.10;
 
 import './SmartAssetMetadata.sol';
 import './SmartAssetLogicInterface.sol';
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 
-contract SmartAssetRouter {
-    address public owner = msg.sender;
+contract SmartAssetRouter is Destructible{
     address private smartAssetAddr;
 
     SmartAssetMetadata smartAssetMetadata;
 
     mapping (uint => bytes32) assetTypeById;
-
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
-    }
 
     /**
      * Check whether SmartAsset contract executes method or not
