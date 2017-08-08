@@ -312,10 +312,6 @@ contract SmartAsset is Destructible{
         smartAssetById[id].state = State.IotDataCollected;
     }
 
-    function onAssetSold(uint assetId) {
-        smartAssetRouter.onAssetSold(assetId);
-    }
-
     function calculateAssetPrice(uint assetId) {
         smartAssetRouter.calculateAssetPrice(assetId);
         smartAssetById[assetId].state = State.PriceCalculated;
