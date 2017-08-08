@@ -2,6 +2,7 @@ pragma solidity ^0.4.10;
 
 import './SmartAssetRouter.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
+import 'zeppelin-solidity/contracts/payment/PullPayment.sol';
 
 /**
  * Interface for SmartAsset contract
@@ -15,12 +16,16 @@ contract SmartAssetI {
 /**
  * @title Buy smart asset contract
  */
-contract BuySmartAsset is Destructible{
+contract BuySmartAsset is Destructible, PullPayment {
     address private smartAssetAddr;
 
     SmartAssetRouter smartAssetRouter;
 
     event AssetSoldTo(uint id, address newOwner);
+
+    event AsyncSend(address to, uint amount);
+
+    event EnteredMethod(uint name);
 
     /**
      * @dev Constructor to check and set up dependencies contract address
@@ -39,11 +44,6 @@ contract BuySmartAsset is Destructible{
      * @param cityName City name of destination/delivery city
      */
     function getTotalPrice(uint assetId, bytes32 cityName) constant returns (uint totalPrice) {
-        if (!smartAssetRouter.isAssetTheSameState(assetId)) {
-            // Formula1 parameters were changed/mutated
-            throw;
-        }
-
         return smartAssetRouter.getSmartAssetPrice(assetId) + smartAssetRouter.calculateDeliveryPrice(assetId, cityName);
     }
 
@@ -54,24 +54,21 @@ contract BuySmartAsset is Destructible{
      */
     function buyAsset(uint assetId, bytes32 cityName) payable {
 
-        if (!smartAssetRouter.getSmartAssetAvailability(assetId)) {
-            throw;
-        }
+        require(smartAssetRouter.getSmartAssetAvailability(assetId));
+
+        require(smartAssetRouter.isAssetTheSameState(assetId));
 
 		uint totalPrice = getTotalPrice(assetId, cityName);
 
-		if (msg.value < totalPrice) {
-			// Not enough founds to buy the asset
-			throw;
-		}
+		require(msg.value >= totalPrice);
 
 		SmartAssetI smartAssetInterface = SmartAssetI(smartAssetAddr);
 		smartAssetInterface.getAssetOwnerById(assetId).transfer(totalPrice);
 
-		// Refund buyer if overpaid
-		msg.sender.transfer(msg.value - totalPrice);
-
         smartAssetInterface.sellAsset(assetId, msg.sender);
+
+        AsyncSend(msg.sender, msg.value - totalPrice);
+        asyncSend(msg.sender, msg.value - totalPrice);
 
         AssetSoldTo(assetId, msg.sender);
     }

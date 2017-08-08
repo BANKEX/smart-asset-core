@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/BankEx/smart-asset-poc#readme",
   "devDependencies": {
+    "big-integer": "^1.6.23",
     "ethereumjs-testrpc": "^4.0.1",
     "truffle": "^3.4.6",
     "zeppelin-solidity": "^1.2.0"

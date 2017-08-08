@@ -3,6 +3,8 @@ var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
+var BigInt = require('big-integer');
+
 contract('BuySmartAsset', function(accounts) {
     it("Should sell asset", function() {
          var smartAssetGeneratedId;
@@ -12,6 +14,11 @@ contract('BuySmartAsset', function(accounts) {
          var smartAsset;
          var iotSimulation;
          var buySmartAsset;
+         var extra = 1000; //
+         var balanceBeforeWithdrawal;
+         var balanceAfterWithdrawal;
+         var gasPrice = 100000000000;
+         var gas ;
 
          return SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
@@ -58,13 +65,43 @@ contract('BuySmartAsset', function(accounts) {
                 buySmartAsset = instance;
                 return buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
              }).then(function(calculatedTotalPrice) {
-                assert.equal(calculatedTotalPrice, 162526397000006467);
-                return buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, {from : accounts[1], value: calculatedTotalPrice});
+                 assert.isOk(BigInt(calculatedTotalPrice.toString()).equals(BigInt('162526397000006467')));
+
+                return buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, {from : accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra))});
              }).then(function(returnValue) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
              }).then(function(returnValue) {
                 assert.equal(returnValue[8], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
                 assert.equal(returnValue[9], accounts[1]);
-             });
+
+             }).then(function() {
+                 return web3.eth.getBalance(accounts[1]);
+
+             }).then(function(result) {
+                 balanceBeforeWithdrawal = result.toString();
+
+
+             }).then(function() {
+                 return buySmartAsset.withdrawPayments.estimateGas({from : accounts[1]});
+
+             }).then(function(result){
+                 gas = result;
+
+             }).then(function() {
+                 return buySmartAsset.withdrawPayments({from : accounts[1], gasPrice: gasPrice});
+
+             }).then(function() {
+
+                 return web3.eth.getBalance(accounts[1]);
+
+             }).then(function(result) {
+
+                 balanceAfterWithdrawal = result.toString();
+
+                 var totalGas = gas * gasPrice;
+
+                 assert.isOk((BigInt(balanceAfterWithdrawal).add(BigInt(totalGas))).eq(BigInt(balanceBeforeWithdrawal).add(BigInt(extra))));
+             })
+             ;
       });
 });
