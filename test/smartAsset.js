@@ -161,5 +161,41 @@ contract('SmartAsset', function(accounts) {
         }).catch(function(error) {
             //do nothing
         })
+    });
+
+    it('Should return assets on sale', function() {
+        var smartAsset;
+        var smartAssetGeneratedId;
+
+        return SmartAsset.deployed().then(function(instance) {
+            smartAsset = instance;
+            return smartAsset.createAsset('description' ,'photo', 'document' ,'car');
+
+        }).then(function(result) {
+            smartAssetGeneratedId = result.logs[0].args.id.c[0];
+
+        }).then(function() {
+            return smartAsset.calculateAssetPrice(smartAssetGeneratedId);
+
+        }).then(function() {
+            return smartAsset.makeOnSale(smartAssetGeneratedId);
+
+        }).then(function(){
+            return smartAsset.getAssetsOnSale('car', 0, 0);
+
+        }).then(function(result) {
+            var ids = result[0];
+            assert.equal(ids[0] , smartAssetGeneratedId);
+
+            var descriptions = result[1];
+            assert.equal(toAscii(descriptions[0]), 'description');
+
+            var photo = result[2];
+            assert.equal(toAscii(photo[0]), 'photo');
+
+            var document = result[3];
+            assert.equal(toAscii(document[0]), 'document');
+        })
+
     })
 });
