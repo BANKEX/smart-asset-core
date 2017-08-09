@@ -3,6 +3,11 @@ pragma solidity ^0.4.10;
 import "./BaseAssetLogic.sol";
 
 
+contract IotSimulationInterface {
+    function generateIotOutput(uint id, uint salt) returns (bool result);
+    function generateIotAvailability(uint id, bool availability) returns (bool result);
+}
+
 /**
  * @title Car smart asset logic  contract
  */
@@ -142,7 +147,16 @@ contract CarAssetLogic is BaseAssetLogic {
     }
 
     /**
-     * @dev Function to updates Smart Asset IoT params and generate asset price
+     * @dev Function to force run update of external params
+     */
+    function forceUpdateFromExternalSource(uint id) {
+        IotSimulationInterface iotSimulation = IotSimulationInterface(iotSimulationAddr);
+        iotSimulation.generateIotOutput(id, 0);
+        iotSimulation.generateIotAvailability(id, true);
+    }
+
+    /**
+     * @dev Function to updates Smart Asset IoT params
      */
     function updatePriceViaIotSimulator(
     uint id,

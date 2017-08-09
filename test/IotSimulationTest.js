@@ -117,5 +117,32 @@ contract('IotSimulation', function(accounts) {
                 console.log('Expected error. Got it');
             });
     });
+    it("Simulation of IoT change data via force smartAssetMethod.", function() {
+         var smartAssetGeneratedId;
+         var smartAsset;
+         var simulator;
+
+         return SmartAsset.deployed().then(function(instance) {
+                 smartAsset = instance;
+                 return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+             }).then(function(result) {
+                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
+                 return smartAsset.forceUpdateFromExternalSource(smartAssetGeneratedId);
+             })
+             .then(function(result) {
+                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
+             })
+             .then(function(returnValue) {
+                assert.equal(toAscii(returnValue[0]), "BMW X5");
+                assert.equal(toAscii(returnValue[1]), "photo_url");
+                assert.equal(toAscii(returnValue[2]), "document_url");
+                assert.isAbove(returnValue[3], 0, 'millage should be bigger than 0');
+                assert.isAbove(returnValue[4], 0, 'damage should be bigger than 0');
+                assert.isAbove(returnValue[5], 0, 'latitude should be bigger than 0');
+                assert.isAbove(returnValue[6], 0, 'longitude should be bigger than 0');
+
+                assert.equal(toAscii(returnValue[10]), "car");
+             });
+     });
 
 });

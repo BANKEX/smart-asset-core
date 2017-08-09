@@ -294,7 +294,7 @@ contract SmartAsset is Destructible{
     }
 
     /**
-     * @dev Function to updates Smart Asset params and generate asset price
+     * @dev Function to updates Smart Asset params
      */
     function updateFromExternalSource(
         uint id,
@@ -320,6 +320,10 @@ contract SmartAsset is Destructible{
         smartAssetById[id].u4 = u4;
 
         smartAssetById[id].state = State.IotDataCollected;
+    }
+
+    function forceUpdateFromExternalSource(uint assetId) {
+        return smartAssetRouter.forceUpdateFromExternalSource(assetId);
     }
 
     function calculateAssetPrice(uint assetId) {

@@ -12,6 +12,10 @@ contract RealEstateAssetLogic is BaseAssetLogic {
         asset.updateFromExternalSource(id, u1, u2, smoker, u3, u4);
     }
 
+    function forceUpdateFromExternalSource(uint id) {
+        updateViaIotSimulator(id, id + 1, id + 2, true, id +3, id + 4);
+    }
+
     function onAssetSold(uint assetId) {
 
     }

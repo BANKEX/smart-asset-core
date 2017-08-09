@@ -52,4 +52,10 @@ contract SmartAssetLogicInterface {
      * @return boolean if smart asset available
      */
     function getSmartAssetAvailability(uint id) constant returns (bool);
+
+    /**
+     * @dev Function that forces updates of Smart Asset external source params.
+     * @param id Id of smart asset
+     */
+    function forceUpdateFromExternalSource(uint id);
 }
