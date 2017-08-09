@@ -44,7 +44,7 @@ contract('SmartAsset', function(accounts) {
       return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
       assert.equal(parseInt(returnValue), parseInt(initialMyAssetsCarCount) +1);
-      return smartAsset.getMyAssets.call("car", 1, 0);
+      return smartAsset.getMyAssets.call("car", 0, 1);
     }).then(function(returnValue) {
       console.log(returnValue);
 
@@ -137,5 +137,29 @@ contract('SmartAsset', function(accounts) {
           })
       })
 
-  })
+  });
+
+    it('Should throw error as last index is smaller that first', function() {
+        var smartAsset;
+
+        SmartAsset.deployed().then(function(instance) {
+            smartAsset = instance;
+            return smartAsset.getMyAssets('car', 1, 0);
+
+        }).catch(function(error) {
+            //do nothing
+        })
+    });
+
+    it('Should throw error as the last index if out of bound', function() {
+        var smartAsset;
+
+        SmartAsset.deployed().then(function(instance) {
+            smartAsset = instance;
+            return smartAsset.getMyAssets('car', 0, 5);
+
+        }).catch(function(error) {
+            //do nothing
+        })
+    })
 });

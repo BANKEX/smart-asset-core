@@ -31,6 +31,7 @@ contract SmartAsset is Destructible{
     event NewSmartAsset(uint id);
     event AssetPutOnSale(uint id);
     event AssetTakenOffSale(uint id);
+    event IndexesQuried(uint8 startIndex, uint8 endIndex);
 
     /**
      * Check whether BuyAsset contract executes method or not
@@ -215,7 +216,7 @@ contract SmartAsset is Destructible{
      * @return id Identification numbers
      * @return rest of Smart asset definition/entity
      */
-    function getMyAssets(bytes32 assetType, uint lastIndex, uint firstIndex) constant
+    function getMyAssets(bytes32 assetType , uint8 firstIndex, uint8 lastIndex) constant
     returns (uint[] memory id,
             bytes32[] memory b1,
             bytes32[] memory b2,
@@ -224,6 +225,9 @@ contract SmartAsset is Destructible{
             uint[] memory u2,
             bool[] memory bool1)
     {
+        IndexesQuried(firstIndex, lastIndex);
+
+        require(lastIndex >= firstIndex);
         uint size = lastIndex - firstIndex + 1;
 
         id = new uint[](size);
@@ -233,6 +237,8 @@ contract SmartAsset is Destructible{
         u1 = new uint[](size);
         u2 = new uint[](size);
         bool1 = new bool[](size);
+
+        require(smartAssetsByOwner[msg.sender][assetType].length >= lastIndex + 1);
 
         for (uint i = firstIndex; i <= lastIndex; i++) {
             SmartAssetData memory smartAssetData = smartAssetsByOwner[msg.sender][assetType][i];
