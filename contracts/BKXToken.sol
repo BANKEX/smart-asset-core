@@ -1,7 +1,7 @@
 pragma solidity ^0.4.10;
 
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
-
+import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 /**
  * @title Interface to confirm/comply with token API (for example via Etherium Wallet)
@@ -16,6 +16,9 @@ contract IToken {
  * @title ICO token contract (draft version)
  */
 contract BKXToken is Destructible {
+
+    using SafeMath for uint256;
+
     // Token-related properties/description to display in Wallet client / UI
     string public standard = "BKXToken 0.1";
     string public name = "BKXToken";
@@ -110,10 +113,9 @@ contract BKXToken is Destructible {
      * @return success/failure of transfer
      */
     function transfer(address _from, address _to, uint256 _value) private returns (bool success) {
-        require(balanceFor[_from] >= _value);// Check if the sender has enough
-        require(balanceFor[_to] + _value >= balanceFor[_to]);// Check for overflows
-        balanceFor[_from] -= _value;                     // Subtract from the sender
-        balanceFor[_to] += _value;                            // Add the same to the recipient
+        balanceFor[_from] = balanceFor[_from].sub(_value);
+        balanceFor[_to] = balanceFor[_to].add(_value);
+
         return true;
     }
 }

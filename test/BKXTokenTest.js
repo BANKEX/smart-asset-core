@@ -33,6 +33,24 @@ contract('BKXToken', function(accounts) {
             done();
         })
 
-    })
+    });
+
+    it('Should throw error', function(){
+        return BKXToken.deployed().then(function(instance){
+
+            bkxToken = instance;
+            return bkxToken.balanceOf(accounts[0]);
+
+        }).then(function(result) {
+            initialAmountBKX = parseInt(result);
+
+        }).then(function() {
+            return bkxToken.transfer(accounts[0], accounts[1], initialAmountBKX + 1)
+
+        }).catch(function(error) {
+            console.log('Should catch error and the transfer should not go down as there is not enough tokens in accounts[0]');
+        })
+
+    });
 
 });
