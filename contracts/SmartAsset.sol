@@ -189,6 +189,87 @@ contract SmartAsset is Destructible{
         return getAssets(firstIndex, lastIndex, smartAssetsOnSale[assetType]);
     }
 
+    function searchAssetsOnSaleByKeyWord(bytes32 assetType, bytes32 keyWord) constant
+    returns (
+        uint[] id,
+        bytes32[] b1,
+        bytes32[] b2,
+        bytes32[] b3,
+        uint[] u1,
+        uint[] u2,
+        bool[] bool1) {
+
+        uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
+
+        SmartAssetData[] memory assetDatas = smartAssetsOnSale[assetType];
+
+        uint count = getCountOfMatchingItems(lastIndex, assetDatas, keyWord);
+
+        SmartAssetData[] memory foundItemsArray = getFoundItemsArray(count, lastIndex, assetDatas, keyWord);
+
+        return getFoundItems(count, foundItemsArray);
+    }
+
+    function getFoundItems(uint count, SmartAssetData[] smartAssetDatas) private constant
+    returns(
+        uint[] id,
+        bytes32[] b1,
+        bytes32[] b2,
+        bytes32[] b3,
+        uint[] u1,
+        uint[] u2,
+        bool[] bool1) {
+
+        id = new uint[](count);
+        b1 = new bytes32[](count);
+        b2 = new bytes32[](count);
+        b3 = new bytes32[](count);
+        u1 = new uint[](count);
+        u2 = new uint[](count);
+        bool1 = new bool[](count);
+
+        for (uint i = 0; i < count; i++) {
+            SmartAssetData memory smartAssetData = smartAssetDatas[i];
+
+            id[i] = smartAssetData.id;
+            b1[i] = smartAssetData.b1;
+            b2[i] = smartAssetData.b2;
+            b3[i] = smartAssetData.b3;
+            u1[i] = smartAssetData.u1;
+            u2[i] = smartAssetData.u2;
+            bool1[i] = smartAssetData.bool1;
+        }
+
+        return (id, b1, b2, b3, u1, u2, bool1);
+    }
+
+
+    function getCountOfMatchingItems(uint lastIndex, SmartAssetData[] smartAssetDatas, bytes32 keyWord) private constant returns(uint) {
+        uint count = 0;
+        for (uint i = 0; i <= lastIndex; i++) {
+            SmartAssetData memory smartAssetData = smartAssetDatas[i];
+
+            if(smartAssetData.b1 == keyWord) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function getFoundItemsArray(uint count, uint lastIndex, SmartAssetData[] smartAssetDatas, bytes32 keyWord) private constant returns(SmartAssetData[]) {
+        SmartAssetData[] memory foundItems = new SmartAssetData[](count);
+        uint indexInFound = 0;
+
+        for (uint i = 0; i <= lastIndex; i++) {
+            SmartAssetData memory smartAssetData = smartAssetDatas[i];
+
+            if(smartAssetData.b1 == keyWord) {
+                foundItems[indexInFound++] = smartAssetData;
+            }
+        }
+        return foundItems;
+    }
+
     /**
      * @dev Returns Smart asset owner
      * @param id Smart asset identification number

@@ -197,5 +197,48 @@ contract('SmartAsset', function(accounts) {
             assert.equal(toAscii(document[0]), 'document');
         })
 
+    });
+
+    it('Should search for smart assets', function() {
+        var smartAsset;
+        var smartAssetGeneratedId;
+
+        return SmartAsset.deployed().then(function(instance) {
+            smartAsset = instance;
+            return smartAsset.createAsset('AbaAba' ,'photo', 'document' ,'car');
+
+        }).then(function(result) {
+            smartAssetGeneratedId = result.logs[0].args.id.c[0];
+
+        }).then(function() {
+            return smartAsset.calculateAssetPrice(smartAssetGeneratedId);
+
+        }).then(function() {
+            return smartAsset.makeOnSale(smartAssetGeneratedId);
+
+        }).then(function() {
+            return smartAsset.createAsset('BabBab' ,'photo', 'document' ,'car');
+
+        }).then(function(result) {
+            smartAssetGeneratedId = result.logs[0].args.id.c[0];
+
+        }).then(function() {
+            return smartAsset.calculateAssetPrice(smartAssetGeneratedId);
+
+        }).then(function() {
+            return smartAsset.makeOnSale(smartAssetGeneratedId);
+
+        }).then(function() {
+            return smartAsset.searchAssetsOnSaleByKeyWord('car', 'BabBab');
+
+        }).then(function(result){
+
+            assert.equal(1, result[0].length);
+
+            var ids = result[0];
+
+            assert.equal(smartAssetGeneratedId, ids[0]);
+
+        })
     })
 });
