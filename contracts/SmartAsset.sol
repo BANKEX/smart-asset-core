@@ -58,15 +58,11 @@ contract SmartAsset is Destructible{
         uint indexInSmartAssetsOnSale;
     }
 
-    struct SmartAssetsMappingByType {
-        mapping (bytes32 => SmartAssetData[]) map;
-    }
-
     mapping (uint => SmartAssetData) smartAssetById;
 
-    mapping (address => SmartAssetsMappingByType) smartAssetsByOwner;
+    mapping (address => mapping (bytes32 => SmartAssetData[])) smartAssetsByOwner;
 
-    SmartAssetsMappingByType smartAssetsOnSale;
+    mapping (bytes32 => SmartAssetData[]) smartAssetsOnSale;
 
     SmartAssetRouter smartAssetRouter;
     SmartAssetMetadata smartAssetMetadata;
@@ -120,7 +116,7 @@ contract SmartAsset is Destructible{
         address owner = msg.sender;
         uint id = ++nextId;
 
-        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[owner].map[assetType];
+        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[owner][assetType];
 
         SmartAssetData memory smartAssetData = SmartAssetData(
             id,
@@ -156,10 +152,10 @@ contract SmartAsset is Destructible{
         require(smartAssetData.owner == owner);
 
         bytes32 assetType = smartAssetRouter.getAssetType(id);
-        delete smartAssetsByOwner[owner].map[assetType][smartAssetData.indexInSmartAssetsByOwner];
+        delete smartAssetsByOwner[owner][assetType][smartAssetData.indexInSmartAssetsByOwner];
 
         if (smartAssetData.state == State.OnSale) {
-            delete smartAssetsOnSale.map[assetType][smartAssetData.indexInSmartAssetsOnSale];
+            delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
         }
         delete smartAssetById[id];
     }
@@ -171,7 +167,7 @@ contract SmartAsset is Destructible{
     *@return the number of assets on sale by type
     */
     function getAssetsOnSaleCount(bytes32 assetType) constant returns (uint) {
-        return smartAssetsOnSale.map[assetType].length;
+        return smartAssetsOnSale[assetType].length;
     }
 
 
@@ -190,7 +186,7 @@ contract SmartAsset is Destructible{
         uint[] memory u2,
         bool[] memory bool1) {
 
-        return getAssets(assetType, firstIndex, lastIndex, smartAssetsOnSale);
+        return getAssets(firstIndex, lastIndex, smartAssetsOnSale[assetType]);
     }
 
     /**
@@ -237,7 +233,7 @@ contract SmartAsset is Destructible{
      * @return count value / quantity/count of smart assets
      */
     function getMyAssetsCount(bytes32 assetType) constant returns (uint) {
-        return smartAssetsByOwner[msg.sender].map[assetType].length;
+        return smartAssetsByOwner[msg.sender][assetType].length;
     }
 
     /**
@@ -256,7 +252,7 @@ contract SmartAsset is Destructible{
             uint[] memory u2,
             bool[] memory bool1)
     {
-        return getAssets(assetType, firstIndex, lastIndex, smartAssetsByOwner[msg.sender]);
+        return getAssets(firstIndex, lastIndex, smartAssetsByOwner[msg.sender][assetType]);
     }
 
     /**
@@ -270,9 +266,9 @@ contract SmartAsset is Destructible{
         bytes32 assetType = smartAssetRouter.getAssetType(id);
 
         smartAssetById[id].state = State.OnSale;
-        smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale.map[assetType].length;
+        smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale[assetType].length;
 
-        smartAssetsOnSale.map[assetType].push(smartAssetById[id]);
+        smartAssetsOnSale[assetType].push(smartAssetById[id]);
 
         AssetPutOnSale(id);
     }
@@ -288,7 +284,7 @@ contract SmartAsset is Destructible{
 
         smartAssetById[id].state = State.PriceCalculated;
         bytes32 assetType = smartAssetRouter.getAssetType(id);
-        delete smartAssetsOnSale.map[assetType][smartAssetData.indexInSmartAssetsOnSale];
+        delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
 
         AssetTakenOffSale(id);
     }
@@ -376,13 +372,13 @@ contract SmartAsset is Destructible{
         bytes32 assetType = smartAssetRouter.getAssetType(id);
 
 
-        delete smartAssetsOnSale.map[assetType][asset.indexInSmartAssetsOnSale];
-        delete smartAssetsByOwner[asset.owner].map[assetType][asset.indexInSmartAssetsByOwner];
+        delete smartAssetsOnSale[assetType][asset.indexInSmartAssetsOnSale];
+        delete smartAssetsByOwner[asset.owner][assetType][asset.indexInSmartAssetsByOwner];
 
         smartAssetById[id].owner = newOwner;
         smartAssetById[id].state = State.ManualDataAreEntered;
 
-        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner].map[assetType];
+        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[newOwner][assetType];
         smartAssetDatasOfOwner.push(asset);
 
         smartAssetRouter.onAssetSold(id);
@@ -398,7 +394,7 @@ contract SmartAsset is Destructible{
         return true;
     }
 
-    function getAssets(bytes32 assetType, uint8 firstIndex, uint8 lastIndex, SmartAssetsMappingByType storage mapByType) internal constant
+    function getAssets(uint8 firstIndex, uint8 lastIndex, SmartAssetData[] storage data) internal constant
     returns(
         uint[] memory id,
         bytes32[] memory b1,
@@ -422,10 +418,10 @@ contract SmartAsset is Destructible{
         u2 = new uint[](size);
         bool1 = new bool[](size);
 
-        requireIndexInBound(mapByType, assetType, lastIndex);
+        requireIndexInBound(data, lastIndex);
 
         for (uint i = firstIndex; i <= lastIndex; i++) {
-            SmartAssetData memory smartAssetData = mapByType.map[assetType][i];
+            SmartAssetData memory smartAssetData = data[i];
 
             id[i] = smartAssetData.id;
             b1[i] = smartAssetData.b1;
@@ -440,8 +436,8 @@ contract SmartAsset is Destructible{
 
     }
 
-    function requireIndexInBound(SmartAssetsMappingByType storage mapByType, bytes32 assetType, uint8 index) internal constant {
-        require(mapByType.map[assetType].length - 1 >= index);
+    function requireIndexInBound(SmartAssetData[] storage data, uint8 index) internal constant {
+        require(data.length - 1 >= index);
     }
 
 }
