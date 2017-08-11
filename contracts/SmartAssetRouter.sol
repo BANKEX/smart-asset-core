@@ -30,23 +30,15 @@ contract SmartAssetRouter is Destructible{
         return assetTypeById[assetId];
     }
 
-    /**
-     * @dev Calculates price base on formula1
-     * @param assetId Id of smart asset
-     */
     function onAssetSold(uint assetId) onlySmartAsset {
         _getSmartAssetImpl(assetId).onAssetSold(assetId);
     }
 
-    /**
-     * @dev Calculates price base on formula1
-     * @param assetId Id of smart asset
-     */
     function calculateAssetPrice(uint assetId) onlySmartAsset {
         _getSmartAssetImpl(assetId).calculateAssetPrice(assetId);
     }
 
-    function getSmartAssetPrice(uint id) returns (uint) {
+    function getSmartAssetPrice(uint id) constant returns (uint) {
         return _getSmartAssetImpl(id).getSmartAssetPrice(id);
     }
 
@@ -62,7 +54,7 @@ contract SmartAssetRouter is Destructible{
         return _getSmartAssetImpl(id).getSmartAssetAvailability(id);
     }
 
-    function forceUpdateFromExternalSource(uint id){
+    function forceUpdateFromExternalSource(uint id) onlySmartAsset {
         return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id);
     }
 

@@ -93,11 +93,11 @@ contract CarAssetLogic is BaseAssetLogic {
         cities.push("Lublin");
     }
 
-    function onAssetSold(uint assetId)  {
+    function onAssetSold(uint assetId) onlySmartAssetRouter {
         delete smartAssetPriceById[assetId];
     }
 
-    function calculateAssetPrice(uint assetId)  returns (uint) {
+    function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         SmartAssetPriceData memory smartAssetPriceData = SmartAssetPriceData(_calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
         smartAssetPriceById[assetId] = smartAssetPriceData;
@@ -109,7 +109,7 @@ contract CarAssetLogic is BaseAssetLogic {
         return smartAssetPriceById[id].price;
     }
 
-    function isAssetTheSameState(uint assetId) constant returns (bool modified) {
+    function isAssetTheSameState(uint assetId) onlySmartAssetRouter constant returns (bool modified) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         //check scenario when there is no id in map
         return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == smartAssetPriceById[assetId].hash;
@@ -123,7 +123,7 @@ contract CarAssetLogic is BaseAssetLogic {
         return cities;
     }
 
-    function calculateDeliveryPrice(uint id, bytes32 cityName) constant returns (uint) {
+    function calculateDeliveryPrice(uint id, bytes32 cityName) onlySmartAssetRouter constant returns (uint) {
         LatLong latLong = cityMapping[cityName];
 
         var (b1, b2, b3, u1, u2, long, lat, bool1, state, owner) = getById(id);
@@ -149,7 +149,7 @@ contract CarAssetLogic is BaseAssetLogic {
     /**
      * @dev Function to force run update of external params
      */
-    function forceUpdateFromExternalSource(uint id) {
+    function forceUpdateFromExternalSource(uint id) onlySmartAssetRouter {
         IotSimulationInterface iotSimulation = IotSimulationInterface(iotSimulationAddr);
         iotSimulation.generateIotOutput(id, 0);
         iotSimulation.generateIotAvailability(id, true);

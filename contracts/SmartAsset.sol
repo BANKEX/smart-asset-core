@@ -400,10 +400,14 @@ contract SmartAsset is Destructible{
     }
 
     function forceUpdateFromExternalSource(uint assetId) {
+        SmartAssetData memory smartAssetData = _getAssetById(assetId);
+        require(smartAssetData.owner == msg.sender && smartAssetData.state <= State.OnSale);
         return smartAssetRouter.forceUpdateFromExternalSource(assetId);
     }
 
     function calculateAssetPrice(uint assetId) {
+        SmartAssetData memory smartAssetData = _getAssetById(assetId);
+        require(smartAssetData.owner == msg.sender && smartAssetData.state < State.OnSale);
         smartAssetRouter.calculateAssetPrice(assetId);
         smartAssetById[assetId].state = State.PriceCalculated;
     }
