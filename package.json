@@ -1,38 +1,40 @@
 {
-    "name": "smart-asset-poc",
-    "version": "0.0.1",
-    "description": "Blockchain contracts for smart assets",
-    "main": "index.js",
-    "directories": {
-        "test": "test"
-    },
-    "scripts": {
-        "build": "truffle compile",
-        "deploy": "truffle migrate",
-        "test": "truffle test",
-        "prestart": "npm run build",
-        "start": "node index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/BankEx/smart-asset-poc.git"
-    },
-    "keywords": [
-        "blockchain",
-        "contracts",
-        "ethereum",
-        "tokenization",
-        "bankex",
-        "smart-assets"
-    ],
-    "author": "BankEx",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/BankEx/smart-asset-poc/issues"
-    },
-    "homepage": "https://github.com/BankEx/smart-asset-poc#readme",
-    "devDependencies": {
-        "ethereumjs-testrpc": "^4.0.1",
-        "truffle": "^3.4.6"
-    }
+  "name": "smart-asset-poc",
+  "version": "0.0.1",
+  "description": "Blockchain contracts for smart assets",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "truffle compile",
+    "deploy": "truffle migrate",
+    "test": "truffle test",
+    "prestart": "npm run build",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BankEx/smart-asset-poc.git"
+  },
+  "keywords": [
+    "blockchain",
+    "contracts",
+    "ethereum",
+    "tokenization",
+    "bankex",
+    "smart-assets"
+  ],
+  "author": "BankEx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BankEx/smart-asset-poc/issues"
+  },
+  "homepage": "https://github.com/BankEx/smart-asset-poc#readme",
+  "devDependencies": {
+    "big-integer": "^1.6.23",
+    "ethereumjs-testrpc": "^4.0.1",
+    "truffle": "^3.4.6",
+    "zeppelin-solidity": "^1.2.0"
+  }
 }

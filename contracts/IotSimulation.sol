@@ -1,45 +1,31 @@
 pragma solidity ^0.4.10;
 
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 /**
  * Interface for SmartAsset contract
  */
-contract SmartAsset {
-    function updateViaIotSimulator(
-        uint id,
-        uint millage,
-        uint damaged,
-        bool smokingCar,
-        uint latitude,
-        uint longitude);
-}
+contract CarAssetLogicInterface {
+    function updatePriceViaIotSimulator(
+    uint id,
+    uint millage,
+    uint damaged,
+    bool smokingCar,
+    uint longitude,
+    uint latitude
+    );
 
-/**
- * Interface for SmartAssetAvailability contract
- */
-contract SmartAssetAvailability {
-    function updateViaIotSimulator(
-        uint id,
-        bool availability);
+    function updateAvailabilityViaIotSimulator(uint id, bool availability);
 }
-
 
 /**
  * @title IotSimulation contract
  */
-contract IotSimulation {
-    address public owner = msg.sender;
-    address private smartAssetAddr;
-    address private smartAssetAvailabilityAddr;
+contract IotSimulation is Destructible{
+    address private carAssetLogicAddr;
     uint private hundred = 100;
     uint private thousand = 1000;
 
-    /**
-     * Check whether contract owner executes method or not
-     */
-    modifier onlyOwner {
-        if (msg.sender != owner) {throw;} else {_;}
-    }
 
     /**
      * @dev Generates IoT data for specified vinId and stores it using SmartAsset interface
@@ -47,22 +33,18 @@ contract IotSimulation {
      * @return result Execution result
      */
     function generateIotOutput(uint id, uint salt) returns (bool result) {
-        if (id == 0) {
-            throw;
-        }
-        if (smartAssetAddr == address(0)) {
-            throw;
-        }
+        require(id != 0);
+        require(carAssetLogicAddr != address(0));
 
         uint number = id + salt;
-        SmartAsset asset = SmartAsset(smartAssetAddr);
-        asset.updateViaIotSimulator(
+        CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
+        carAssetLogic.updatePriceViaIotSimulator(
             id,
             generateMillageResult(number),
             generateDamageResult(number),
             generateSmokingCarResult(number),
-            generateLatitudeResult(number),
-            generateLongitudeResult(number)
+            generateLongitudeResult(number),
+            generateLatitudeResult(number)
         );
         return true;
     }
@@ -73,15 +55,11 @@ contract IotSimulation {
      * @return result Execution result
      */
     function generateIotAvailability(uint id, bool availability) returns (bool result) {
-        if (id == 0) {
-            throw;
-        }
-        if (smartAssetAvailabilityAddr == address(0)) {
-            throw;
-        }
+        require(id != 0);
+        require(carAssetLogicAddr != address(0));
 
-        SmartAssetAvailability smartAssetAvailability = SmartAssetAvailability(smartAssetAvailabilityAddr);
-        smartAssetAvailability.updateViaIotSimulator(
+        CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
+        carAssetLogic.updateAvailabilityViaIotSimulator(
             id,
             availability
         );
@@ -150,28 +128,9 @@ contract IotSimulation {
      * @param contractAddress address to be set
      * @return result Execution result
      */
-    function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
-        smartAssetAddr = contractAddress;
-        if (contractAddress == address(0)) {
-            throw;
-        } else {
-            smartAssetAddr = contractAddress;
-            return true;
-        }
-    }
-
-    /**
-     * @dev Setter for SmartAssetAvailability contract address.
-     * @param contractAddress address to be set
-     * @return result Execution result
-     */
-    function setSmartAssetAvailabilityAddr(address contractAddress) onlyOwner returns (bool result) {
-        smartAssetAvailabilityAddr = contractAddress;
-        if (contractAddress == address(0)) {
-            throw;
-        } else {
-            smartAssetAvailabilityAddr = contractAddress;
-            return true;
-        }
+    function setCarAssetLogicAddr(address contractAddress) onlyOwner returns (bool result) {
+        require(contractAddress != address(0));
+        carAssetLogicAddr = contractAddress;
+        return true;
     }
 }

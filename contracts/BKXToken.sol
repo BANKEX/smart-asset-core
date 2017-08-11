@@ -1,5 +1,7 @@
 pragma solidity ^0.4.10;
 
+import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
+import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 /**
  * @title Interface to confirm/comply with token API (for example via Etherium Wallet)
@@ -13,14 +15,15 @@ contract IToken {
 /**
  * @title ICO token contract (draft version)
  */
-contract BKXToken {
-    // Token-related properties/description to display in Wallet client / UI
-    string public standard = 'BKXToken 0.1';
-    string public name = 'BKXToken';
-    string public symbol = 'BKX';
+contract BKXToken is Destructible {
 
-    // Contract creator/author/person who's deployed it
-    address owner;
+    using SafeMath for uint256;
+
+    // Token-related properties/description to display in Wallet client / UI
+    string public standard = "BKXToken 0.1";
+    string public name = "BKXToken";
+    string public symbol = "BKX";
+
 
     // Presale token contract which required for granular access while doing Presale -> ICO token exchange from within Presale contract
     address PBKXcontract;
@@ -30,9 +33,14 @@ contract BKXToken {
     mapping (address => uint256) balanceFor;
 
     // Modifiers
-    modifier owneronly { if (msg.sender == owner) _; }
-    modifier PBKXcontractOnly { if (msg.sender == PBKXcontract) _; }
-    modifier smartAssetContractOnly { if (msg.sender == smartAssetContract) _; }
+    modifier PBKXcontractOnly {
+        require(msg.sender == PBKXcontract);
+        _;
+    }
+    modifier smartAssetContractOnly {
+        require(msg.sender == smartAssetContract);
+        _;
+    }
 
     /**
      * @dev ICO contract constructor
@@ -43,26 +51,18 @@ contract BKXToken {
     }
 
     /**
-     * @dev Set/change contract owner
-     * @param _owner owner address
-     */
-    function setOwner(address _owner) owneronly {
-        owner = _owner;
-    }
-
-    /**
      * @dev Set/change presale contract address
-     * @param _PBKXcontract Presale contract address
+     * @param contractAddress Presale contract address
      */
-    function setPBKXcontract(address _PBKXcontract) owneronly {
-        PBKXcontract = _PBKXcontract;
+    function setPBKXcontract(address contractAddress) onlyOwner {
+        PBKXcontract = contractAddress;
     }
 
     /**
      * @dev Set/change smart asset contract address
      * @param _smartAssetContract smart asset contract address
      */
-    function setSmartAssetContract(address _smartAssetContract) owneronly {
+    function setSmartAssetContract(address _smartAssetContract) onlyOwner {
         smartAssetContract = _smartAssetContract;
     }
 
@@ -72,9 +72,7 @@ contract BKXToken {
      * @param amount the amount to deduct
      */
     function burn(address _address, uint amount) smartAssetContractOnly() {
-        if(balanceFor[_address] < amount) {
-            throw;
-        }
+        require(balanceFor[_address] >= amount);
         balanceFor[_address] -= amount;
     }
 
@@ -108,13 +106,6 @@ contract BKXToken {
     }
 
     /**
-     * @dev Removes/deletes contract
-     */
-    function kill() owneronly {
-        suicide(msg.sender);
-    }
-
-    /**
      * @dev Transfers tokens from specifed sender to specified recipient
      * @param _from Sender address
      * @param _to Recipient address
@@ -122,10 +113,9 @@ contract BKXToken {
      * @return success/failure of transfer
      */
     function transfer(address _from, address _to, uint256 _value) private returns (bool success) {
-        if (balanceFor[_from] < _value) throw;           // Check if the sender has enough
-        if (balanceFor[_to] + _value < balanceFor[_to]) throw; // Check for overflows
-        balanceFor[_from] -= _value;                     // Subtract from the sender
-        balanceFor[_to] += _value;                            // Add the same to the recipient
+        balanceFor[_from] = balanceFor[_from].sub(_value);
+        balanceFor[_to] = balanceFor[_to].add(_value);
+
         return true;
     }
 }
