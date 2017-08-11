@@ -12,15 +12,15 @@ contract RealEstateAssetLogic is BaseAssetLogic {
         asset.updateFromExternalSource(id, u1, u2, smoker, u3, u4);
     }
 
-    function forceUpdateFromExternalSource(uint id) {
+    function forceUpdateFromExternalSource(uint id) onlySmartAssetRouter {
         updateViaIotSimulator(id, id + 1, id + 2, true, id +3, id + 4);
     }
 
-    function onAssetSold(uint assetId) {
+    function onAssetSold(uint assetId) onlySmartAssetRouter {
 
     }
 
-    function calculateAssetPrice(uint assetId) returns (uint) {
+    function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
         return u1*u2 - u3*u4;
     }
@@ -30,11 +30,11 @@ contract RealEstateAssetLogic is BaseAssetLogic {
         return u1*u2 - u3*u4;
     }
 
-    function isAssetTheSameState(uint id) constant returns (bool modified) {
+    function isAssetTheSameState(uint id) onlySmartAssetRouter constant returns (bool modified) {
         return true;
     }
 
-    function calculateDeliveryPrice(uint id, bytes32 city) constant returns (uint) {
+    function calculateDeliveryPrice(uint id, bytes32 city) onlySmartAssetRouter constant returns (uint) {
         return 10;
     }
 

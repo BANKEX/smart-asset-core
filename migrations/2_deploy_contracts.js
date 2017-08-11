@@ -59,6 +59,12 @@ module.exports = function(deployer) {
             return CarAssetLogic.deployed();
         })
         .then(function(instance){
+             return instance.setSmartAssetRouterAddr(SmartAssetRouter.address);
+        })
+        .then(function(){
+            return CarAssetLogic.deployed();
+        })
+        .then(function(instance){
             return instance.setIotSimulationAddr(IotSimulation.address);
         })
 
@@ -101,6 +107,12 @@ module.exports = function(deployer) {
         })
         .then(function(instance){
             instance.setSmartAssetAddr(SmartAsset.address);
+        })
+        .then(function(){
+            return RealEstateAssetLogic.deployed();
+        })
+        .then(function(instance){
+             return instance.setSmartAssetRouterAddr(SmartAssetRouter.address);
         })
         .then(function() {
             smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)

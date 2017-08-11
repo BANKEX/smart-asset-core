@@ -30,12 +30,13 @@ contract SmartAssetInterface {
  */
 contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
     address smartAssetAddr;
+    address smartAssetRouterAddr;
 
     /**
-     * Check whether SmartAsset contract executes method or not
+     * Check whether SmartAssetRouter contract executes method or not
      */
-    modifier onlySmartAsset {
-        require(msg.sender == smartAssetAddr);
+    modifier onlySmartAssetRouter {
+        require(msg.sender == smartAssetRouterAddr);
         _;
     }
 
@@ -88,6 +89,15 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
             throw;
         } else {
             smartAssetAddr = contractAddress;
+            return true;
+        }
+    }
+
+    function setSmartAssetRouterAddr(address contractAddress) onlyOwner returns (bool result) {
+        if (contractAddress == address(0)) {
+            throw;
+        } else {
+            smartAssetRouterAddr = contractAddress;
             return true;
         }
     }
