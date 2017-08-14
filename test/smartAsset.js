@@ -1,6 +1,8 @@
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BKXToken = artifacts.require("./BKXToken.sol");
 
+var BigInt = require('big-integer');
+
 function toAscii(input) {
   return web3.toAscii(input).replace(/\u0000/g, '');
 }
@@ -10,18 +12,24 @@ contract('SmartAsset', function(accounts) {
   it("Should create asset", function() {
     var smartAsset;
     var smartAssetGeneratedId;
-
+    var timeInMs = BigInt(Date.now());
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+      return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
     }).then(function(result) {
       smartAssetGeneratedId = result.logs[0].args.id.c[0];
       return smartAsset.getAssetById.call(smartAssetGeneratedId);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.equal(toAscii(returnValue[0]), "BMW X5");
-      assert.equal(toAscii(returnValue[1]), "photo_url");
-      assert.equal(toAscii(returnValue[2]), "document_url");
+      assert.isOk(BigInt(returnValue[0]).equals(timeInMs));
+      assert.equal(toAscii(returnValue[1]), "docUrl");
+      assert.equal(returnValue[2], 1);
+      assert.equal(toAscii(returnValue[3]), "email@email.com");
+      assert.equal(toAscii(returnValue[4]), "BMW X5");
+      assert.equal(toAscii(returnValue[5]), "VIN01");
+      assert.equal(toAscii(returnValue[6]), "yellow");
+      assert.equal(returnValue[7], 25000);
+      assert.equal(returnValue[8], 0);
       assert.equal(returnValue[9], accounts[0]);
       assert.equal(toAscii(returnValue[10]), "car");
     });
@@ -30,15 +38,16 @@ contract('SmartAsset', function(accounts) {
   it("Should return my assets", function() {
     var smartAsset;
     var initialMyAssetsCarCount;
+    var timeInMs = BigInt(Date.now());
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
       return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
       initialMyAssetsCarCount = returnValue;
-      return smartAsset.createAsset("Audi A8", "a_photo", "a_document", "car");
+      return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
     }).then(function(returnValue) {
-      return smartAsset.createAsset("Field", "a_photo", "a_document", "notCar");
+      return smartAsset.createAsset(timeInMs, "docUrl", 25, "email@email2.com", "notCar", "info", "data", "25", "Notcar");
       })
     .then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call("car");
@@ -52,17 +61,17 @@ contract('SmartAsset', function(accounts) {
       assert.equal(ids[0], 1);
       assert.equal(ids[1], 2);
 
-      var descriptions = returnValue[1];
-      assert.equal(toAscii(descriptions[0]), "BMW X5");
-      assert.equal(toAscii(descriptions[1]), "Audi A8");
+      var b1 = returnValue[3];
+      assert.equal(toAscii(b1[0]), "BMW X5");
+      assert.equal(toAscii(b1[1]), "Audi A8");
 
-      var photoUrl = returnValue[2];
-      assert.equal(toAscii(photoUrl[0]), "photo_url");
-      assert.equal(toAscii(photoUrl[1]), "a_photo");
+      var b2 = returnValue[4];
+      assert.equal(toAscii(b2[0]), "VIN01");
+      assert.equal(toAscii(b2[1]), "VIN02");
 
-      var documents = returnValue[3];
-      assert.equal(toAscii(documents[0]), "document_url");
-      assert.equal(toAscii(documents[1]), "a_document");
+      var b3 = returnValue[5];
+      assert.equal(toAscii(b3[0]), "yellow");
+      assert.equal(toAscii(b3[1]), "black");
     });
   });
 
