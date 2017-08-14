@@ -10,16 +10,16 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 contract SmartAssetInterface {
     function getAssetById(uint id) constant
     returns (
-    bytes32,
-    bytes32,
-    bytes32,
-    uint,
-    uint,
-    uint,
-    uint,
-    bool,
-    uint,
-    address);
+        uint32,
+        bytes6,
+        uint8,
+        bytes32,
+        bytes32,
+        bytes32,
+        bytes32,
+        uint,
+        uint,
+        address);
 
     function updateFromExternalSource(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl);
 }
@@ -42,16 +42,16 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
 
     function getById(uint assetId)
     returns (
-    bytes32,
-    bytes32,
-    bytes32,
-    uint,
-    uint,
-    uint,
-    uint,
-    bool,
-    uint,
-    address)
+        uint32,
+        bytes6,
+        uint8,
+        bytes32,
+        bytes32,
+        bytes32,
+        bytes32,
+        uint,
+        uint,
+        address)
     {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         return asset.getAssetById(assetId);
