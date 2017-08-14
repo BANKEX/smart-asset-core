@@ -83,7 +83,7 @@ contract CarAssetLogic is BaseAssetLogic {
 
     function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
-        carAssetLogicStorage.setSmartAssetPriceData(assetId, _calculateAssetPrice(millage, smoker), sha256(timestamp, docUrl, _type, email, model, vin, color, millage));
+        carAssetLogicStorage.setSmartAssetPriceData(assetId, _calculateAssetPrice(millage, smoker), sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
 
         return _calculateAssetPrice(millage, smoker);
     }
@@ -98,7 +98,7 @@ contract CarAssetLogic is BaseAssetLogic {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
         var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(assetId);
 
-        return sha256(timestamp, docUrl, _type, email, model, vin, color, millage) == hash;
+        return sha256(timestamp, docUrl, smoker, email, model, vin, color, millage) == hash;
     }
 
     /**
@@ -118,7 +118,7 @@ contract CarAssetLogic is BaseAssetLogic {
         if (coefficient == 0)
         coefficient = DEFAULT_COEFFICIENT;
 
-        return ((max(latLong.lat, latitude)) + (max(latLong.long, longitude))) * coefficient * 1 wei;
+        return ((max(latLong.lat, uint(latitude))) + (max(latLong.long, uint(longitude)))) * coefficient * 1 wei;
 
     }
 

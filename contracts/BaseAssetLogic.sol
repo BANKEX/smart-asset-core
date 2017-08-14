@@ -22,6 +22,8 @@ contract SmartAssetInterface {
         address);
 
     function updateFromExternalSource(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl);
+
+    function getAssetIotById(uint id) constant returns (bytes11, bytes11, bytes6, bytes32);
 }
 
 

@@ -21,13 +21,13 @@ contract RealEstateAssetLogic is BaseAssetLogic {
     }
 
     function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
-        var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
-        return u1*u2 - u3*u4;
+        var(timestamp, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner) = getById(assetId);
+        return 1000 * sqm;
     }
 
     function getSmartAssetPrice(uint id) constant returns (uint) {
-        var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(id);
-        return u1*u2 - u3*u4;
+        var(timestamp, docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner) = getById(id);
+        return 1000 * sqm;
     }
 
     function isAssetTheSameState(uint id) onlySmartAssetRouter constant returns (bool modified) {

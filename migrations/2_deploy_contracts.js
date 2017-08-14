@@ -69,7 +69,7 @@ module.exports = function(deployer) {
             return instance.setIotSimulationAddr(IotSimulation.address);
         })
         .then(function(){
-            deployer.deploy(CarAssetLogicStorage);
+            return deployer.deploy(CarAssetLogicStorage);
         })
         .then(function() {
             return CarAssetLogicStorage.deployed();
