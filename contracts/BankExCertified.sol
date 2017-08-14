@@ -1,21 +1,28 @@
 pragma solidity ^0.4.10;
 
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
+import './BankExCertifiedStorage.sol';
+
 
 contract BankExCertified is Destructible  {
 
-    mapping(address => bool) private certified;
+    BankExCertifiedStorage bankExCertifiedStorage;
 
     function certify(address _address) onlyOwner() {
-        certified[_address] = true;
+        //some other logic  if else
+        bankExCertifiedStorage.addCertified(_address);
     }
 
     function unCertify(address _address) onlyOwner() {
-        delete certified[_address];
+        bankExCertifiedStorage.removeCertified(_address);
     }
 
     function isCertified(address _address) constant returns(bool) {
-        return certified[_address];
+        return bankExCertifiedStorage.isCertified(_address);
+    }
+
+    function setStorageAddress(address _bankExCertifiedStorage) onlyOwner {
+        bankExCertifiedStorage = BankExCertifiedStorage(_bankExCertifiedStorage);
     }
 
 }

@@ -1,6 +1,7 @@
 pragma solidity ^0.4.10;
 
 import "./BaseAssetLogic.sol";
+import "./CarAssetLogicStorage.sol";
 
 
 contract IotSimulationInterface {
@@ -17,6 +18,8 @@ contract CarAssetLogic is BaseAssetLogic {
     uint private MIN_CAR_PRICE = 100;
 
     address private iotSimulationAddr;
+
+    CarAssetLogicStorage carAssetLogicStorage;
 
 
     /**
@@ -35,18 +38,6 @@ contract CarAssetLogic is BaseAssetLogic {
     */
     bytes32[] cities;
 
-    // Definition of Smart asset price data object
-    struct SmartAssetPriceData {
-    uint price;
-    bytes32 hash;
-    }
-
-    // Definition of Smart asset price data object
-    struct SmartAssetAvailabilityData {
-    bool availability;
-    bytes32 hash;
-    }
-
     /**
      * Construct encapsulating latitude and longitude pair
      */
@@ -54,13 +45,6 @@ contract CarAssetLogic is BaseAssetLogic {
     uint lat;
     uint long;
     }
-
-
-    // Smart asset by its identifier
-    mapping (uint => SmartAssetPriceData) smartAssetPriceById;
-
-    // Smart asset by its identifier
-    mapping (uint => SmartAssetAvailabilityData) smartAssetAvailabilityById;
 
     // Mapping city to its latitude longitude pair
     mapping (bytes32 => LatLong) cityMapping;
@@ -94,25 +78,27 @@ contract CarAssetLogic is BaseAssetLogic {
     }
 
     function onAssetSold(uint assetId) onlySmartAssetRouter {
-        delete smartAssetPriceById[assetId];
+        carAssetLogicStorage.deleteAssetPriceById(assetId);
     }
 
     function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
-        SmartAssetPriceData memory smartAssetPriceData = SmartAssetPriceData(_calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
-        smartAssetPriceById[assetId] = smartAssetPriceData;
+        carAssetLogicStorage.setSmartAssetPriceData(assetId, _calculateAssetPrice(u1, u2, bool1), sha256(b1, b2, b3, u1, u2, u3, u4, bool1));
+
         return _calculateAssetPrice(u1, u2, bool1);
     }
 
-    function getSmartAssetPrice(uint id) constant returns (uint price) {
-        //check scenario when there is no id in map
-        return smartAssetPriceById[id].price;
+    function getSmartAssetPrice(uint id) constant returns (uint) {
+        var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(id);
+
+        return price;
     }
 
     function isAssetTheSameState(uint assetId) onlySmartAssetRouter constant returns (bool modified) {
         var(b1, b2, b3, u1, u2, u3, u4, bool1, state, owner) = getById(assetId);
-        //check scenario when there is no id in map
-        return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == smartAssetPriceById[assetId].hash;
+        var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(assetId);
+
+        return sha256(b1, b2, b3, u1, u2, u3, u4, bool1) == hash;
     }
 
     /**
@@ -143,7 +129,7 @@ contract CarAssetLogic is BaseAssetLogic {
     bool availability
     ) onlyIotSimulator()
     {
-        smartAssetAvailabilityById[id].availability = availability;
+        carAssetLogicStorage.setSmartAssetAvailabilityData(id, availability);
     }
 
     /**
@@ -172,7 +158,7 @@ contract CarAssetLogic is BaseAssetLogic {
     }
 
     function getSmartAssetAvailability(uint id) constant returns (bool availability) {
-        return smartAssetAvailabilityById[id].availability;
+        return carAssetLogicStorage.getSmartAssetAvailability(id);
     }
 
     /**
@@ -248,5 +234,9 @@ contract CarAssetLogic is BaseAssetLogic {
      */
     function boolToInt(bool input) private returns (uint) {
         return input == true ? 1 : 0;
+    }
+
+    function setCarAssetLogicStorage(address _carAssetLogicStorage) onlyOwner {
+        carAssetLogicStorage = CarAssetLogicStorage(_carAssetLogicStorage);
     }
 }
