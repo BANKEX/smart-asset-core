@@ -1,5 +1,5 @@
 const TestRPC = require("ethereumjs-testrpc");
-const { spawn } = require('child_process');
+const spawn = require('cross-spawn');
 const config = require('./truffle-config');
 
 TestRPC
