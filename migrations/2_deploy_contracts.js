@@ -6,6 +6,7 @@ var BuySmartAsset = artifacts.require("BuySmartAsset.sol");
 var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
 var BKXToken = artifacts.require("BKXToken.sol");
 var RealEstateAssetLogic = artifacts.require("RealEstateAssetLogic.sol");
+var CarAssetLogicStorage = artifacts.require("CarAssetLogicStorage.sol");
 
 
 module.exports = function(deployer) {
@@ -66,6 +67,21 @@ module.exports = function(deployer) {
         })
         .then(function(instance){
             return instance.setIotSimulationAddr(IotSimulation.address);
+        })
+        .then(function(){
+            deployer.deploy(CarAssetLogicStorage);
+        })
+        .then(function() {
+            return CarAssetLogicStorage.deployed();
+        })
+        .then(function(instance){
+            instance.setCarAssetLogic(CarAssetLogic.address);
+        })
+        .then(function() {
+            return CarAssetLogic.deployed();
+        })
+        .then(function(instance) {
+            instance.setCarAssetLogicStorage(CarAssetLogicStorage.address);
         })
 
         .then(function() {
