@@ -104,15 +104,15 @@ contract SmartAsset is Destructible{
     //     * @param b3 Generic byte32 parameter #3
     //     */
     function createAsset(
-    uint32 timestamp,
-    bytes6 docUrl,
-    uint8 _type,
-    bytes32 email,
-    bytes32 b1,
-    bytes32 b2,
-    bytes32 b3,
-    uint u1,
-    bytes32 assetType
+        uint32 timestamp,
+        bytes6 docUrl,
+        uint8 _type,
+        bytes32 email,
+        bytes32 b1,
+        bytes32 b2,
+        bytes32 b3,
+        uint u1,
+        bytes32 assetType
     ) {
 
         //This piece is commented out due to the fact that not all those using the prototype application
@@ -195,58 +195,49 @@ contract SmartAsset is Destructible{
     returns (
     uint24[] memory id,
     uint32[] memory timestamp,
-    bytes6[] memory docUrl,
     uint8[] memory _type,
-    bytes32[] memory email,
     bytes32[] memory b1,
     bytes32[] memory b2,
     bytes32[] memory b3,
     uint[] memory u1) {
 
-        (id,timestamp,docUrl,_type,email,b1,b2,b3,u1) = getAssets(firstIndex, lastIndex, smartAssetsOnSale[assetType]);
-        return (id,timestamp,docUrl,_type,email,b1,b2,b3,u1);
+        return getAssets(firstIndex, lastIndex, smartAssetsOnSale[assetType]);
     }
 
-    // function searchAssetsOnSaleByKeyWord(bytes32 assetType, bytes32 keyWord) constant
-    // returns (
-    //     uint24[] memory id,
-    //     uint32[] memory timestamp,
-    //     bytes6[] memory docUrl,
-    //     uint8[] memory _type,
-    //     bytes32[] memory email,
-    //     bytes32[] memory b1,
-    //     bytes32[] memory b2,
-    //     bytes32[] memory b3,
-    //     uint[] memory u1) {
+     function searchAssetsOnSaleByKeyWord(bytes32 assetType, bytes32 keyWord) constant
+     returns (
+         uint24[] memory id,
+         uint32[] memory timestamp,
+         uint8[] memory _type,
+         bytes32[] memory b1,
+         bytes32[] memory b2,
+         bytes32[] memory b3,
+         uint[] memory u1) {
 
-    //     uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
+         uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
 
-    //     SmartAssetData[] memory assetDatas = smartAssetsOnSale[assetType];
+         SmartAssetData[] memory assetDatas = smartAssetsOnSale[assetType];
 
-    //     uint count = getCountOfMatchingItems(lastIndex, assetDatas, keyWord);
+         uint count = getCountOfMatchingItems(lastIndex, assetDatas, keyWord);
 
-    //     SmartAssetData[] memory foundItemsArray = getFoundItemsArray(count, lastIndex, assetDatas, keyWord);
+         SmartAssetData[] memory foundItemsArray = getFoundItemsArray(count, lastIndex, assetDatas, keyWord);
 
-    //     return getFoundItems(count, foundItemsArray);
-    // }
+         return getFoundItems(count, foundItemsArray);
+     }
 
     function getFoundItems(uint count, SmartAssetData[] smartAssetDatas) private constant
     returns(
-    uint24[] memory id,
-    uint32[] memory timestamp,
-    bytes6[] memory docUrl,
-    uint8[] memory _type,
-    bytes32[] memory email,
-    bytes32[] memory b1,
-    bytes32[] memory b2,
-    bytes32[] memory b3,
-    uint[] memory u1) {
+        uint24[] memory id,
+        uint32[] memory timestamp,
+        uint8[] memory _type,
+        bytes32[] memory b1,
+        bytes32[] memory b2,
+        bytes32[] memory b3,
+        uint[] memory u1) {
 
         id = new uint24[](count);
         timestamp = new uint32[](count);
-        docUrl = new bytes6[](count);
         _type = new uint8[](count);
-        email = new bytes32[](count);
         b1 = new bytes32[](count);
         b2 = new bytes32[](count);
         b3 = new bytes32[](count);
@@ -257,16 +248,14 @@ contract SmartAsset is Destructible{
 
             id[i] = smartAssetData.id;
             timestamp[i] = smartAssetData.timestamp;
-            docUrl[i] = smartAssetData.docUrl;
             _type[i] = smartAssetData._type;
-            email[i] = smartAssetData.email;
             b1[i] = smartAssetData.b1;
             b2[i] = smartAssetData.b2;
             b3[i] = smartAssetData.b3;
             u1[i] = smartAssetData.u1;
         }
 
-        return (id, timestamp, docUrl, _type, email, b1, b2, b3, u1);
+        return (id, timestamp, _type, b1, b2, b3, u1);
     }
 
 
@@ -371,21 +360,19 @@ contract SmartAsset is Destructible{
      * @return id Identification numbers
      * @return rest of Smart asset definition/entity
      */
-    // function getMyAssets(bytes32 assetType , uint8 firstIndex, uint8 lastIndex) constant
-    // returns (
-    //     uint24[] memory id,
-    //     uint32[] memory timestamp,
-    //     bytes6[] memory docUrl,
-    //     uint8[] memory _type,
-    //     bytes32[] memory email,
-    //     bytes32[] memory b1,
-    //     bytes32[] memory b2,
-    //     bytes32[] memory b3,
-    //     uint[] memory u1
-    // )
-    // {
-    //     return getAssets(firstIndex, lastIndex, smartAssetsByOwner[msg.sender][assetType]);
-    // }
+     function getMyAssets(bytes32 assetType , uint8 firstIndex, uint8 lastIndex) constant
+     returns (
+         uint24[] memory id,
+         uint32[] memory timestamp,
+         uint8[] memory _type,
+         bytes32[] memory b1,
+         bytes32[] memory b2,
+         bytes32[] memory b3,
+         uint[] memory u1
+     )
+     {
+         return getAssets(firstIndex, lastIndex, smartAssetsByOwner[msg.sender][assetType]);
+     }
 
     /**
      * @dev Put smart asset on-sale
@@ -534,9 +521,7 @@ contract SmartAsset is Destructible{
     returns(
     uint24[] memory id,
     uint32[] memory timestamp,
-    bytes6[] memory docUrl,
     uint8[] memory _type,
-    bytes32[] memory email,
     bytes32[] memory b1,
     bytes32[] memory b2,
     bytes32[] memory b3,
@@ -550,9 +535,7 @@ contract SmartAsset is Destructible{
 
         id = new uint24[](size);
         timestamp = new uint32[](size);
-        docUrl = new bytes6[](size);
         _type = new uint8[](size);
-        email = new bytes32[](size);
         b1 = new bytes32[](size);
         b2 = new bytes32[](size);
         b3 = new bytes32[](size);
@@ -565,16 +548,14 @@ contract SmartAsset is Destructible{
 
             id[i] = smartAssetData.id;
             timestamp[i] = smartAssetData.timestamp;
-            docUrl[i] = smartAssetData.docUrl;
             _type[i] = smartAssetData._type;
-            email[i] = smartAssetData.email;
             b1[i] = smartAssetData.b1;
             b2[i] = smartAssetData.b2;
             b3[i] = smartAssetData.b3;
             u1[i] = smartAssetData.u1;
         }
 
-        return (id, timestamp, docUrl, _type, email, b1, b2, b3, u1);
+        return (id, timestamp, _type, b1, b2, b3, u1);
 
     }
 
