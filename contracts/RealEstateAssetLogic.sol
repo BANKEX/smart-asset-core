@@ -6,14 +6,14 @@ import "./BaseAssetLogic.sol";
 contract RealEstateAssetLogic is BaseAssetLogic {
 
 
-    function updateViaIotSimulator(uint id, uint u1, uint u2, bool smoker , uint u3, uint u4) {
+    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl) {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
-        asset.updateFromExternalSource(id, u1, u2, smoker, u3, u4);
+        asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
     }
 
-    function forceUpdateFromExternalSource(uint id) onlySmartAssetRouter {
-        updateViaIotSimulator(id, id + 1, id + 2, true, id +3, id + 4);
+    function forceUpdateFromExternalSource(uint24 id) onlySmartAssetRouter {
+        updateViaIotSimulator(id, bytes11(id + 1), bytes11(id + 2), "/link");
     }
 
     function onAssetSold(uint assetId) onlySmartAssetRouter {

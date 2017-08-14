@@ -412,12 +412,10 @@ contract SmartAsset is Destructible{
      * @dev Function to updates Smart Asset params
      */
     function updateFromExternalSource(
-    uint id,
-    uint u1,
-    uint u2,
-    bool bool1,
-    uint u3,
-    uint u4
+        uint24 id,
+        bytes11 latitude,
+        bytes11 longitude,
+        bytes6 imageUrl
     )
     {
         //checks that function is executed from correct contract
@@ -428,11 +426,9 @@ contract SmartAsset is Destructible{
 
         require(asset.state < State.OnSale);
 
-        //        smartAssetById[id].u1 = u1;
-        //        smartAssetById[id].u2 = u2;
-        //        smartAssetById[id].bool1 = bool1;
-        //        smartAssetById[id].u3 = u3;
-        //        smartAssetById[id].u4 = u4;
+        smartAssetById[id].latitude = latitude;
+        smartAssetById[id].longitude = longitude;
+        smartAssetById[id].imageUrl = imageUrl;
 
         smartAssetById[id].state = State.IotDataCollected;
     }
