@@ -6,7 +6,7 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
  * Interface for SmartAsset contract
  */
 contract CarAssetLogicInterface {
-    function updatePriceViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl);
+    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl);
 
     function updateAvailabilityViaIotSimulator(uint id, bool availability);
 }
@@ -31,7 +31,7 @@ contract IotSimulation is Destructible{
 
         uint number = id + salt;
         CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
-        carAssetLogic.updatePriceViaIotSimulator(
+        carAssetLogic.updateViaIotSimulator(
             id,
             generateLongitudeResult(number),
             generateLatitudeResult(number),
