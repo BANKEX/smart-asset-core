@@ -22,7 +22,7 @@ contract('RealEstateAssetLogic', function(accounts) {
 
         }).then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset("awesome", "photo", "doc", "real estate");
+            return smartAsset.createAsset(Date.now(), "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", "40", "Real Estate");
 
         }).then(function(result){
             id = result.logs[0].args.id.c[0];
@@ -49,7 +49,7 @@ contract('RealEstateAssetLogic', function(accounts) {
             return smartAsset.getSmartAssetPrice(id);
 
         }).then(function(result) {
-            assert.equal(75, parseInt(result));
+            assert.equal(40000, parseInt(result));
 
             return smartAsset.makeOnSale(id);
 
@@ -62,8 +62,8 @@ contract('RealEstateAssetLogic', function(accounts) {
             return buySmartAsset.getTotalPrice(id, 'Saint-Petersburg');
 
         }).then(function(result) {
-            assert.equal(85, parseInt(result));
-            return buySmartAsset.buyAsset(id, 'Saint-Petersburg', {from : accounts[1], value: 85});
+            assert.equal(40010, parseInt(result));
+            return buySmartAsset.buyAsset(id, 'Saint-Petersburg', {from : accounts[1], value: 40010});
 
         }).then(function() {
             return smartAsset.getAssetById(id);
