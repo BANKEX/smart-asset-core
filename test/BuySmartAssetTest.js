@@ -19,10 +19,11 @@ contract('BuySmartAsset', function(accounts) {
          var balanceAfterWithdrawal;
          var gasPrice = 100000000000;
          var gas ;
+         var timeInMs = BigInt(Date.now());
 
          return SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
-                 return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+                 return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
              }).then(function(result) {
                  smartAssetGeneratedId = result.logs[0].args.id.c[0];
                  return IotSimulation.deployed();
@@ -65,7 +66,7 @@ contract('BuySmartAsset', function(accounts) {
                 buySmartAsset = instance;
                 return buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
              }).then(function(calculatedTotalPrice) {
-                 assert.isOk(BigInt(calculatedTotalPrice.toString()).equals(BigInt('162526397000006467')));
+                 assert.isOk(BigInt(calculatedTotalPrice.toString()).equals(BigInt('162526397000006417')));
 
                 return buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, {from : accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra))});
              }).then(function(returnValue) {
