@@ -8,7 +8,7 @@ contract SmartAssetStorage is Destructible {
     address smartAsset;
 
     struct SmartAssetData {
-        uint id;
+        uint24 id;
         bytes32 b1;
         bytes32 b2;
         bytes32 b3;

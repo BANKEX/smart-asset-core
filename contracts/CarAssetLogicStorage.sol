@@ -26,23 +26,23 @@ contract CarAssetLogicStorage is Destructible {
         _;
     }
 
-    function deleteAssetPriceById(uint assetId) onlyCarAssetLogic {
+    function deleteAssetPriceById(uint24 assetId) onlyCarAssetLogic {
         delete smartAssetPriceById[assetId];
     }
 
-    function setSmartAssetPriceData(uint assetId, uint price, bytes32 hash) onlyCarAssetLogic {
+    function setSmartAssetPriceData(uint24 assetId, uint price, bytes32 hash) onlyCarAssetLogic {
         smartAssetPriceById[assetId] = SmartAssetPriceData(price, hash);
     }
 
-    function getSmartAssetPriceData(uint assetId) onlyCarAssetLogic constant returns (uint, bytes32)  {
+    function getSmartAssetPriceData(uint24 assetId) onlyCarAssetLogic constant returns (uint, bytes32)  {
         return (smartAssetPriceById[assetId].price, smartAssetPriceById[assetId].hash);
     }
 
-    function setSmartAssetAvailabilityData(uint assetId, bool availability) onlyCarAssetLogic {
+    function setSmartAssetAvailabilityData(uint24 assetId, bool availability) onlyCarAssetLogic {
         smartAssetAvailabilityById[assetId].availability = availability;
     }
 
-    function getSmartAssetAvailability(uint assetId) onlyCarAssetLogic constant returns(bool) {
+    function getSmartAssetAvailability(uint24 assetId) onlyCarAssetLogic constant returns(bool) {
         return smartAssetAvailabilityById[assetId].availability;
     }
 

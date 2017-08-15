@@ -8,7 +8,7 @@ contract SmartAssetLogicInterface {
      * Possible usage for a particular case - trigger event, remove asset price from cache
      * @param assetId Id of smart asset
      */
-    function onAssetSold(uint assetId);
+    function onAssetSold(uint24 assetId);
 
     /**
      * @dev Calculates the price of a given smart asset based on its parameters
@@ -17,7 +17,7 @@ contract SmartAssetLogicInterface {
      * @param assetId Id of smart asset
      * @return smart asset price
      */
-    function calculateAssetPrice(uint assetId) returns (uint);
+    function calculateAssetPrice(uint24 assetId) returns (uint);
 
     /**
      * @dev Get price of a given smart asset
@@ -26,7 +26,7 @@ contract SmartAssetLogicInterface {
      * @param id Id of smart asset
      * @return smart asset price
      */
-    function getSmartAssetPrice(uint id) constant returns (uint);
+    function getSmartAssetPrice(uint24 id) constant returns (uint);
 
     /**
      * @dev Check if smart asset change has not been changed since parameters setup
@@ -34,7 +34,7 @@ contract SmartAssetLogicInterface {
      * @param id Id of smart asset
      * @return boolean if smart asset has the same state
      */
-    function isAssetTheSameState(uint id) constant returns (bool sameState);
+    function isAssetTheSameState(uint24 id) constant returns (bool sameState);
 
     /**
      * @dev Calculates delivery price for a given smart asset and given city
@@ -42,7 +42,7 @@ contract SmartAssetLogicInterface {
      * @param city city name
      * @return uint delivery price
      */
-    function calculateDeliveryPrice(uint id, bytes32 city) constant returns (uint);
+    function calculateDeliveryPrice(uint24 id, bytes32 city) constant returns (uint);
 
     /**
      * @dev Returns smart asset availability (e.g car is still on
@@ -51,11 +51,11 @@ contract SmartAssetLogicInterface {
      * @param id Id of smart asset
      * @return boolean if smart asset available
      */
-    function getSmartAssetAvailability(uint id) constant returns (bool);
+    function getSmartAssetAvailability(uint24 id) constant returns (bool);
 
     /**
      * @dev Function that forces updates of Smart Asset external source params.
      * @param id Id of smart asset
      */
-    function forceUpdateFromExternalSource(uint id);
+    function forceUpdateFromExternalSource(uint24 id);
 }

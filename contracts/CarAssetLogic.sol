@@ -5,8 +5,8 @@ import "./CarAssetLogicStorage.sol";
 
 
 contract IotSimulationInterface {
-    function generateIotOutput(uint id, uint salt) returns (bool result);
-    function generateIotAvailability(uint id, bool availability) returns (bool result);
+    function generateIotOutput(uint24 id, uint salt) returns (bool result);
+    function generateIotAvailability(uint24 id, bool availability) returns (bool result);
 }
 
 /**
@@ -77,24 +77,24 @@ contract CarAssetLogic is BaseAssetLogic {
         cities.push("Lublin");
     }
 
-    function onAssetSold(uint assetId) onlySmartAssetRouter {
+    function onAssetSold(uint24 assetId) onlySmartAssetRouter {
         carAssetLogicStorage.deleteAssetPriceById(assetId);
     }
 
-    function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
+    function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
         carAssetLogicStorage.setSmartAssetPriceData(assetId, _calculateAssetPrice(millage, smoker), sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
 
         return _calculateAssetPrice(millage, smoker);
     }
 
-    function getSmartAssetPrice(uint id) constant returns (uint) {
+    function getSmartAssetPrice(uint24 id) constant returns (uint) {
         var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(id);
 
         return price;
     }
 
-    function isAssetTheSameState(uint assetId) onlySmartAssetRouter constant returns (bool modified) {
+    function isAssetTheSameState(uint24 assetId) onlySmartAssetRouter constant returns (bool modified) {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
         var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(assetId);
 
@@ -109,7 +109,7 @@ contract CarAssetLogic is BaseAssetLogic {
         return cities;
     }
 
-    function calculateDeliveryPrice(uint id, bytes32 cityName) onlySmartAssetRouter constant returns (uint) {
+    function calculateDeliveryPrice(uint24 id, bytes32 cityName) onlySmartAssetRouter constant returns (uint) {
         LatLong latLong = cityMapping[cityName];
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
@@ -126,7 +126,7 @@ contract CarAssetLogic is BaseAssetLogic {
      * @dev Function to updates Smart Asset IoT availability
      */
     function updateAvailabilityViaIotSimulator(
-    uint id,
+    uint24 id,
     bool availability
     ) onlyIotSimulator()
     {
@@ -136,7 +136,7 @@ contract CarAssetLogic is BaseAssetLogic {
     /**
      * @dev Function to force run update of external params
      */
-    function forceUpdateFromExternalSource(uint id) onlySmartAssetRouter {
+    function forceUpdateFromExternalSource(uint24 id) onlySmartAssetRouter {
         IotSimulationInterface iotSimulation = IotSimulationInterface(iotSimulationAddr);
         iotSimulation.generateIotOutput(id, 0);
         iotSimulation.generateIotAvailability(id, true);
@@ -151,7 +151,7 @@ contract CarAssetLogic is BaseAssetLogic {
         asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
     }
 
-    function getSmartAssetAvailability(uint id) constant returns (bool availability) {
+    function getSmartAssetAvailability(uint24 id) constant returns (bool availability) {
         return carAssetLogicStorage.getSmartAssetAvailability(id);
     }
 

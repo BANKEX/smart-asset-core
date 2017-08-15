@@ -8,7 +8,7 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
  * Interface for SmartAsset contract
  */
 contract SmartAssetInterface {
-    function getAssetById(uint id) constant
+    function getAssetById(uint24 id) constant
     returns (
         uint32,
         bytes6,
@@ -23,7 +23,7 @@ contract SmartAssetInterface {
 
     function updateFromExternalSource(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl);
 
-    function getAssetIotById(uint id) constant returns (bytes11, bytes11, bytes6, bytes32);
+    function getAssetIotById(uint24 id) constant returns (bytes11, bytes11, bytes6, bytes32);
 }
 
 
@@ -42,7 +42,7 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
         _;
     }
 
-    function getById(uint assetId)
+    function getById(uint24 assetId)
     returns (
         uint32,
         bytes6,
@@ -60,30 +60,30 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
     }
 
 
-    function onAssetSold(uint assetId) {
+    function onAssetSold(uint24 assetId) {
 
     }
 
-    function calculateAssetPrice(uint assetId) returns (uint) {
+    function calculateAssetPrice(uint24 assetId) returns (uint) {
     }
 
-    function getSmartAssetPrice(uint assetId) constant returns (uint) {
+    function getSmartAssetPrice(uint24 assetId) constant returns (uint) {
         return 0;
     }
 
-    function getSmartAssetAvailability(uint assetId) constant returns (bool) {
+    function getSmartAssetAvailability(uint24 assetId) constant returns (bool) {
         return true;
     }
 
-    function calculateDeliveryPrice(uint assetId, bytes32 param) constant returns (uint) {
+    function calculateDeliveryPrice(uint24 assetId, bytes32 param) constant returns (uint) {
         return 0;
     }
 
-    function isAssetTheSameState(uint assetId) constant returns (bool sameState) {
+    function isAssetTheSameState(uint24 assetId) constant returns (bool sameState) {
         return true;
     }
 
-    function forceUpdateFromExternalSource(uint id) {
+    function forceUpdateFromExternalSource(uint24 id) {
     }
 
     function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {

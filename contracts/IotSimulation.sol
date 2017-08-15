@@ -8,7 +8,7 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 contract CarAssetLogicInterface {
     function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl);
 
-    function updateAvailabilityViaIotSimulator(uint id, bool availability);
+    function updateAvailabilityViaIotSimulator(uint24 id, bool availability);
 }
 
 /**
@@ -25,14 +25,14 @@ contract IotSimulation is Destructible{
      * @param id Vehicle identification number
      * @return result Execution result
      */
-    function generateIotOutput(uint id, uint salt) returns (bool result) {
+    function generateIotOutput(uint24 id, uint salt) returns (bool result) {
         require(id != 0);
         require(carAssetLogicAddr != address(0));
 
         uint number = id + salt;
         CarAssetLogicInterface carAssetLogic = CarAssetLogicInterface(carAssetLogicAddr);
         carAssetLogic.updateViaIotSimulator(
-            uint24(id),
+            id,
             generateLongitudeResult(number),
             generateLatitudeResult(number),
             "/link"
@@ -45,7 +45,7 @@ contract IotSimulation is Destructible{
      * @param id Vehicle identification number
      * @return result Execution result
      */
-    function generateIotAvailability(uint id, bool availability) returns (bool result) {
+    function generateIotAvailability(uint24 id, bool availability) returns (bool result) {
         require(id != 0);
         require(carAssetLogicAddr != address(0));
 

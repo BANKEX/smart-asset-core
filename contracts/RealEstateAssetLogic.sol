@@ -16,29 +16,29 @@ contract RealEstateAssetLogic is BaseAssetLogic {
         updateViaIotSimulator(id, bytes11(id + 1), bytes11(id + 2), "/link");
     }
 
-    function onAssetSold(uint assetId) onlySmartAssetRouter {
+    function onAssetSold(uint24 assetId) onlySmartAssetRouter {
 
     }
 
-    function calculateAssetPrice(uint assetId) onlySmartAssetRouter returns (uint) {
+    function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
         var(timestamp, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner) = getById(assetId);
         return 1000 * sqm;
     }
 
-    function getSmartAssetPrice(uint id) constant returns (uint) {
+    function getSmartAssetPrice(uint24 id) constant returns (uint) {
         var(timestamp, docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner) = getById(id);
         return 1000 * sqm;
     }
 
-    function isAssetTheSameState(uint id) onlySmartAssetRouter constant returns (bool modified) {
+    function isAssetTheSameState(uint24 id) onlySmartAssetRouter constant returns (bool modified) {
         return true;
     }
 
-    function calculateDeliveryPrice(uint id, bytes32 city) onlySmartAssetRouter constant returns (uint) {
+    function calculateDeliveryPrice(uint24 id, bytes32 city) onlySmartAssetRouter constant returns (uint) {
         return 10;
     }
 
-    function getSmartAssetAvailability(uint id) constant returns (bool) {
+    function getSmartAssetAvailability(uint24 id) constant returns (bool) {
         return true;
     }
 

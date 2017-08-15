@@ -28,9 +28,9 @@ contract SmartAsset is Destructible{
     // Next identifier
     uint24 nextId;
 
-    event NewSmartAsset(uint id);
-    event AssetPutOnSale(uint id);
-    event AssetTakenOffSale(uint id);
+    event NewSmartAsset(uint24 id);
+    event AssetPutOnSale(uint24 id);
+    event AssetTakenOffSale(uint24 id);
     event IndexesQuried(uint8 startIndex, uint8 endIndex);
 
     /**
@@ -160,7 +160,7 @@ contract SmartAsset is Destructible{
      * @dev Removes stored Smart asset
      * @param id Smart asset identifier
      */
-    function removeAsset(uint id) {
+    function removeAsset(uint24 id) {
         address owner = msg.sender;
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
@@ -290,7 +290,7 @@ contract SmartAsset is Destructible{
      * @param id Smart asset identification number
      * @return Smart asset owner
      */
-    function getAssetOwnerById(uint id) constant
+    function getAssetOwnerById(uint24 id) constant
     returns (address)
     {
         SmartAssetData memory a = smartAssetById[id];
@@ -303,7 +303,7 @@ contract SmartAsset is Destructible{
      * @param id Smart asset identification number
      * @return Smart asset tuple
      */
-    function getAssetById(uint id) constant
+    function getAssetById(uint24 id) constant
     returns (
     uint8,
     bytes6,
@@ -330,7 +330,7 @@ contract SmartAsset is Destructible{
      * @param id Smart asset identification number
      * @return Smart asset tuple
      */
-    function getAssetIotById(uint id) constant
+    function getAssetIotById(uint24 id) constant
     returns (
     bytes11,
     bytes11,
@@ -378,7 +378,7 @@ contract SmartAsset is Destructible{
      * @dev Put smart asset on-sale
      * @param id Smart asset identification number
      */
-    function makeOnSale(uint id) {
+    function makeOnSale(uint24 id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
         require(smartAssetData.owner == msg.sender && smartAssetData.state == State.PriceCalculated);
@@ -396,7 +396,7 @@ contract SmartAsset is Destructible{
      * @dev Take smart asset off sale
      * @param id Smart asset identification number
      */
-    function makeOffSale(uint id) {
+    function makeOffSale(uint24 id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
         require(smartAssetData.owner == msg.sender && smartAssetData.state == State.OnSale);
@@ -433,32 +433,32 @@ contract SmartAsset is Destructible{
         smartAssetById[id].state = State.IotDataCollected;
     }
 
-    function forceUpdateFromExternalSource(uint assetId) {
+    function forceUpdateFromExternalSource(uint24 assetId) {
         SmartAssetData memory smartAssetData = _getAssetById(assetId);
         require(smartAssetData.owner == msg.sender && smartAssetData.state <= State.OnSale);
         return smartAssetRouter.forceUpdateFromExternalSource(assetId);
     }
 
-    function calculateAssetPrice(uint assetId) {
+    function calculateAssetPrice(uint24 assetId) {
         SmartAssetData memory smartAssetData = _getAssetById(assetId);
         require(smartAssetData.owner == msg.sender && smartAssetData.state < State.OnSale);
         smartAssetRouter.calculateAssetPrice(assetId);
         smartAssetById[assetId].state = State.PriceCalculated;
     }
 
-    function getSmartAssetPrice(uint assetId) constant returns (uint) {
+    function getSmartAssetPrice(uint24 assetId) constant returns (uint) {
         return smartAssetRouter.getSmartAssetPrice(assetId);
     }
 
-    function getSmartAssetAvailability(uint assetId) constant returns (bool) {
+    function getSmartAssetAvailability(uint24 assetId) constant returns (bool) {
         return smartAssetRouter.getSmartAssetAvailability(assetId);
     }
 
-    function calculateDeliveryPrice(uint assetId, bytes32 param) constant returns (uint) {
+    function calculateDeliveryPrice(uint24 assetId, bytes32 param) constant returns (uint) {
         return smartAssetRouter.calculateDeliveryPrice(assetId, param);
     }
 
-    function isAssetTheSameState(uint assetId) constant returns (bool modified) {
+    function isAssetTheSameState(uint24 assetId) constant returns (bool modified) {
         return smartAssetRouter.isAssetTheSameState(assetId);
     }
 
@@ -466,7 +466,7 @@ contract SmartAsset is Destructible{
      * @dev Returns Smart asset
      * @param smartAsset Smart asset structure/entity
      */
-    function _getAssetById(uint id) constant private returns (SmartAssetData smartAsset) {
+    function _getAssetById(uint24 id) constant private returns (SmartAssetData smartAsset) {
         SmartAssetData memory smartAssetData = smartAssetById[id];
 
         require(!isAssetEmpty(smartAssetData));
@@ -482,7 +482,7 @@ contract SmartAsset is Destructible{
         return smartAssetData.id == 0;
     }
 
-    function sellAsset(uint id, address newOwner) onlyBuyAsset {
+    function sellAsset(uint24 id, address newOwner) onlyBuyAsset {
         SmartAssetData memory asset = _getAssetById(id);
 
         require(asset.owner != msg.sender);// Owner cannot buy its own asset
