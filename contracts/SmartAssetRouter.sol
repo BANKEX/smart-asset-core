@@ -11,7 +11,7 @@ contract SmartAssetRouter is Destructible{
 
     SmartAssetMetadata smartAssetMetadata;
 
-    mapping (uint24 => bytes32) assetTypeById;
+    mapping (uint24 => bytes16) assetTypeById;
 
     /**
      * Check whether SmartAsset contract executes method or not
@@ -26,7 +26,7 @@ contract SmartAssetRouter is Destructible{
         smartAssetMetadata = SmartAssetMetadata(metadataAddress);
     }
 
-    function getAssetType(uint24 assetId) constant returns (bytes32) {
+    function getAssetType(uint24 assetId) constant returns (bytes16) {
         return assetTypeById[assetId];
     }
 
@@ -58,7 +58,7 @@ contract SmartAssetRouter is Destructible{
         return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id);
     }
 
-    function setAssetType(uint24 assetId, bytes32 assetType) onlySmartAsset {
+    function setAssetType(uint24 assetId, bytes16 assetType) onlySmartAsset {
         assetTypeById[assetId] = assetType;
     }
 

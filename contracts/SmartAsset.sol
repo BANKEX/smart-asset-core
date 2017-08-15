@@ -112,7 +112,7 @@ contract SmartAsset is Destructible{
         bytes32 b2,
         bytes32 b3,
         uint u1,
-        bytes32 assetType
+        bytes16 assetType
     ) {
 
         //This piece is commented out due to the fact that not all those using the prototype application
@@ -166,7 +166,7 @@ contract SmartAsset is Destructible{
 
         require(smartAssetData.owner == owner);
 
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsByOwner[owner][assetType][smartAssetData.indexInSmartAssetsByOwner];
 
         if (smartAssetData.state == State.OnSale) {
@@ -181,7 +181,7 @@ contract SmartAsset is Destructible{
     *@param asset type
     *@return the number of assets on sale by type
     */
-    function getAssetsOnSaleCount(bytes32 assetType) constant returns (uint) {
+    function getAssetsOnSaleCount(bytes16 assetType) constant returns (uint) {
         return smartAssetsOnSale[assetType].length;
     }
 
@@ -191,7 +191,7 @@ contract SmartAsset is Destructible{
     *@param asset type
     *@return the number of asset on sale by type
     */
-    function getAssetsOnSale(bytes32 assetType, uint8 firstIndex, uint8 lastIndex) constant
+    function getAssetsOnSale(bytes16 assetType, uint8 firstIndex, uint8 lastIndex) constant
     returns (
     uint24[] memory id,
     uint8[] memory year,
@@ -204,7 +204,7 @@ contract SmartAsset is Destructible{
         return getAssets(firstIndex, lastIndex, smartAssetsOnSale[assetType]);
     }
 
-     function searchAssetsOnSaleByKeyWord(bytes32 assetType, bytes32 keyWord) constant
+     function searchAssetsOnSaleByKeyWord(bytes16 assetType, bytes32 keyWord) constant
      returns (
          uint24[] memory id,
          uint8[] memory year,
@@ -320,7 +320,7 @@ contract SmartAsset is Destructible{
     {
         SmartAssetData memory a = smartAssetById[id];
         require(!isAssetEmpty(a));
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
         return (a.year, a.docUrl, a._type, a.email, a.b1, a.b2, a.b3, a.u1, a.state, a.owner, assetType);
     }
@@ -340,7 +340,7 @@ contract SmartAsset is Destructible{
     {
         SmartAssetData memory a = smartAssetById[id];
         require(!isAssetEmpty(a));
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
         return (a.latitude, a.longitude, a.imageUrl, assetType);
     }
@@ -382,7 +382,7 @@ contract SmartAsset is Destructible{
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
         require(smartAssetData.owner == msg.sender && smartAssetData.state == State.PriceCalculated);
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
         smartAssetById[id].state = State.OnSale;
         smartAssetById[id].indexInSmartAssetsOnSale = uint24(smartAssetsOnSale[assetType].length);
@@ -402,7 +402,7 @@ contract SmartAsset is Destructible{
         require(smartAssetData.owner == msg.sender && smartAssetData.state == State.OnSale);
 
         smartAssetById[id].state = State.PriceCalculated;
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
 
         AssetTakenOffSale(id);
@@ -488,7 +488,7 @@ contract SmartAsset is Destructible{
         require(asset.owner != msg.sender);// Owner cannot buy its own asset
         require(asset.state == State.OnSale);
 
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
 
         delete smartAssetsOnSale[assetType][asset.indexInSmartAssetsOnSale];
