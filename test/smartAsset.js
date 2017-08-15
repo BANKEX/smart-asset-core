@@ -175,10 +175,11 @@ contract('SmartAsset', function(accounts) {
     it('Should return assets on sale', function() {
         var smartAsset;
         var smartAssetGeneratedId;
+        var timeInMs = BigInt(Date.now());
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset('description' ,'photo', 'document' ,'car');
+            return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -196,14 +197,14 @@ contract('SmartAsset', function(accounts) {
             var ids = result[0];
             assert.equal(ids[0] , smartAssetGeneratedId);
 
-            var descriptions = result[1];
-            assert.equal(toAscii(descriptions[0]), 'description');
+            var timestamps = result[1];
+            assert.isOk(BigInt(timestamps[0]).eq(timeInMs));
 
-            var photo = result[2];
-            assert.equal(toAscii(photo[0]), 'photo');
+            var _types = result[2];
+            assert.equal(_types[0], 1);
 
-            var document = result[3];
-            assert.equal(toAscii(document[0]), 'document');
+            var vins = result[3];
+            assert.equal(toAscii(vins[0]), 'Audi A8');
         })
 
     });
@@ -211,10 +212,11 @@ contract('SmartAsset', function(accounts) {
     it('Should search for smart assets', function() {
         var smartAsset;
         var smartAssetGeneratedId;
+        var timeInMs = BigInt(Date.now());
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset('AbaAba' ,'photo', 'document' ,'car');
+            return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -226,7 +228,7 @@ contract('SmartAsset', function(accounts) {
             return smartAsset.makeOnSale(smartAssetGeneratedId);
 
         }).then(function() {
-            return smartAsset.createAsset('BabBab' ,'photo', 'document' ,'car');
+            return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -238,7 +240,7 @@ contract('SmartAsset', function(accounts) {
             return smartAsset.makeOnSale(smartAssetGeneratedId);
 
         }).then(function() {
-            return smartAsset.searchAssetsOnSaleByKeyWord('car', 'BabBab');
+            return smartAsset.searchAssetsOnSaleByKeyWord('car', 'BMW X3');
 
         }).then(function(result){
 
