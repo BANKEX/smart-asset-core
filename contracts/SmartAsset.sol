@@ -26,11 +26,11 @@ contract SmartAsset is Destructible{
     uint bkxPriceForTransaction = 1;
 
     // Next identifier
-    uint nextId;
+    uint24 nextId;
 
-    event NewSmartAsset(uint id);
-    event AssetPutOnSale(uint id);
-    event AssetTakenOffSale(uint id);
+    event NewSmartAsset(uint24 id);
+    event AssetPutOnSale(uint24 id);
+    event AssetTakenOffSale(uint24 id);
     event IndexesQuried(uint8 startIndex, uint8 endIndex);
 
     /**
@@ -43,19 +43,26 @@ contract SmartAsset is Destructible{
 
     // Definition of Smart asset
     struct SmartAssetData {
-        uint id;
-        bytes32 b1;
-        bytes32 b2;
-        bytes32 b3;
-        uint u1;
-        uint u2;
-        uint u3;
-        uint u4;
-        bool bool1;
-        State state;
-        address owner;
-        uint indexInSmartAssetsByOwner;
-        uint indexInSmartAssetsOnSale;
+    uint24 id;
+    uint8 year;
+    bytes11 latitude;
+    bytes11 longitude;
+
+    uint24 indexInSmartAssetsByOwner;
+    uint24 indexInSmartAssetsOnSale;
+
+    bytes6 docUrl;
+    bytes6 imageUrl;
+    uint8 _type;
+    bytes32 email;
+
+    bytes32 b1;
+    bytes32 b2;
+    bytes32 b3;
+    uint u1;
+
+    State state;
+    address owner;
     }
 
     mapping (uint => SmartAssetData) smartAssetById;
@@ -90,22 +97,27 @@ contract SmartAsset is Destructible{
         bkxPriceForTransaction = _bkxPriceForTransaction;
     }
 
-    /**
-     * @dev Creates/stores new Smart asset
-     * @param b1 Generic byte32 parameter #1
-     * @param b2 Generic byte32 parameter #2
-     * @param b3 Generic byte32 parameter #3
-     */
+    //    /**
+    //     * @dev Creates/stores new Smart asset
+    //     * @param b1 Generic byte32 parameter #1
+    //     * @param b2 Generic byte32 parameter #2
+    //     * @param b3 Generic byte32 parameter #3
+    //     */
     function createAsset(
+        uint8 year,
+        bytes6 docUrl,
+        uint8 _type,
+        bytes32 email,
         bytes32 b1,
         bytes32 b2,
         bytes32 b3,
-        bytes32 assetType
+        uint u1,
+        bytes16 assetType
     ) {
 
-    //This piece is commented out due to the fact that not all those using the prototype application
-    //will have BKX tokens at their disposal. This logic is to remain here until needed.
-    //todo
+        //This piece is commented out due to the fact that not all those using the prototype application
+        //will have BKX tokens at their disposal. This logic is to remain here until needed.
+        //todo
 
         /*if(bkxToken == address(0) || bkxToken.balanceOf(msg.sender) < bkxPriceForTransaction) {
             throw;
@@ -114,24 +126,27 @@ contract SmartAsset is Destructible{
         bkxToken.burn(msg.sender, bkxPriceForTransaction);*/
 
         address owner = msg.sender;
-        uint id = ++nextId;
+        uint24 id = ++nextId;
 
         SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[owner][assetType];
 
         SmartAssetData memory smartAssetData = SmartAssetData(
-            id,
-            b1,
-            b2,
-            b3,
-            0,
-            0,
-            0,
-            0,
-            false,
-            State.ManualDataAreEntered,
-            owner,
-            smartAssetDatasOfOwner.length,
-            0
+        id,
+        year,
+        "",
+        "",
+        uint24(smartAssetDatasOfOwner.length),
+        0,
+        docUrl,
+        "",
+        _type,
+        email,
+        b1,
+        b2,
+        b3,
+        u1,
+        State.ManualDataAreEntered,
+        owner
         );
 
         smartAssetById[id] = smartAssetData;
@@ -145,13 +160,13 @@ contract SmartAsset is Destructible{
      * @dev Removes stored Smart asset
      * @param id Smart asset identifier
      */
-    function removeAsset(uint id) {
+    function removeAsset(uint24 id) {
         address owner = msg.sender;
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
         require(smartAssetData.owner == owner);
 
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsByOwner[owner][assetType][smartAssetData.indexInSmartAssetsByOwner];
 
         if (smartAssetData.state == State.OnSale) {
@@ -166,7 +181,7 @@ contract SmartAsset is Destructible{
     *@param asset type
     *@return the number of assets on sale by type
     */
-    function getAssetsOnSaleCount(bytes32 assetType) constant returns (uint) {
+    function getAssetsOnSaleCount(bytes16 assetType) constant returns (uint) {
         return smartAssetsOnSale[assetType].length;
     }
 
@@ -176,71 +191,71 @@ contract SmartAsset is Destructible{
     *@param asset type
     *@return the number of asset on sale by type
     */
-    function getAssetsOnSale(bytes32 assetType, uint8 firstIndex, uint8 lastIndex) constant
+    function getAssetsOnSale(bytes16 assetType, uint8 firstIndex, uint8 lastIndex) constant
     returns (
-        uint[] memory id,
-        bytes32[] memory b1,
-        bytes32[] memory b2,
-        bytes32[] memory b3,
-        uint[] memory u1,
-        uint[] memory u2,
-        bool[] memory bool1) {
+    uint24[] memory id,
+    uint8[] memory year,
+    uint8[] memory _type,
+    bytes32[] memory b1,
+    bytes32[] memory b2,
+    bytes32[] memory b3,
+    uint[] memory u1) {
 
         return getAssets(firstIndex, lastIndex, smartAssetsOnSale[assetType]);
     }
 
-    function searchAssetsOnSaleByKeyWord(bytes32 assetType, bytes32 keyWord) constant
-    returns (
-        uint[] id,
-        bytes32[] b1,
-        bytes32[] b2,
-        bytes32[] b3,
-        uint[] u1,
-        uint[] u2,
-        bool[] bool1) {
+     function searchAssetsOnSaleByKeyWord(bytes16 assetType, bytes32 keyWord) constant
+     returns (
+         uint24[] memory id,
+         uint8[] memory year,
+         uint8[] memory _type,
+         bytes32[] memory b1,
+         bytes32[] memory b2,
+         bytes32[] memory b3,
+         uint[] memory u1) {
 
-        uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
+         uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
 
-        SmartAssetData[] memory assetDatas = smartAssetsOnSale[assetType];
+         SmartAssetData[] memory assetDatas = smartAssetsOnSale[assetType];
 
-        uint count = getCountOfMatchingItems(lastIndex, assetDatas, keyWord);
+         uint count = getCountOfMatchingItems(lastIndex, assetDatas, keyWord);
 
-        SmartAssetData[] memory foundItemsArray = getFoundItemsArray(count, lastIndex, assetDatas, keyWord);
+         SmartAssetData[] memory foundItemsArray = getFoundItemsArray(count, lastIndex, assetDatas, keyWord);
 
-        return getFoundItems(count, foundItemsArray);
-    }
+         return getFoundItems(count, foundItemsArray);
+     }
 
     function getFoundItems(uint count, SmartAssetData[] smartAssetDatas) private constant
     returns(
-        uint[] id,
-        bytes32[] b1,
-        bytes32[] b2,
-        bytes32[] b3,
-        uint[] u1,
-        uint[] u2,
-        bool[] bool1) {
+        uint24[] memory id,
+        uint8[] memory year,
+        uint8[] memory _type,
+        bytes32[] memory b1,
+        bytes32[] memory b2,
+        bytes32[] memory b3,
+        uint[] memory u1) {
 
-        id = new uint[](count);
+        id = new uint24[](count);
+        year = new uint8[](count);
+        _type = new uint8[](count);
         b1 = new bytes32[](count);
         b2 = new bytes32[](count);
         b3 = new bytes32[](count);
         u1 = new uint[](count);
-        u2 = new uint[](count);
-        bool1 = new bool[](count);
 
         for (uint i = 0; i < count; i++) {
             SmartAssetData memory smartAssetData = smartAssetDatas[i];
 
             id[i] = smartAssetData.id;
+            year[i] = smartAssetData.year;
+            _type[i] = smartAssetData._type;
             b1[i] = smartAssetData.b1;
             b2[i] = smartAssetData.b2;
             b3[i] = smartAssetData.b3;
             u1[i] = smartAssetData.u1;
-            u2[i] = smartAssetData.u2;
-            bool1[i] = smartAssetData.bool1;
         }
 
-        return (id, b1, b2, b3, u1, u2, bool1);
+        return (id, year, _type, b1, b2, b3, u1);
     }
 
 
@@ -275,7 +290,7 @@ contract SmartAsset is Destructible{
      * @param id Smart asset identification number
      * @return Smart asset owner
      */
-    function getAssetOwnerById(uint id) constant
+    function getAssetOwnerById(uint24 id) constant
     returns (address)
     {
         SmartAssetData memory a = smartAssetById[id];
@@ -288,32 +303,53 @@ contract SmartAsset is Destructible{
      * @param id Smart asset identification number
      * @return Smart asset tuple
      */
-    function getAssetById(uint id) constant
+    function getAssetById(uint24 id) constant
     returns (
-            bytes32,
-            bytes32,
-            bytes32,
-            uint,
-            uint,
-            uint,
-            uint,
-            bool,
-            State,
-            address,
-            bytes32)
+    uint8,
+    bytes6,
+    uint8,
+    bytes32,
+    bytes32,
+    bytes32,
+    bytes32,
+    uint,
+    State,
+    address,
+    bytes32
+    )
     {
         SmartAssetData memory a = smartAssetById[id];
         require(!isAssetEmpty(a));
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
-        return (a.b1, a.b2, a.b3, a.u1, a.u2, a.u3, a.u4, a.bool1, a.state, a.owner, assetType);
+        return (a.year, a.docUrl, a._type, a.email, a.b1, a.b2, a.b3, a.u1, a.state, a.owner, assetType);
+    }
+
+    /**
+     * @dev Returns Smart asset
+     * @param id Smart asset identification number
+     * @return Smart asset tuple
+     */
+    function getAssetIotById(uint24 id) constant
+    returns (
+    bytes11,
+    bytes11,
+    bytes6,
+    bytes32
+    )
+    {
+        SmartAssetData memory a = smartAssetById[id];
+        require(!isAssetEmpty(a));
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
+
+        return (a.latitude, a.longitude, a.imageUrl, assetType);
     }
 
     /**
      * @dev Returns quantity/count of smart assets owned by invoker/caller
      * @return count value / quantity/count of smart assets
      */
-    function getMyAssetsCount(bytes32 assetType) constant returns (uint) {
+    function getMyAssetsCount(bytes16 assetType) constant returns (uint) {
         return smartAssetsByOwner[msg.sender][assetType].length;
     }
 
@@ -324,30 +360,32 @@ contract SmartAsset is Destructible{
      * @return id Identification numbers
      * @return rest of Smart asset definition/entity
      */
-    function getMyAssets(bytes32 assetType , uint8 firstIndex, uint8 lastIndex) constant
-    returns (uint[] memory id,
-            bytes32[] memory b1,
-            bytes32[] memory b2,
-            bytes32[] memory b3,
-            uint[] memory u1,
-            uint[] memory u2,
-            bool[] memory bool1)
-    {
-        return getAssets(firstIndex, lastIndex, smartAssetsByOwner[msg.sender][assetType]);
-    }
+     function getMyAssets(bytes16 assetType , uint8 firstIndex, uint8 lastIndex) constant
+     returns (
+         uint24[] memory id,
+         uint8[] memory year,
+         uint8[] memory _type,
+         bytes32[] memory b1,
+         bytes32[] memory b2,
+         bytes32[] memory b3,
+         uint[] memory u1
+     )
+     {
+         return getAssets(firstIndex, lastIndex, smartAssetsByOwner[msg.sender][assetType]);
+     }
 
     /**
      * @dev Put smart asset on-sale
      * @param id Smart asset identification number
      */
-    function makeOnSale(uint id) {
+    function makeOnSale(uint24 id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
         require(smartAssetData.owner == msg.sender && smartAssetData.state == State.PriceCalculated);
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
         smartAssetById[id].state = State.OnSale;
-        smartAssetById[id].indexInSmartAssetsOnSale = smartAssetsOnSale[assetType].length;
+        smartAssetById[id].indexInSmartAssetsOnSale = uint24(smartAssetsOnSale[assetType].length);
 
         smartAssetsOnSale[assetType].push(smartAssetById[id]);
 
@@ -358,13 +396,13 @@ contract SmartAsset is Destructible{
      * @dev Take smart asset off sale
      * @param id Smart asset identification number
      */
-    function makeOffSale(uint id) {
+    function makeOffSale(uint24 id) {
         SmartAssetData memory smartAssetData = _getAssetById(id);
 
         require(smartAssetData.owner == msg.sender && smartAssetData.state == State.OnSale);
 
         smartAssetById[id].state = State.PriceCalculated;
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
         delete smartAssetsOnSale[assetType][smartAssetData.indexInSmartAssetsOnSale];
 
         AssetTakenOffSale(id);
@@ -374,12 +412,10 @@ contract SmartAsset is Destructible{
      * @dev Function to updates Smart Asset params
      */
     function updateFromExternalSource(
-        uint id,
-        uint u1,
-        uint u2,
-        bool bool1,
-        uint u3,
-        uint u4
+        uint24 id,
+        bytes11 latitude,
+        bytes11 longitude,
+        bytes6 imageUrl
     )
     {
         //checks that function is executed from correct contract
@@ -390,41 +426,39 @@ contract SmartAsset is Destructible{
 
         require(asset.state < State.OnSale);
 
-        smartAssetById[id].u1 = u1;
-        smartAssetById[id].u2 = u2;
-        smartAssetById[id].bool1 = bool1;
-        smartAssetById[id].u3 = u3;
-        smartAssetById[id].u4 = u4;
+        smartAssetById[id].latitude = latitude;
+        smartAssetById[id].longitude = longitude;
+        smartAssetById[id].imageUrl = imageUrl;
 
         smartAssetById[id].state = State.IotDataCollected;
     }
 
-    function forceUpdateFromExternalSource(uint assetId) {
+    function forceUpdateFromExternalSource(uint24 assetId) {
         SmartAssetData memory smartAssetData = _getAssetById(assetId);
         require(smartAssetData.owner == msg.sender && smartAssetData.state <= State.OnSale);
         return smartAssetRouter.forceUpdateFromExternalSource(assetId);
     }
 
-    function calculateAssetPrice(uint assetId) {
+    function calculateAssetPrice(uint24 assetId) {
         SmartAssetData memory smartAssetData = _getAssetById(assetId);
         require(smartAssetData.owner == msg.sender && smartAssetData.state < State.OnSale);
         smartAssetRouter.calculateAssetPrice(assetId);
         smartAssetById[assetId].state = State.PriceCalculated;
     }
 
-    function getSmartAssetPrice(uint assetId) constant returns (uint) {
+    function getSmartAssetPrice(uint24 assetId) constant returns (uint) {
         return smartAssetRouter.getSmartAssetPrice(assetId);
     }
 
-    function getSmartAssetAvailability(uint assetId) constant returns (bool) {
+    function getSmartAssetAvailability(uint24 assetId) constant returns (bool) {
         return smartAssetRouter.getSmartAssetAvailability(assetId);
     }
 
-    function calculateDeliveryPrice(uint assetId, bytes32 param) constant returns (uint) {
+    function calculateDeliveryPrice(uint24 assetId, bytes32 param) constant returns (uint) {
         return smartAssetRouter.calculateDeliveryPrice(assetId, param);
     }
 
-    function isAssetTheSameState(uint assetId) constant returns (bool modified) {
+    function isAssetTheSameState(uint24 assetId) constant returns (bool modified) {
         return smartAssetRouter.isAssetTheSameState(assetId);
     }
 
@@ -432,7 +466,7 @@ contract SmartAsset is Destructible{
      * @dev Returns Smart asset
      * @param smartAsset Smart asset structure/entity
      */
-    function _getAssetById(uint id) constant private returns (SmartAssetData smartAsset) {
+    function _getAssetById(uint24 id) constant private returns (SmartAssetData smartAsset) {
         SmartAssetData memory smartAssetData = smartAssetById[id];
 
         require(!isAssetEmpty(smartAssetData));
@@ -448,13 +482,13 @@ contract SmartAsset is Destructible{
         return smartAssetData.id == 0;
     }
 
-    function sellAsset(uint id, address newOwner) onlyBuyAsset {
+    function sellAsset(uint24 id, address newOwner) onlyBuyAsset {
         SmartAssetData memory asset = _getAssetById(id);
 
         require(asset.owner != msg.sender);// Owner cannot buy its own asset
         require(asset.state == State.OnSale);
 
-        bytes32 assetType = smartAssetRouter.getAssetType(id);
+        bytes16 assetType = smartAssetRouter.getAssetType(id);
 
 
         delete smartAssetsOnSale[assetType][asset.indexInSmartAssetsOnSale];
@@ -479,15 +513,15 @@ contract SmartAsset is Destructible{
         return true;
     }
 
-    function getAssets(uint8 firstIndex, uint8 lastIndex, SmartAssetData[] storage data) internal constant
+    function getAssets(uint8 firstIndex, uint8 lastIndex, SmartAssetData[] storage data) private constant
     returns(
-        uint[] memory id,
-        bytes32[] memory b1,
-        bytes32[] memory b2,
-        bytes32[] memory b3,
-        uint[] memory u1,
-        uint[] memory u2,
-        bool[] memory bool1) {
+    uint24[] memory id,
+    uint8[] memory year,
+    uint8[] memory _type,
+    bytes32[] memory b1,
+    bytes32[] memory b2,
+    bytes32[] memory b3,
+    uint[] memory u1) {
 
         IndexesQuried(firstIndex, lastIndex);
 
@@ -495,13 +529,13 @@ contract SmartAsset is Destructible{
 
         uint size = lastIndex - firstIndex + 1;
 
-        id = new uint[](size);
+        id = new uint24[](size);
+        year = new uint8[](size);
+        _type = new uint8[](size);
         b1 = new bytes32[](size);
         b2 = new bytes32[](size);
         b3 = new bytes32[](size);
         u1 = new uint[](size);
-        u2 = new uint[](size);
-        bool1 = new bool[](size);
 
         requireIndexInBound(data, lastIndex);
 
@@ -509,20 +543,19 @@ contract SmartAsset is Destructible{
             SmartAssetData memory smartAssetData = data[i];
 
             id[i] = smartAssetData.id;
+            year[i] = smartAssetData.year;
+            _type[i] = smartAssetData._type;
             b1[i] = smartAssetData.b1;
             b2[i] = smartAssetData.b2;
             b3[i] = smartAssetData.b3;
             u1[i] = smartAssetData.u1;
-            u2[i] = smartAssetData.u2;
-            bool1[i] = smartAssetData.bool1;
         }
 
-        return (id, b1, b2, b3, u1, u2, bool1);
+        return (id, year, _type, b1, b2, b3, u1);
 
     }
 
     function requireIndexInBound(SmartAssetData[] storage data, uint8 index) internal constant {
         require(data.length - 1 >= index);
     }
-
 }

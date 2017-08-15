@@ -11,7 +11,7 @@ contract SmartAssetRouter is Destructible{
 
     SmartAssetMetadata smartAssetMetadata;
 
-    mapping (uint => bytes32) assetTypeById;
+    mapping (uint24 => bytes16) assetTypeById;
 
     /**
      * Check whether SmartAsset contract executes method or not
@@ -26,39 +26,39 @@ contract SmartAssetRouter is Destructible{
         smartAssetMetadata = SmartAssetMetadata(metadataAddress);
     }
 
-    function getAssetType(uint assetId) constant returns (bytes32) {
+    function getAssetType(uint24 assetId) constant returns (bytes16) {
         return assetTypeById[assetId];
     }
 
-    function onAssetSold(uint assetId) onlySmartAsset {
+    function onAssetSold(uint24 assetId) onlySmartAsset {
         _getSmartAssetImpl(assetId).onAssetSold(assetId);
     }
 
-    function calculateAssetPrice(uint assetId) onlySmartAsset {
+    function calculateAssetPrice(uint24 assetId) onlySmartAsset {
         _getSmartAssetImpl(assetId).calculateAssetPrice(assetId);
     }
 
-    function getSmartAssetPrice(uint id) constant returns (uint) {
+    function getSmartAssetPrice(uint24 id) constant returns (uint) {
         return _getSmartAssetImpl(id).getSmartAssetPrice(id);
     }
 
-    function isAssetTheSameState(uint id) returns (bool) {
+    function isAssetTheSameState(uint24 id) returns (bool) {
         return _getSmartAssetImpl(id).isAssetTheSameState(id);
     }
 
-    function calculateDeliveryPrice(uint id, bytes32 city) returns (uint) {
+    function calculateDeliveryPrice(uint24 id, bytes32 city) returns (uint) {
         return _getSmartAssetImpl(id).calculateDeliveryPrice(id, city);
     }
 
-    function getSmartAssetAvailability(uint id) returns (bool) {
+    function getSmartAssetAvailability(uint24 id) returns (bool) {
         return _getSmartAssetImpl(id).getSmartAssetAvailability(id);
     }
 
-    function forceUpdateFromExternalSource(uint id) onlySmartAsset {
+    function forceUpdateFromExternalSource(uint24 id) onlySmartAsset {
         return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id);
     }
 
-    function setAssetType(uint assetId, bytes32 assetType) onlySmartAsset {
+    function setAssetType(uint24 assetId, bytes16 assetType) onlySmartAsset {
         assetTypeById[assetId] = assetType;
     }
 
@@ -71,8 +71,8 @@ contract SmartAssetRouter is Destructible{
         smartAssetAddr = contractAddress;
     }
 
-    function _getSmartAssetImpl(uint assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface){
-        bytes32 assetType = assetTypeById[assetId];
+    function _getSmartAssetImpl(uint24 assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface){
+        bytes16 assetType = assetTypeById[assetId];
         address implAddress = smartAssetMetadata.getAssetLogicAddress(assetType);
         return SmartAssetLogicInterface(implAddress);
     }

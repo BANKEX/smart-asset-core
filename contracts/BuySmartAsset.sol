@@ -8,8 +8,8 @@ import 'zeppelin-solidity/contracts/payment/PullPayment.sol';
  * Interface for SmartAsset contract
  */
 contract SmartAssetI {
-    function sellAsset(uint id, address newOwner);
-    function getAssetOwnerById(uint id) constant returns (address);
+    function sellAsset(uint24 id, address newOwner);
+    function getAssetOwnerById(uint24 id) constant returns (address);
 }
 
 
@@ -21,7 +21,7 @@ contract BuySmartAsset is Destructible, PullPayment {
 
     SmartAssetRouter smartAssetRouter;
 
-    event AssetSoldTo(uint id, address newOwner);
+    event AssetSoldTo(uint24 id, address newOwner);
 
     event AsyncSend(address to, uint amount);
 
@@ -43,7 +43,7 @@ contract BuySmartAsset is Destructible, PullPayment {
      * @param assetId Id of smart asset
      * @param cityName City name of destination/delivery city
      */
-    function getTotalPrice(uint assetId, bytes32 cityName) constant returns (uint totalPrice) {
+    function getTotalPrice(uint24 assetId, bytes32 cityName) constant returns (uint totalPrice) {
         return smartAssetRouter.getSmartAssetPrice(assetId) + smartAssetRouter.calculateDeliveryPrice(assetId, cityName);
     }
 
@@ -52,7 +52,7 @@ contract BuySmartAsset is Destructible, PullPayment {
      * @param assetId Id of smart asset
      * @param cityName City name of destination/delivery city
      */
-    function buyAsset(uint assetId, bytes32 cityName) payable {
+    function buyAsset(uint24 assetId, bytes32 cityName) payable {
 
         require(smartAssetRouter.getSmartAssetAvailability(assetId));
 

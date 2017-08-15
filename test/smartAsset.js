@@ -10,18 +10,23 @@ contract('SmartAsset', function(accounts) {
   it("Should create asset", function() {
     var smartAsset;
     var smartAssetGeneratedId;
-
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+      return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
     }).then(function(result) {
       smartAssetGeneratedId = result.logs[0].args.id.c[0];
       return smartAsset.getAssetById.call(smartAssetGeneratedId);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.equal(toAscii(returnValue[0]), "BMW X5");
-      assert.equal(toAscii(returnValue[1]), "photo_url");
-      assert.equal(toAscii(returnValue[2]), "document_url");
+      assert.equal(returnValue[0], 200);
+      assert.equal(toAscii(returnValue[1]), "docUrl");
+      assert.equal(returnValue[2], 1);
+      assert.equal(toAscii(returnValue[3]), "email@email.com");
+      assert.equal(toAscii(returnValue[4]), "BMW X5");
+      assert.equal(toAscii(returnValue[5]), "VIN01");
+      assert.equal(toAscii(returnValue[6]), "yellow");
+      assert.equal(returnValue[7], 25000);
+      assert.equal(returnValue[8], 0);
       assert.equal(returnValue[9], accounts[0]);
       assert.equal(toAscii(returnValue[10]), "car");
     });
@@ -36,9 +41,9 @@ contract('SmartAsset', function(accounts) {
       return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
       initialMyAssetsCarCount = returnValue;
-      return smartAsset.createAsset("Audi A8", "a_photo", "a_document", "car");
+      return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
     }).then(function(returnValue) {
-      return smartAsset.createAsset("Field", "a_photo", "a_document", "notCar");
+      return smartAsset.createAsset(201, "docUrl", 25, "email@email2.com", "notCar", "info", "data", "25", "Notcar");
       })
     .then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call("car");
@@ -52,17 +57,17 @@ contract('SmartAsset', function(accounts) {
       assert.equal(ids[0], 1);
       assert.equal(ids[1], 2);
 
-      var descriptions = returnValue[1];
-      assert.equal(toAscii(descriptions[0]), "BMW X5");
-      assert.equal(toAscii(descriptions[1]), "Audi A8");
+      var b1 = returnValue[3];
+      assert.equal(toAscii(b1[0]), "BMW X5");
+      assert.equal(toAscii(b1[1]), "Audi A8");
 
-      var photoUrl = returnValue[2];
-      assert.equal(toAscii(photoUrl[0]), "photo_url");
-      assert.equal(toAscii(photoUrl[1]), "a_photo");
+      var b2 = returnValue[4];
+      assert.equal(toAscii(b2[0]), "VIN01");
+      assert.equal(toAscii(b2[1]), "VIN02");
 
-      var documents = returnValue[3];
-      assert.equal(toAscii(documents[0]), "document_url");
-      assert.equal(toAscii(documents[1]), "a_document");
+      var b3 = returnValue[5];
+      assert.equal(toAscii(b3[0]), "yellow");
+      assert.equal(toAscii(b3[1]), "black");
     });
   });
 
@@ -169,7 +174,7 @@ contract('SmartAsset', function(accounts) {
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset('description' ,'photo', 'document' ,'car');
+            return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -187,14 +192,14 @@ contract('SmartAsset', function(accounts) {
             var ids = result[0];
             assert.equal(ids[0] , smartAssetGeneratedId);
 
-            var descriptions = result[1];
-            assert.equal(toAscii(descriptions[0]), 'description');
+            var year = result[1];
+            assert.equal(year[0], 200);
 
-            var photo = result[2];
-            assert.equal(toAscii(photo[0]), 'photo');
+            var _types = result[2];
+            assert.equal(_types[0], 1);
 
-            var document = result[3];
-            assert.equal(toAscii(document[0]), 'document');
+            var vins = result[3];
+            assert.equal(toAscii(vins[0]), 'Audi A8');
         })
 
     });
@@ -205,7 +210,7 @@ contract('SmartAsset', function(accounts) {
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset('AbaAba' ,'photo', 'document' ,'car');
+            return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -217,7 +222,7 @@ contract('SmartAsset', function(accounts) {
             return smartAsset.makeOnSale(smartAssetGeneratedId);
 
         }).then(function() {
-            return smartAsset.createAsset('BabBab' ,'photo', 'document' ,'car');
+            return smartAsset.createAsset(201, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -229,7 +234,7 @@ contract('SmartAsset', function(accounts) {
             return smartAsset.makeOnSale(smartAssetGeneratedId);
 
         }).then(function() {
-            return smartAsset.searchAssetsOnSaleByKeyWord('car', 'BabBab');
+            return smartAsset.searchAssetsOnSaleByKeyWord('car', 'BMW X3');
 
         }).then(function(result){
 
