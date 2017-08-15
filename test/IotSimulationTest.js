@@ -2,7 +2,6 @@ var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
-var BigInt = require('big-integer');
 
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
@@ -13,12 +12,11 @@ contract('IotSimulation', function(accounts) {
     it("Should update params of SmartAsset", function() {
         var smartAssetGeneratedId;
         var smartAsset;
-        var timeInMs = BigInt(Date.now());
 
         return SmartAsset.deployed()
             .then(function(instance) {
                 smartAsset = instance;
-                return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+                return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
             })
             .then(function(result) {
                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -43,12 +41,11 @@ contract('IotSimulation', function(accounts) {
         var smartAsset;
         var simulator;
         var smartAssetAvailability;
-        var timeInMs = BigInt(Date.now());
 
         return SmartAsset.deployed()
             .then(function(instance) {
                 smartAsset = instance;
-                return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+                return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
             })
             .then(function(result) {
                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -119,11 +116,10 @@ contract('IotSimulation', function(accounts) {
          var smartAssetGeneratedId;
          var smartAsset;
          var simulator;
-         var timeInMs = BigInt(Date.now());
 
          return SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
-                 return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+                 return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
              }).then(function(result) {
                  smartAssetGeneratedId = result.logs[0].args.id.c[0];
                  return smartAsset.forceUpdateFromExternalSource(smartAssetGeneratedId);

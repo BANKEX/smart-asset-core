@@ -11,7 +11,7 @@ contract('CarAssetLogic', function(accounts) {
     it("Should return price", function(done) {
         SmartAsset.deployed().then(function(instance){
             smartAsset = instance;
-            return smartAsset.createAsset(Date.now(), "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+            return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
         }).then(function(result) {
             smartAssetId = result.logs[0].args.id.c[0];
             return IotSimulation.deployed();

@@ -22,7 +22,7 @@ contract('RealEstateAssetLogic', function(accounts) {
 
         }).then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset(Date.now(), "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", "40", "Real Estate");
+            return smartAsset.createAsset(200, "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", "40", "Real Estate");
 
         }).then(function(result){
             id = result.logs[0].args.id.c[0];
