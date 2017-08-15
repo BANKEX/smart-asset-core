@@ -12,7 +12,7 @@ contract('SmartAsset', function(accounts) {
   it("Should create asset", function() {
     var smartAsset;
     var smartAssetGeneratedId;
-    var timeInMs = BigInt(Date.now());
+    var timeInMs = Date.now();
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
       return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
@@ -21,7 +21,7 @@ contract('SmartAsset', function(accounts) {
       return smartAsset.getAssetById.call(smartAssetGeneratedId);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.isOk(BigInt(returnValue[0]).equals(timeInMs));
+      assert.isOk(BigInt(returnValue[0]).equals(BigInt(timeInMs)));
       assert.equal(toAscii(returnValue[1]), "docUrl");
       assert.equal(returnValue[2], 1);
       assert.equal(toAscii(returnValue[3]), "email@email.com");
@@ -38,7 +38,7 @@ contract('SmartAsset', function(accounts) {
   it("Should return my assets", function() {
     var smartAsset;
     var initialMyAssetsCarCount;
-    var timeInMs = BigInt(Date.now());
+    var timeInMs = Date.now();
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
@@ -175,7 +175,7 @@ contract('SmartAsset', function(accounts) {
     it('Should return assets on sale', function() {
         var smartAsset;
         var smartAssetGeneratedId;
-        var timeInMs = BigInt(Date.now());
+        var timeInMs = Date.now();
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
@@ -198,7 +198,7 @@ contract('SmartAsset', function(accounts) {
             assert.equal(ids[0] , smartAssetGeneratedId);
 
             var timestamps = result[1];
-            assert.isOk(BigInt(timestamps[0]).eq(timeInMs));
+            assert.isOk(BigInt(timestamps[0]).eq(BigInt(timeInMs)));
 
             var _types = result[2];
             assert.equal(_types[0], 1);
@@ -212,7 +212,7 @@ contract('SmartAsset', function(accounts) {
     it('Should search for smart assets', function() {
         var smartAsset;
         var smartAssetGeneratedId;
-        var timeInMs = BigInt(Date.now());
+        var timeInMs = Date.now();
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
