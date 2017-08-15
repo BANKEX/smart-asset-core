@@ -2,6 +2,8 @@ var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
+var BigInt = require('big-integer');
+
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
 }
@@ -11,11 +13,12 @@ contract('IotSimulation', function(accounts) {
     it("Should update params of SmartAsset", function() {
         var smartAssetGeneratedId;
         var smartAsset;
+        var timeInMs = BigInt(Date.now());
 
         return SmartAsset.deployed()
             .then(function(instance) {
                 smartAsset = instance;
-                return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+                return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
             })
             .then(function(result) {
                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -25,20 +28,13 @@ contract('IotSimulation', function(accounts) {
                 return instance.generateIotOutput(smartAssetGeneratedId, 0);
             })
             .then(function(result) {
-                return smartAsset.getAssetById.call(smartAssetGeneratedId);
+                return smartAsset.getAssetIotById.call(smartAssetGeneratedId);
             })
             .then(function(returnValue) {
-                assert.equal(toAscii(returnValue[0]), "BMW X5");
-                assert.equal(toAscii(returnValue[1]), "photo_url");
-                assert.equal(toAscii(returnValue[2]), "document_url");
-                assert.isAbove(returnValue[3], 0, 'millage should be bigger than 0');
-                assert.isAbove(returnValue[4], 0, 'damage should be bigger than 0');
-                assert.isAbove(returnValue[5], 0, 'latitude should be bigger than 0');
-                assert.isAbove(returnValue[6], 0, 'longitude should be bigger than 0');
-
-                assert.equal(returnValue[8], 1, 'state should be SensorDataAreCollected = position 1 in State enum list');
-
-                assert.equal(toAscii(returnValue[10]), "car");
+                assert.notEqual(toAscii(returnValue[0]), '');
+                assert.notEqual(toAscii(returnValue[1]), '');
+                assert.notEqual(toAscii(returnValue[2]), '');
+                assert.equal(toAscii(returnValue[3]), "car")
             });
     });
 
@@ -47,11 +43,12 @@ contract('IotSimulation', function(accounts) {
         var smartAsset;
         var simulator;
         var smartAssetAvailability;
+        var timeInMs = BigInt(Date.now());
 
         return SmartAsset.deployed()
             .then(function(instance) {
                 smartAsset = instance;
-                return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+                return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
             })
             .then(function(result) {
                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -117,31 +114,28 @@ contract('IotSimulation', function(accounts) {
                 console.log('Expected error. Got it');
             });
     });
+
     it("Simulation of IoT change data via force smartAssetMethod.", function() {
          var smartAssetGeneratedId;
          var smartAsset;
          var simulator;
+         var timeInMs = BigInt(Date.now());
 
          return SmartAsset.deployed().then(function(instance) {
                  smartAsset = instance;
-                 return smartAsset.createAsset("BMW X5", "photo_url", "document_url", "car");
+                 return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
              }).then(function(result) {
                  smartAssetGeneratedId = result.logs[0].args.id.c[0];
                  return smartAsset.forceUpdateFromExternalSource(smartAssetGeneratedId);
              })
              .then(function(result) {
-                 return smartAsset.getAssetById.call(smartAssetGeneratedId);
+                 return smartAsset.getAssetIotById.call(smartAssetGeneratedId);
              })
              .then(function(returnValue) {
-                assert.equal(toAscii(returnValue[0]), "BMW X5");
-                assert.equal(toAscii(returnValue[1]), "photo_url");
-                assert.equal(toAscii(returnValue[2]), "document_url");
-                assert.isAbove(returnValue[3], 0, 'millage should be bigger than 0');
-                assert.isAbove(returnValue[4], 0, 'damage should be bigger than 0');
-                assert.isAbove(returnValue[5], 0, 'latitude should be bigger than 0');
-                assert.isAbove(returnValue[6], 0, 'longitude should be bigger than 0');
-
-                assert.equal(toAscii(returnValue[10]), "car");
+                assert.notEqual(toAscii(returnValue[0]), '');
+                assert.notEqual(toAscii(returnValue[1]), '');
+                assert.notEqual(toAscii(returnValue[2]), '');
+                assert.equal(toAscii(returnValue[3]), "car")
              });
      });
 
