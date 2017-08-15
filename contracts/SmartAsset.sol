@@ -44,7 +44,7 @@ contract SmartAsset is Destructible{
     // Definition of Smart asset
     struct SmartAssetData {
     uint24 id;
-    uint56 timestamp;
+    uint8 year;
     bytes11 latitude;
     bytes11 longitude;
 
@@ -104,7 +104,7 @@ contract SmartAsset is Destructible{
     //     * @param b3 Generic byte32 parameter #3
     //     */
     function createAsset(
-        uint56 timestamp,
+        uint8 year,
         bytes6 docUrl,
         uint8 _type,
         bytes32 email,
@@ -132,7 +132,7 @@ contract SmartAsset is Destructible{
 
         SmartAssetData memory smartAssetData = SmartAssetData(
         id,
-        timestamp,
+        year,
         "",
         "",
         uint24(smartAssetDatasOfOwner.length),
@@ -194,7 +194,7 @@ contract SmartAsset is Destructible{
     function getAssetsOnSale(bytes32 assetType, uint8 firstIndex, uint8 lastIndex) constant
     returns (
     uint24[] memory id,
-    uint56[] memory timestamp,
+    uint8[] memory year,
     uint8[] memory _type,
     bytes32[] memory b1,
     bytes32[] memory b2,
@@ -207,7 +207,7 @@ contract SmartAsset is Destructible{
      function searchAssetsOnSaleByKeyWord(bytes32 assetType, bytes32 keyWord) constant
      returns (
          uint24[] memory id,
-         uint56[] memory timestamp,
+         uint8[] memory year,
          uint8[] memory _type,
          bytes32[] memory b1,
          bytes32[] memory b2,
@@ -228,7 +228,7 @@ contract SmartAsset is Destructible{
     function getFoundItems(uint count, SmartAssetData[] smartAssetDatas) private constant
     returns(
         uint24[] memory id,
-        uint56[] memory timestamp,
+        uint8[] memory year,
         uint8[] memory _type,
         bytes32[] memory b1,
         bytes32[] memory b2,
@@ -236,7 +236,7 @@ contract SmartAsset is Destructible{
         uint[] memory u1) {
 
         id = new uint24[](count);
-        timestamp = new uint56[](count);
+        year = new uint8[](count);
         _type = new uint8[](count);
         b1 = new bytes32[](count);
         b2 = new bytes32[](count);
@@ -247,7 +247,7 @@ contract SmartAsset is Destructible{
             SmartAssetData memory smartAssetData = smartAssetDatas[i];
 
             id[i] = smartAssetData.id;
-            timestamp[i] = smartAssetData.timestamp;
+            year[i] = smartAssetData.year;
             _type[i] = smartAssetData._type;
             b1[i] = smartAssetData.b1;
             b2[i] = smartAssetData.b2;
@@ -255,7 +255,7 @@ contract SmartAsset is Destructible{
             u1[i] = smartAssetData.u1;
         }
 
-        return (id, timestamp, _type, b1, b2, b3, u1);
+        return (id, year, _type, b1, b2, b3, u1);
     }
 
 
@@ -305,7 +305,7 @@ contract SmartAsset is Destructible{
      */
     function getAssetById(uint id) constant
     returns (
-    uint56,
+    uint8,
     bytes6,
     uint8,
     bytes32,
@@ -322,7 +322,7 @@ contract SmartAsset is Destructible{
         require(!isAssetEmpty(a));
         bytes32 assetType = smartAssetRouter.getAssetType(id);
 
-        return (a.timestamp, a.docUrl, a._type, a.email, a.b1, a.b2, a.b3, a.u1, a.state, a.owner, assetType);
+        return (a.year, a.docUrl, a._type, a.email, a.b1, a.b2, a.b3, a.u1, a.state, a.owner, assetType);
     }
 
     /**
@@ -363,7 +363,7 @@ contract SmartAsset is Destructible{
      function getMyAssets(bytes32 assetType , uint8 firstIndex, uint8 lastIndex) constant
      returns (
          uint24[] memory id,
-         uint56[] memory timestamp,
+         uint8[] memory year,
          uint8[] memory _type,
          bytes32[] memory b1,
          bytes32[] memory b2,
@@ -516,7 +516,7 @@ contract SmartAsset is Destructible{
     function getAssets(uint8 firstIndex, uint8 lastIndex, SmartAssetData[] storage data) private constant
     returns(
     uint24[] memory id,
-    uint56[] memory timestamp,
+    uint8[] memory year,
     uint8[] memory _type,
     bytes32[] memory b1,
     bytes32[] memory b2,
@@ -530,7 +530,7 @@ contract SmartAsset is Destructible{
         uint size = lastIndex - firstIndex + 1;
 
         id = new uint24[](size);
-        timestamp = new uint56[](size);
+        year = new uint8[](size);
         _type = new uint8[](size);
         b1 = new bytes32[](size);
         b2 = new bytes32[](size);
@@ -543,7 +543,7 @@ contract SmartAsset is Destructible{
             SmartAssetData memory smartAssetData = data[i];
 
             id[i] = smartAssetData.id;
-            timestamp[i] = smartAssetData.timestamp;
+            year[i] = smartAssetData.year;
             _type[i] = smartAssetData._type;
             b1[i] = smartAssetData.b1;
             b2[i] = smartAssetData.b2;
@@ -551,7 +551,7 @@ contract SmartAsset is Destructible{
             u1[i] = smartAssetData.u1;
         }
 
-        return (id, timestamp, _type, b1, b2, b3, u1);
+        return (id, year, _type, b1, b2, b3, u1);
 
     }
 

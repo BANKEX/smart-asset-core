@@ -1,8 +1,6 @@
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BKXToken = artifacts.require("./BKXToken.sol");
 
-var BigInt = require('big-integer');
-
 function toAscii(input) {
   return web3.toAscii(input).replace(/\u0000/g, '');
 }
@@ -12,16 +10,15 @@ contract('SmartAsset', function(accounts) {
   it("Should create asset", function() {
     var smartAsset;
     var smartAssetGeneratedId;
-    var timeInMs = Date.now();
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
-      return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+      return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
     }).then(function(result) {
       smartAssetGeneratedId = result.logs[0].args.id.c[0];
       return smartAsset.getAssetById.call(smartAssetGeneratedId);
     }).then(function(returnValue) {
       console.log(returnValue);
-      assert.isOk(BigInt(returnValue[0]).equals(BigInt(timeInMs)));
+      assert.equal(returnValue[0], 200);
       assert.equal(toAscii(returnValue[1]), "docUrl");
       assert.equal(returnValue[2], 1);
       assert.equal(toAscii(returnValue[3]), "email@email.com");
@@ -38,16 +35,15 @@ contract('SmartAsset', function(accounts) {
   it("Should return my assets", function() {
     var smartAsset;
     var initialMyAssetsCarCount;
-    var timeInMs = Date.now();
 
     return SmartAsset.deployed().then(function(instance) {
       smartAsset = instance;
       return smartAsset.getMyAssetsCount.call("car");
     }).then(function(returnValue) {
       initialMyAssetsCarCount = returnValue;
-      return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+      return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
     }).then(function(returnValue) {
-      return smartAsset.createAsset(timeInMs, "docUrl", 25, "email@email2.com", "notCar", "info", "data", "25", "Notcar");
+      return smartAsset.createAsset(201, "docUrl", 25, "email@email2.com", "notCar", "info", "data", "25", "Notcar");
       })
     .then(function(returnValue) {
       return smartAsset.getMyAssetsCount.call("car");
@@ -175,11 +171,10 @@ contract('SmartAsset', function(accounts) {
     it('Should return assets on sale', function() {
         var smartAsset;
         var smartAssetGeneratedId;
-        var timeInMs = Date.now();
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+            return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -197,8 +192,8 @@ contract('SmartAsset', function(accounts) {
             var ids = result[0];
             assert.equal(ids[0] , smartAssetGeneratedId);
 
-            var timestamps = result[1];
-            assert.isOk(BigInt(timestamps[0]).eq(BigInt(timeInMs)));
+            var year = result[1];
+            assert.equal(year[0], 200);
 
             var _types = result[2];
             assert.equal(_types[0], 1);
@@ -212,11 +207,10 @@ contract('SmartAsset', function(accounts) {
     it('Should search for smart assets', function() {
         var smartAsset;
         var smartAssetGeneratedId;
-        var timeInMs = Date.now();
 
         return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
-            return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+            return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
@@ -228,7 +222,7 @@ contract('SmartAsset', function(accounts) {
             return smartAsset.makeOnSale(smartAssetGeneratedId);
 
         }).then(function() {
-            return smartAsset.createAsset(timeInMs, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
+            return smartAsset.createAsset(201, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
 
         }).then(function(result) {
             smartAssetGeneratedId = result.logs[0].args.id.c[0];
