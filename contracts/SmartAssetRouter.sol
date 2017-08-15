@@ -72,7 +72,7 @@ contract SmartAssetRouter is Destructible{
     }
 
     function _getSmartAssetImpl(uint24 assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface){
-        bytes32 assetType = assetTypeById[assetId];
+        bytes16 assetType = assetTypeById[assetId];
         address implAddress = smartAssetMetadata.getAssetLogicAddress(assetType);
         return SmartAssetLogicInterface(implAddress);
     }

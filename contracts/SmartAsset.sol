@@ -349,7 +349,7 @@ contract SmartAsset is Destructible{
      * @dev Returns quantity/count of smart assets owned by invoker/caller
      * @return count value / quantity/count of smart assets
      */
-    function getMyAssetsCount(bytes32 assetType) constant returns (uint) {
+    function getMyAssetsCount(bytes16 assetType) constant returns (uint) {
         return smartAssetsByOwner[msg.sender][assetType].length;
     }
 
@@ -360,7 +360,7 @@ contract SmartAsset is Destructible{
      * @return id Identification numbers
      * @return rest of Smart asset definition/entity
      */
-     function getMyAssets(bytes32 assetType , uint8 firstIndex, uint8 lastIndex) constant
+     function getMyAssets(bytes16 assetType , uint8 firstIndex, uint8 lastIndex) constant
      returns (
          uint24[] memory id,
          uint8[] memory year,

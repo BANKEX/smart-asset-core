@@ -5,11 +5,11 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 contract SmartAssetMetadata is Destructible {
 
-    mapping(bytes32 => address) smartAssetLogicAddresses;
+    mapping(bytes16 => address) smartAssetLogicAddresses;
 
-    bytes32[] assetTypes;
+    bytes16[] assetTypes;
 
-    function addSmartAssetType(bytes32 newType, address smartAssetLogic) onlyOwner() {
+    function addSmartAssetType(bytes16 newType, address smartAssetLogic) onlyOwner() {
 
         smartAssetLogicAddresses[newType] = smartAssetLogic;
 
@@ -17,15 +17,15 @@ contract SmartAssetMetadata is Destructible {
 
     }
 
-    function getAssetTypes() constant returns (bytes32[]) {
+    function getAssetTypes() constant returns (bytes16[]) {
         return assetTypes;
     }
 
-    function getAssetLogicAddress(bytes32 assetType) constant returns(address) {
+    function getAssetLogicAddress(bytes16 assetType) constant returns(address) {
         return smartAssetLogicAddresses[assetType];
     }
 
-    function updateAssetLogicAddress(bytes32 assetType, address _assetLogicAddress) onlyOwner() {
+    function updateAssetLogicAddress(bytes16 assetType, address _assetLogicAddress) onlyOwner() {
         smartAssetLogicAddresses[assetType] = _assetLogicAddress;
     }
 }
