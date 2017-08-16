@@ -2,6 +2,7 @@ pragma solidity ^0.4.10;
 
 import './SmartAssetRouter.sol';
 import './SmartAssetMetadata.sol';
+import './SmartAssetStorage.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 /**
@@ -22,6 +23,8 @@ contract SmartAsset is Destructible{
 
     address private buyAssetAddr;
 
+    SmartAssetStorage smartAssetStorage;
+
     BKXTokenInterface bkxToken;
     uint bkxPriceForTransaction = 1;
 
@@ -33,9 +36,7 @@ contract SmartAsset is Destructible{
     event AssetTakenOffSale(uint24 id);
     event IndexesQuried(uint8 startIndex, uint8 endIndex);
 
-    /**
-     * Check whether BuyAsset contract executes method or not
-     */
+
     modifier onlyBuyAsset {
         require(msg.sender == buyAssetAddr);
         _;
@@ -126,32 +127,18 @@ contract SmartAsset is Destructible{
         bkxToken.burn(msg.sender, bkxPriceForTransaction);*/
 
         address owner = msg.sender;
-        uint24 id = ++nextId;
+        uint24 id = smartAssetStorage.getId();
 
-        SmartAssetData[] storage smartAssetDatasOfOwner = smartAssetsByOwner[owner][assetType];
+        smartAssetStorage.setSmartAssetDataManualById(id, year, docUrl, _type, email, b1, b2, b3, u1);
 
-        SmartAssetData memory smartAssetData = SmartAssetData(
-        id,
-        year,
-        "",
-        "",
-        uint24(smartAssetDatasOfOwner.length),
-        0,
-        docUrl,
-        "",
-        _type,
-        email,
-        b1,
-        b2,
-        b3,
-        u1,
-        State.ManualDataAreEntered,
-        owner
-        );
+        smartAssetStorage.setSmartAssetDataMetaById(id, smartAssetStorage.getSmartAssetsCountByOwner(owner, assetType), 0, uint8(State.ManualDataAreEntered), owner);
 
-        smartAssetById[id] = smartAssetData;
+        smartAssetStorage.addSmartAssetDataManualByOwner(owner, assetType, year, docUrl, _type, email, b1, b2, b3, u1);
 
-        smartAssetDatasOfOwner.push(smartAssetData);
+        smartAssetStorage.addSmartAssetDataMetaByOwner(owner, assetType, id, smartAssetStorage.getSmartAssetsCountByOwner(owner, assetType) , 0, uint8(State.ManualDataAreEntered));
+
+        smartAssetStorage.setId(++id);
+
         smartAssetRouter.setAssetType(id, assetType);
         NewSmartAsset(id);
     }
@@ -182,7 +169,7 @@ contract SmartAsset is Destructible{
     *@return the number of assets on sale by type
     */
     function getAssetsOnSaleCount(bytes16 assetType) constant returns (uint) {
-        return smartAssetsOnSale[assetType].length;
+        return smartAssetStorage.getSmartAssetsOnSaleCount(assetType);
     }
 
 
@@ -293,9 +280,8 @@ contract SmartAsset is Destructible{
     function getAssetOwnerById(uint24 id) constant
     returns (address)
     {
-        SmartAssetData memory a = smartAssetById[id];
-        require(!isAssetEmpty(a));
-        return a.owner;
+        var (indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner) = smartAssetStorage.getSmartAssetDataMetaById(id);
+        return owner;
     }
 
     /**
@@ -483,16 +469,18 @@ contract SmartAsset is Destructible{
     }
 
     function sellAsset(uint24 id, address newOwner) onlyBuyAsset {
-        SmartAssetData memory asset = _getAssetById(id);
+        var (indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner) = smartAssetStorage.getSmartAssetDataMetaById(id);
+        var (year, docUrl, _type, email, b1, b2, b3, u1) = smartAssetStorage.getSmartAssetDataManualById(id);
+        var (latitude, longitude, imageUrl) = smartAssetStorage.getSmartAssetDataIotById(id);
 
-        require(asset.owner != msg.sender);// Owner cannot buy its own asset
-        require(asset.state == State.OnSale);
+        require(owner != msg.sender);// Owner cannot buy its own asset
+        require(State(state) == State.OnSale);
 
         bytes16 assetType = smartAssetRouter.getAssetType(id);
 
 
-        delete smartAssetsOnSale[assetType][asset.indexInSmartAssetsOnSale];
-        delete smartAssetsByOwner[asset.owner][assetType][asset.indexInSmartAssetsByOwner];
+        //delete smartAssetsOnSale[assetType][indexInSmartAssetsOnSale];
+        //delete smartAssetsByOwner[asset.owner][assetType][indexInSmartAssetsByOwner];
 
         smartAssetById[id].owner = newOwner;
         smartAssetById[id].state = State.ManualDataAreEntered;
@@ -557,5 +545,9 @@ contract SmartAsset is Destructible{
 
     function requireIndexInBound(SmartAssetData[] storage data, uint8 index) internal constant {
         require(data.length - 1 >= index);
+    }
+
+    function setSmartAssetStorage (address _smartAssetStorage) {
+        smartAssetStorage = SmartAssetStorage(_smartAssetStorage);
     }
 }
