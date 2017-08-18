@@ -145,7 +145,7 @@ contract CarAssetLogic is BaseAssetLogic {
     /**
      * @dev Function to updates Smart Asset IoT params
      */
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl) onlyIotSimulator()
+    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) onlyIotSimulator()
     {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         asset.updateFromExternalSource(id, latitude, longitude, imageUrl);

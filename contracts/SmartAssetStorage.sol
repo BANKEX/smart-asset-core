@@ -22,8 +22,8 @@ contract SmartAssetStorage is Destructible {
 
     struct SmartAssetDataManual {
         uint8 year;
-        bytes6 docUrl;
         uint8 _type;
+        bytes32 docUrl;
         bytes32 email;
         bytes32 b1;
         bytes32 b2;
@@ -34,7 +34,7 @@ contract SmartAssetStorage is Destructible {
     struct SmartAssetDataIot {
         bytes11 latitude;
         bytes11 longitude;
-        bytes6 imageUrl;
+        bytes32 imageUrl;
     }
 
     mapping (uint => SmartAssetDataMeta) smartAssetMetaById;
@@ -52,15 +52,15 @@ contract SmartAssetStorage is Destructible {
 
 
     /** ById set*/
-    function setSmartAssetDataManualById(uint24 id, uint8 year, bytes6 docUrl, uint8 _type, bytes32 email, bytes32 b1, bytes32 b2, bytes32 b3, uint u1) onlySmartAsset {
-        smartAssetManualById[id] = SmartAssetDataManual(year, docUrl, _type, email, b1, b2, b3, u1);
+    function setSmartAssetDataManualById(uint24 id, uint8 year, bytes32 docUrl, uint8 _type, bytes32 email, bytes32 b1, bytes32 b2, bytes32 b3, uint u1) onlySmartAsset {
+        smartAssetManualById[id] = SmartAssetDataManual(year, _type, docUrl,  email, b1, b2, b3, u1);
     }
 
     function setSmartAssetDataMetaById(uint24 id, uint24 indexInSmartAssetsByOwner, uint24 indexInSmartAssetsOnSale, uint8 state, address owner) onlySmartAsset {
         smartAssetMetaById[id] = SmartAssetDataMeta(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner);
     }
 
-    function setSmartAssetDataIotById(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl) onlySmartAsset {
+    function setSmartAssetDataIotById(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) onlySmartAsset {
         smartAssetIotById[id] = SmartAssetDataIot(latitude, longitude, imageUrl);
     }
 
@@ -71,12 +71,12 @@ contract SmartAssetStorage is Destructible {
         return(data.indexInSmartAssetsByOwner, data.indexInSmartAssetsOnSale, data.state, data.owner);
     }
 
-    function getSmartAssetDataManualById(uint24 id) constant returns(uint8, bytes6, uint8, bytes32, bytes32, bytes32, bytes32, uint) {
+    function getSmartAssetDataManualById(uint24 id) constant returns(uint8, bytes32, uint8, bytes32, bytes32, bytes32, bytes32, uint) {
         SmartAssetDataManual data = smartAssetManualById[id];
         return(data.year, data.docUrl, data._type, data.email, data.b1, data.b2, data.b3, data.u1);
     }
 
-    function getSmartAssetDataIotById(uint24 id) constant returns (bytes11, bytes11, bytes6) {
+    function getSmartAssetDataIotById(uint24 id) constant returns (bytes11, bytes11, bytes32) {
         SmartAssetDataIot data = smartAssetIotById[id];
         return (data.latitude, data.longitude, data.imageUrl);
     }
@@ -136,7 +136,7 @@ contract SmartAssetStorage is Destructible {
         return(data.year);
     }
 
-    function getSmartAssetDocURl(uint24 id) constant returns(bytes6) {
+    function getSmartAssetDocURl(uint24 id) constant returns(bytes32) {
         SmartAssetDataManual data = smartAssetManualById[id];
         return(data.docUrl);
     }
@@ -201,7 +201,7 @@ contract SmartAssetStorage is Destructible {
         return(data.longitude);
     }
 
-    function getSmartAssetImageUrl(uint24 id) constant returns(bytes6) {
+    function getSmartAssetImageUrl(uint24 id) constant returns(bytes32) {
         SmartAssetDataIot data = smartAssetIotById[id];
         return(data.imageUrl);
     }

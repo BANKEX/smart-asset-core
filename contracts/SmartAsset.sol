@@ -76,7 +76,7 @@ contract SmartAsset is Destructible{
     //     */
     function createAsset(
         uint8 year,
-        bytes6 docUrl,
+        bytes32 docUrl,
         uint8 _type,
         bytes32 email,
         bytes32 b1,
@@ -272,7 +272,7 @@ contract SmartAsset is Destructible{
     function getAssetById(uint24 id) constant
     returns (
         uint8 year,
-        bytes6 docUrl,
+        bytes32 docUrl,
         uint8 _type,
         bytes32 email,
         bytes32 b1,
@@ -310,7 +310,7 @@ contract SmartAsset is Destructible{
     returns (
     bytes11,
     bytes11,
-    bytes6,
+    bytes32,
     bytes32
     )
     {
@@ -408,7 +408,7 @@ contract SmartAsset is Destructible{
         uint24 id,
         bytes11 latitude,
         bytes11 longitude,
-        bytes6 imageUrl
+        bytes32 imageUrl
     )
     {
         //checks that function is executed from correct contract
