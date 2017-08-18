@@ -60,7 +60,7 @@ contract SmartAssetStorage is Destructible {
         smartAssetMetaById[id] = SmartAssetDataMeta(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner);
     }
 
-    function setSmartAssetDataIotById(uint24, bytes11 latitude, bytes11 longitude, bytes6 imageUrl) {
+    function setSmartAssetDataIotById(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl) onlySmartAsset {
         smartAssetIotById[id] = SmartAssetDataIot(latitude, longitude, imageUrl);
     }
 
@@ -83,7 +83,7 @@ contract SmartAssetStorage is Destructible {
 
 
     /** ById delete*/
-    function deleteSmartAssetById(uint24 id) {
+    function deleteSmartAssetById(uint24 id) onlySmartAsset {
         delete smartAssetManualById[id];
         delete smartAssetMetaById[id];
         delete smartAssetIotById[id];
@@ -91,21 +91,21 @@ contract SmartAssetStorage is Destructible {
 
 
     /** ByOwner OnSale add*/
-    function addSmartAssetByOwner(address owner, bytes16 assetType, uint24 id) {
+    function addSmartAssetByOwner(address owner, bytes16 assetType, uint24 id) onlySmartAsset {
         smartAssetsByOwner[owner][assetType].push(id);
     }
 
-    function addSmartAssetOnSale(bytes16 assetType, uint24 id) {
+    function addSmartAssetOnSale(bytes16 assetType, uint24 id) onlySmartAsset {
         smartAssetsOnSale[assetType].push(id);
     }
 
 
     /** ByOwner OnSale delete*/
-    function deleteSmartAssetByOwner(address owner, bytes16 assetType, uint24 indexInSmartAssetsByOwner) {
+    function deleteSmartAssetByOwner(address owner, bytes16 assetType, uint24 indexInSmartAssetsByOwner) onlySmartAsset {
         delete smartAssetsByOwner[owner][assetType][indexInSmartAssetsByOwner];
     }
 
-    function deleteSmartAssetOnSale(bytes16 assetType, uint24 indexInSmartAssetsOnSale) {
+    function deleteSmartAssetOnSale(bytes16 assetType, uint24 indexInSmartAssetsOnSale) onlySmartAsset {
         delete smartAssetsOnSale[assetType][indexInSmartAssetsOnSale];
     }
 
@@ -208,63 +208,63 @@ contract SmartAssetStorage is Destructible {
 ////////////////////////////////////////
 
 
-    function setSmartAssetYear(uint24 id, uint8 year) {
+    function setSmartAssetYear(uint24 id, uint8 year) onlySmartAsset {
         smartAssetManualById[id].year = year;
     }
 
-    function setSmartAssetDocURl(uint24 id, bytes6 docUrl) {
+    function setSmartAssetDocURl(uint24 id, bytes6 docUrl) onlySmartAsset {
         smartAssetManualById[id].docUrl = docUrl;
     }
 
-    function setSmartAssetType(uint24 id, uint8 _type) {
+    function setSmartAssetType(uint24 id, uint8 _type) onlySmartAsset {
         smartAssetManualById[id]._type = _type;
     }
 
-    function setSmartAssetEmail(uint24 id, bytes32 email) {
+    function setSmartAssetEmail(uint24 id, bytes32 email) onlySmartAsset {
         smartAssetManualById[id].email = email;
     }
 
-    function setSmartAssetb1(uint24 id, bytes32 b1) {
+    function setSmartAssetb1(uint24 id, bytes32 b1) onlySmartAsset {
         smartAssetManualById[id].b1 = b1;
     }
 
-    function setSmartAssetb2(uint24 id, bytes32 b2) {
+    function setSmartAssetb2(uint24 id, bytes32 b2) onlySmartAsset {
         smartAssetManualById[id].b2 = b2;
     }
 
-    function setSmartAssetb3(uint24 id, bytes32 b3) {
+    function setSmartAssetb3(uint24 id, bytes32 b3) onlySmartAsset {
         smartAssetManualById[id].b3 = b3;
     }
 
-    function setSmartAssetu1(uint24 id, uint u1) {
+    function setSmartAssetu1(uint24 id, uint u1) onlySmartAsset {
         smartAssetManualById[id].u1 = u1;
     }
 
-    function setSmartAssetState(uint24 id, uint8 state) {
+    function setSmartAssetState(uint24 id, uint8 state) onlySmartAsset {
         smartAssetMetaById[id].state = state;
     }
 
-    function setSmartAssetOwner(uint24 id, address owner) {
+    function setSmartAssetOwner(uint24 id, address owner) onlySmartAsset {
         smartAssetMetaById[id].owner = owner;
     }
 
-    function setSmartAssetIndexInOnSale(uint24 id, uint24 indexInSmartAssetsOnSale) {
+    function setSmartAssetIndexInOnSale(uint24 id, uint24 indexInSmartAssetsOnSale) onlySmartAsset {
         smartAssetMetaById[id].indexInSmartAssetsOnSale = indexInSmartAssetsOnSale;
     }
 
-    function setSmartAssetIndexInAssetsByOwner(uint24 id, uint24 indexInSmartAssetsByOwner) {
+    function setSmartAssetIndexInAssetsByOwner(uint24 id, uint24 indexInSmartAssetsByOwner) onlySmartAsset {
         smartAssetMetaById[id].indexInSmartAssetsByOwner = indexInSmartAssetsByOwner;
     }
 
-    function setSmartAssetLatitude(uint24 id, bytes11 latitude) {
+    function setSmartAssetLatitude(uint24 id, bytes11 latitude) onlySmartAsset {
         smartAssetIotById[id].latitude = latitude;
     }
 
-    function setSmartAssetLongitude(uint24 id, bytes11 longitude) {
+    function setSmartAssetLongitude(uint24 id, bytes11 longitude) onlySmartAsset {
         smartAssetIotById[id].longitude = longitude;
     }
 
-    function setSmartAssetImageUrl(uint24 id, bytes6 imageUrl) {
+    function setSmartAssetImageUrl(uint24 id, bytes6 imageUrl) onlySmartAsset {
         smartAssetIotById[id].imageUrl = imageUrl;
     }
 
