@@ -6,7 +6,7 @@ import "./BaseAssetLogic.sol";
 contract RealEstateAssetLogic is BaseAssetLogic {
 
 
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes6 imageUrl) {
+    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
         asset.updateFromExternalSource(id, latitude, longitude, imageUrl);

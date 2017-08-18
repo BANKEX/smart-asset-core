@@ -7,6 +7,7 @@ var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
 var BKXToken = artifacts.require("BKXToken.sol");
 var RealEstateAssetLogic = artifacts.require("RealEstateAssetLogic.sol");
 var CarAssetLogicStorage = artifacts.require("CarAssetLogicStorage.sol");
+var SmartAssetStorage = artifacts.require("SmartAssetStorage.sol");
 
 
 module.exports = function(deployer) {
@@ -23,6 +24,21 @@ module.exports = function(deployer) {
         })
         .then(function() {
             return deployer.deploy(SmartAsset, SmartAssetRouter.address, SmartAssetMetadata.address);
+        })
+        .then(function(){
+            return deployer.deploy(SmartAssetStorage);
+        })
+        .then(function() {
+            return SmartAsset.deployed()
+        })
+        .then(function(smartAssetInstance) {
+            smartAssetInstance.setSmartAssetStorage(SmartAssetStorage.address);
+        })
+        .then(function() {
+            return SmartAssetStorage.deployed()
+        })
+        .then(function(smartAssetStorageInstance) {
+            smartAssetStorageInstance.setSmartAsset(SmartAsset.address);
         })
 
         .then(function() {
