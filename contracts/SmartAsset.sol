@@ -4,7 +4,6 @@ import './SmartAssetRouter.sol';
 import './SmartAssetMetadata.sol';
 import './SmartAssetStorage.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
-import '../oraclize/oraclizeAPI_0.4.sol';
 
 /**
 *Interface for BKXToken contract
@@ -18,7 +17,7 @@ contract BKXTokenInterface {
 /**
  * @title Smart asset contract
  */
-contract SmartAsset is Destructible, usingOraclize {
+contract SmartAsset is Destructible {
     // Workflow stages
     enum State { ManualDataAreEntered, IotDataCollected, PriceCalculated, OnSale, FailedAssetModified }
 

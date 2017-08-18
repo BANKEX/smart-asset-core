@@ -2,6 +2,7 @@ pragma solidity ^0.4.10;
 
 import "./BaseAssetLogic.sol";
 import "./CarAssetLogicStorage.sol";
+import '../oraclize/oraclizeAPI_0.4.sol';
 
 
 contract IotSimulationInterface {
@@ -12,7 +13,7 @@ contract IotSimulationInterface {
 /**
  * @title Car smart asset logic  contract
  */
-contract CarAssetLogic is BaseAssetLogic {
+contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     uint private BASE_CAR_PRICE = 10000;
 
     uint private MIN_CAR_PRICE = 100;
