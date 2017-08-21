@@ -39,7 +39,7 @@ contract('RealEstateAssetLogic', function(accounts) {
 
         }).then(function(instance){
             realEstateAssetLogic = instance;
-            return realEstateAssetLogic.updateViaIotSimulator(id, 10, 10, false, 5, 5, {from : accounts[1]});
+            return realEstateAssetLogic.updateViaIotSimulator(id, 10, 10, "/link", {from : accounts[1]});
 
 
         }).then(function() {
