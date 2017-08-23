@@ -69,6 +69,8 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         bytes32 imageUrl = stringToBytes32(JsmnSolLib.getBytes(result, tokens[4].start, tokens[4].end));
         bytes11 long = bytes11(stringToBytes32(JsmnSolLib.getBytes(result, tokens[6].start, tokens[6].end)));
 
+//        uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(oraclizeId);
+
         updateViaIotSimulator(1, lat, long, imageUrl);
         updateAvailabilityViaIotSimulator(1, true);
     }
@@ -149,6 +151,9 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
      * @dev Function to force run update of external params
      */
     function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
+//        string memory url   = strConcat("json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/", param, ").0.parameters");
+//        bytes32 oraclizeId = oraclize_query("URL", "json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/5ddb306a-3c21-4773-8e55-d25fd2328d7e).0.parameters");
+//        carAssetLogicStorage.setOraclizeIdToAssetId(oraclizeId, id);
         oraclize_query("URL", "json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/5ddb306a-3c21-4773-8e55-d25fd2328d7e).0.parameters");
     }
 
