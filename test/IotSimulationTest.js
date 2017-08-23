@@ -9,7 +9,7 @@ function toAscii(input) {
 
 contract('IotSimulation', function(accounts) {
 
-    it("Should update params of SmartAsset", function() {
+    xit("Should update params of SmartAsset", function() {
         var smartAssetGeneratedId;
         var smartAsset;
 
@@ -36,7 +36,7 @@ contract('IotSimulation', function(accounts) {
             });
     });
 
-    it("Should update params of SmartAssetAvailability", function() {
+    xit("Should update params of SmartAssetAvailability", function() {
         var smartAssetGeneratedId;
         var smartAsset;
         var simulator;
