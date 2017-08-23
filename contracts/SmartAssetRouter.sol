@@ -54,8 +54,8 @@ contract SmartAssetRouter is Destructible{
         return _getSmartAssetImpl(id).getSmartAssetAvailability(id);
     }
 
-    function forceUpdateFromExternalSource(uint24 id) onlySmartAsset {
-        return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id);
+    function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAsset {
+        return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id, param);
     }
 
     function setAssetType(uint24 assetId, bytes16 assetType) onlySmartAsset {

@@ -426,10 +426,10 @@ contract SmartAsset is Destructible {
         smartAssetStorage.setSmartAssetDataMetaById(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, uint8(State.IotDataCollected), owner);
     }
 
-    function forceUpdateFromExternalSource(uint24 assetId, bytes32 deviceId) {
+    function forceUpdateFromExternalSource(uint24 assetId, string param) {
         var (indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner) = smartAssetStorage.getSmartAssetDataMetaById(assetId);
         require(owner == msg.sender && State(state) <= State.OnSale);
-        return smartAssetRouter.forceUpdateFromExternalSource(assetId);
+        return smartAssetRouter.forceUpdateFromExternalSource(assetId, param);
     }
 
     function calculateAssetPrice(uint24 assetId) {

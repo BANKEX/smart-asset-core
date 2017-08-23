@@ -148,7 +148,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     /**
      * @dev Function to force run update of external params
      */
-    function forceUpdateFromExternalSource(uint24 id) onlySmartAssetRouter {
+    function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
         oraclize_query("URL", "json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/5ddb306a-3c21-4773-8e55-d25fd2328d7e).0.parameters");
     }
 

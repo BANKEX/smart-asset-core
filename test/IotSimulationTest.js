@@ -122,7 +122,7 @@ contract('IotSimulation', function(accounts) {
                  return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
              }).then(function(result) {
                  smartAssetGeneratedId = result.logs[0].args.id.c[0];
-                 return smartAsset.forceUpdateFromExternalSource(smartAssetGeneratedId);
+                 return smartAsset.forceUpdateFromExternalSource(smartAssetGeneratedId, "");
              })
              .then(function(result) {
                  return smartAsset.getAssetIotById.call(smartAssetGeneratedId);

@@ -12,7 +12,7 @@ contract RealEstateAssetLogic is BaseAssetLogic {
         asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
     }
 
-    function forceUpdateFromExternalSource(uint24 id) onlySmartAssetRouter {
+    function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
         updateViaIotSimulator(id, bytes11(id + 1), bytes11(id + 2), "/link");
     }
 

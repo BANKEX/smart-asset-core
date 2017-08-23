@@ -57,5 +57,5 @@ contract SmartAssetLogicInterface {
      * @dev Function that forces updates of Smart Asset external source params.
      * @param id Id of smart asset
      */
-    function forceUpdateFromExternalSource(uint24 id);
+    function forceUpdateFromExternalSource(uint24 id, string param);
 }
