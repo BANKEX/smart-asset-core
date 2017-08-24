@@ -63,16 +63,12 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     function __callback(bytes32 myid, string result) {
         require(msg.sender == oraclize_cbAddress());
 
-        var (status, tokens, numberOfFoundTokens) = JsmnSolLib.parse(result, 7);
+        bytes32 imageUrl = stringToBytes32(result);
 
-        bytes11 lat = bytes11(stringToBytes32(JsmnSolLib.getBytes(result, tokens[2].start, tokens[2].end)));
-        bytes32 imageUrl = stringToBytes32(JsmnSolLib.getBytes(result, tokens[4].start, tokens[4].end));
-        bytes11 long = bytes11(stringToBytes32(JsmnSolLib.getBytes(result, tokens[6].start, tokens[6].end)));
+        uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(myid);
 
-//        uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(oraclizeId);
-
-        updateViaIotSimulator(1, lat, long, imageUrl);
-        updateAvailabilityViaIotSimulator(1, true);
+        updateViaIotSimulator(assetId, "65.1111", "56.2324", imageUrl);
+        updateAvailabilityViaIotSimulator(assetId, true);
     }
 
     function CarAssetLogic() {
@@ -92,7 +88,6 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         cityMapping["Lublin"] = LatLong(51, 22);
         cities.push("Lublin");
 
-        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
     }
 
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {
@@ -143,7 +138,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     /**
      * @dev Function to updates Smart Asset IoT availability
      */
-    function updateAvailabilityViaIotSimulator(uint24 id, bool availability) internal{
+    function updateAvailabilityViaIotSimulator(uint24 id, bool availability) private {
         carAssetLogicStorage.setSmartAssetAvailabilityData(id, availability);
     }
 
@@ -151,16 +146,15 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
      * @dev Function to force run update of external params
      */
     function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
-//        string memory url   = strConcat("json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/", param, ").0.parameters");
-//        bytes32 oraclizeId = oraclize_query("URL", "json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/5ddb306a-3c21-4773-8e55-d25fd2328d7e).0.parameters");
-//        carAssetLogicStorage.setOraclizeIdToAssetId(oraclizeId, id);
-        oraclize_query("URL", "json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/5ddb306a-3c21-4773-8e55-d25fd2328d7e).0.parameters");
+        string memory url   = strConcat("json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/", param, ").0.parameters.imageUrl");
+        bytes32 oraclizeId = oraclize_query("URL", url);
+        carAssetLogicStorage.setOraclizeIdToAssetId(oraclizeId, id);
     }
 
     /**
      * @dev Function to updates Smart Asset IoT params
      */
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) internal {
+    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) private {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
     }

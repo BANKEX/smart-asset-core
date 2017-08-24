@@ -83,7 +83,7 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
         return true;
     }
 
-    function forceUpdateFromExternalSource(uint24 id) {
+    function forceUpdateFromExternalSource(uint24 id, string param) {
     }
 
     function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {
