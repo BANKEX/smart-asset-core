@@ -60,10 +60,8 @@ contract SmartAssetStorage is Destructible {
         smartAssetMetaById[id] = SmartAssetDataMeta(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner);
     }
 
-    event StorageEvent(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl);
 
     function setSmartAssetDataIotById(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) onlySmartAsset {
-        StorageEvent(id, latitude, longitude, imageUrl);
         smartAssetIotById[id] = SmartAssetDataIot(latitude, longitude, imageUrl);
     }
 

@@ -401,7 +401,7 @@ contract SmartAsset is Destructible {
         AssetTakenOffSale(id);
     }
 
-    event AssetEvent(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl);
+    event IotUpdateEvent(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl);
     /**
      * @dev Function to updates Smart Asset params
      */
@@ -412,7 +412,6 @@ contract SmartAsset is Destructible {
         bytes32 imageUrl
     )
     {
-        AssetEvent(id, latitude, longitude, imageUrl);
         //checks that function is executed from correct contract
         require(msg.sender == smartAssetMetadata.getAssetLogicAddress(smartAssetRouter.getAssetType(id)));
 
@@ -424,6 +423,8 @@ contract SmartAsset is Destructible {
         smartAssetStorage.setSmartAssetDataIotById(id, latitude, longitude, imageUrl);
 
         smartAssetStorage.setSmartAssetDataMetaById(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, uint8(State.IotDataCollected), owner);
+
+        IotUpdateEvent(id, latitude, longitude, imageUrl);
     }
 
     function forceUpdateFromExternalSource(uint24 assetId, string param) {
