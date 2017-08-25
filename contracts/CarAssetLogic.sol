@@ -63,7 +63,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     function __callback(bytes32 myid, string result) {
         require(msg.sender == oraclize_cbAddress());
 
-        bytes32 imageUrl = stringToBytes32(result);
+        bytes32 imageUrl = parseHex(result);
 
         uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(myid);
 
@@ -246,6 +246,25 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         assembly {
             result := mload(add(source, 32))
         }
+    }
+
+    function parseHex(string _a) private returns (bytes32) {
+        bytes memory bresult = bytes(_a);
+        uint mint = 0;
+
+        for (uint i=0; i<bresult.length; i++){
+            if ((bresult[i] >= 48)&&(bresult[i] <= 57)){
+
+                mint *= 16;
+                mint += uint(bresult[i]) - 48;
+            }
+            if ((bresult[i] >= 97)&&(bresult[i] <= 102)){
+
+                mint *= 16;
+                mint += uint(bresult[i]) - 97 + 10;
+            }
+        }
+        return bytes32(mint);
     }
 
     function () payable {}
