@@ -87,7 +87,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
 
         cityMapping["Lublin"] = LatLong(51, 22);
         cities.push("Lublin");
-    
+
     }
 
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {
@@ -247,4 +247,6 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
             result := mload(add(source, 32))
         }
     }
+
+    function () payable {}
 }
