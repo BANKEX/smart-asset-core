@@ -63,12 +63,18 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     function __callback(bytes32 myid, string result) {
         require(msg.sender == oraclize_cbAddress());
 
-        bytes32 imageUrl = parseHex(result);
+        var (status, tokens, numberOfFoundTokens) = JsmnSolLib.parse(result, 7);
+
+        bytes11 lat = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[2].start, tokens[2].end)));
+        bytes32 imageUrl = parseHex(JsmnSolLib.getBytes(result, tokens[4].start, tokens[4].end));
+        bytes11 long = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[6].start, tokens[6].end)));
 
         uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(myid);
 
-        updateAvailabilityViaIotSimulator(assetId, true);
-        updateViaIotSimulator(assetId, "65.1111", "56.2324", imageUrl);
+        carAssetLogicStorage.setSmartAssetAvailabilityData(assetId, true);
+
+        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
+        asset.updateFromExternalSource(assetId, lat, long, imageUrl);
     }
 
     function CarAssetLogic() {
@@ -136,27 +142,12 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     }
 
     /**
-     * @dev Function to updates Smart Asset IoT availability
-     */
-    function updateAvailabilityViaIotSimulator(uint24 id, bool availability) private {
-        carAssetLogicStorage.setSmartAssetAvailabilityData(id, availability);
-    }
-
-    /**
      * @dev Function to force run update of external params
      */
     function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
-        string memory url   = strConcat("json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/", param, ").0.parameters.imageUrl");
+        string memory url   = strConcat("json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/", param, ").0.parameters");
         bytes32 oraclizeId = oraclize_query("URL", url, 500000);
         carAssetLogicStorage.setOraclizeIdToAssetId(oraclizeId, id);
-    }
-
-    /**
-     * @dev Function to updates Smart Asset IoT params
-     */
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) private {
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
     }
 
     function getSmartAssetAvailability(uint24 id) constant returns (bool availability) {
@@ -242,7 +233,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         carAssetLogicStorage = CarAssetLogicStorage(_carAssetLogicStorage);
     }
 
-    function stringToBytes32(string source) returns (bytes32 result) {
+    function getFirst32Bytes(string source) returns (bytes32 result) {
         assembly {
             result := mload(add(source, 32))
         }

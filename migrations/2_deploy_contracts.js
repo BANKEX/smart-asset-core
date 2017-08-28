@@ -150,7 +150,7 @@ module.exports = function(deployer) {
             smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
         })
         .then(function() {
-            web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 5000000000000000000})
+            web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000})
         })
     ;
 
