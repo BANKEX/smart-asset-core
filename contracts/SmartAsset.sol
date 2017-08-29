@@ -157,6 +157,7 @@ contract SmartAsset is Destructible {
     uint[]) {
 
         require(lastIndex >= firstIndex);
+        require(lastIndex <= getAssetsOnSaleCount(assetType));
 
         uint24[] memory ids = new uint24[](lastIndex - firstIndex + 1);
 
@@ -349,6 +350,7 @@ contract SmartAsset is Destructible {
      )
      {
          require(lastIndex >= firstIndex);
+         require(lastIndex <= getMyAssetsCount(assetType));
 
          uint24[] memory ids = new uint24[](lastIndex - firstIndex + 1);
 
@@ -503,8 +505,6 @@ contract SmartAsset is Destructible {
         b3s = new bytes32[](size);
         states = new uint[](size);
 
-        //requireIndexInBound(data, lastIndex);
-
         for (uint24 i = 0; i < size; i++) {
 
             uint24 id = ids[i];
@@ -520,10 +520,6 @@ contract SmartAsset is Destructible {
         return (ids, yearss, _types, b1s, b2s, b3s, states);
 
     }
-
-   /* function requireIndexInBound(SmartAssetData[] storage data, uint8 index) internal constant {
-        require(data.length - 1 >= index);
-    }*/
 
     function setSmartAssetStorage (address _smartAssetStorage) {
         smartAssetStorage = SmartAssetStorage(_smartAssetStorage);
