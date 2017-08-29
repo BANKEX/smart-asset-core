@@ -2,6 +2,7 @@ var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
+var CarAssetLogicStorage = artifacts.require("./CarAssetLogicStorage.sol");
 
 var BigInt = require('big-integer');
 

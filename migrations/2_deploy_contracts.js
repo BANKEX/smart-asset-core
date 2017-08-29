@@ -7,10 +7,11 @@ var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
 var BKXToken = artifacts.require("BKXToken.sol");
 var RealEstateAssetLogic = artifacts.require("RealEstateAssetLogic.sol");
 var CarAssetLogicStorage = artifacts.require("CarAssetLogicStorage.sol");
+var CarAssetLogicStorageMock = artifacts.require("CarAssetLogicStorageMock.sol");
 var SmartAssetStorage = artifacts.require("SmartAssetStorage.sol");
 
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
     var smartAssetMetadata;
 
@@ -85,10 +86,20 @@ module.exports = function(deployer) {
             return instance.setIotSimulationAddr(IotSimulation.address);
         })
         .then(function(){
-            return deployer.deploy(CarAssetLogicStorage);
+            if(network == 'development') {
+                return deployer.deploy(CarAssetLogicStorageMock);
+            }
+            else {
+                return deployer.deploy(CarAssetLogicStorage);
+            }
         })
         .then(function() {
-            return CarAssetLogicStorage.deployed();
+            if(network == 'development') {
+                return CarAssetLogicStorageMock.deployed();
+            }
+            else {
+                return CarAssetLogicStorage.deployed();
+            }
         })
         .then(function(instance){
             instance.setCarAssetLogic(CarAssetLogic.address);
@@ -97,9 +108,13 @@ module.exports = function(deployer) {
             return CarAssetLogic.deployed();
         })
         .then(function(instance) {
-            instance.setCarAssetLogicStorage(CarAssetLogicStorage.address);
+            if(network == 'development') {
+                instance.setCarAssetLogicStorage(CarAssetLogicStorageMock.address);
+            }
+            else {
+                instance.setCarAssetLogicStorage(CarAssetLogicStorage.address);
+            }
         })
-
         .then(function() {
              return IotSimulation.deployed()
         })
