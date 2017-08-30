@@ -18,6 +18,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     uint private BASE_CAR_PRICE = 10000;
 
     uint private MIN_CAR_PRICE = 100;
+    uint private MAX_CAR_PRICE = 10000;
 
     address private iotSimulationAddr;
 
@@ -28,6 +29,11 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     * Coefficient to calculate delivery price. E.g price = distance * coefficient
     */
     uint coefficient;
+
+    /**
+    * Coefficient to calculate car price.
+    */
+    uint priceCoefficient = 4452778000000000;
 
     /**
     * Default coefficient.
@@ -102,9 +108,10 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
-        carAssetLogicStorage.setSmartAssetPriceData(assetId, _calculateAssetPrice(millage, smoker), sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
+        uint price = _calculateAssetPrice(millage, smoker);
+        carAssetLogicStorage.setSmartAssetPriceData(assetId, price, sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
 
-        return _calculateAssetPrice(millage, smoker);
+        return price;
     }
 
     function getSmartAssetPrice(uint24 id) constant returns (uint) {
@@ -181,6 +188,15 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
 
 
     /**
+    * Sets coefficient for delivery price calculation in wei
+    *e.g 2226389000000000 ~ 0,0022 ether ~ 0.5 $
+    * @param _wei the coefficient to set
+    */
+    function setPriceCoefficientInWei(uint _wei) onlyOwner() {
+        priceCoefficient = _wei;
+    }
+
+    /**
      * @dev Setter for the SmartAsset contract address
      * @param contractAddress Address of the IotSimulation contract
      */
@@ -209,10 +225,19 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     }
 
     /**
+     * @dev Setter for the Car max price - parameter for car price calculation
+     * @param price Max price of the car
+     */
+    function setMaxCarPrice(uint price) onlyOwner returns (bool result) {
+        MAX_CAR_PRICE = price;
+        return true;
+    }
+
+    /**
      * @dev Formula for car price calculation
      */
     function _calculateAssetPrice(uint millage, uint8 smoker) constant private returns (uint price) {
-        return max(BASE_CAR_PRICE - millage / 10 - smoker * BASE_CAR_PRICE / 3, MIN_CAR_PRICE);
+        return min(max(BASE_CAR_PRICE - millage / 100 - smoker * BASE_CAR_PRICE / 3, MIN_CAR_PRICE), MAX_CAR_PRICE) * priceCoefficient * 1 wei;
     }
 
     /**
@@ -220,6 +245,13 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
      */
     function max(uint a, uint b) private returns (uint) {
         return a > b ? a : b;
+    }
+
+    /**
+     * @dev Min function
+     */
+    function min(uint a, uint b) private returns (uint) {
+        return a < b ? a : b;
     }
 
     /**
