@@ -23,6 +23,7 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
 
     CarAssetLogicStorage carAssetLogicStorage;
 
+    string public endpoint = "https://dev-web-prototype-bankex.azurewebsites.net/api/dh/";
 
     /**
     * Coefficient to calculate delivery price. E.g price = distance * coefficient
@@ -63,15 +64,17 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     function __callback(bytes32 myid, string result) {
         require(msg.sender == oraclize_cbAddress());
 
-        var (status, tokens, numberOfFoundTokens) = JsmnSolLib.parse(result, 7);
+        var (status, tokens, numberOfFoundTokens) = JsmnSolLib.parse(result, 10);
 
         bytes11 lat = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[2].start, tokens[2].end)));
         bytes32 imageUrl = parseHex(JsmnSolLib.getBytes(result, tokens[4].start, tokens[4].end));
-        bytes11 long = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[6].start, tokens[6].end)));
+        bool shaked = JsmnSolLib.parseBool(JsmnSolLib.getBytes(result, tokens[6].start, tokens[6].end));
+        bytes11 long = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[8].start, tokens[8].end)));
+
 
         uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(myid);
 
-        carAssetLogicStorage.setSmartAssetAvailabilityData(assetId, true);
+        carAssetLogicStorage.setSmartAssetAvailabilityData(assetId, shaked);
 
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         asset.updateFromExternalSource(assetId, lat, long, imageUrl);
@@ -145,13 +148,17 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
      * @dev Function to force run update of external params
      */
     function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
-        string memory url   = strConcat("json(http://dev-web-prototype-bankex.azurewebsites.net/api/dh/", param, ").0.parameters");
-        bytes32 oraclizeId = oraclize_query("URL", url, 500000);
+        string memory url   = strConcat("json(", endpoint , param, ").0.parameters");
+        bytes32 oraclizeId = oraclize_query("URL", url, 800000);
         carAssetLogicStorage.setOraclizeIdToAssetId(oraclizeId, id);
     }
 
     function getSmartAssetAvailability(uint24 id) constant returns (bool availability) {
         return carAssetLogicStorage.getSmartAssetAvailability(id);
+    }
+
+    function setEndpoint(string _endpoint) onlyOwner {
+        endpoint = _endpoint;
     }
 
     /**

@@ -332,7 +332,7 @@ library JsmnSolLib {
         return string(bstr);
     }
 
-    function parseBool(string _a) returns (bool) {
+    function parseBool(string _a) internal returns (bool) {
         if (strCompare(_a, 'true') == 0) {
             return true;
         } else {
