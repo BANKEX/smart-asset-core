@@ -21,8 +21,6 @@ contract CarAssetLogicStorage is Destructible {
 
     mapping (uint => SmartAssetAvailabilityData) smartAssetAvailabilityById;
 
-    mapping (bytes32 => uint24) oraclizeIdToAssetId;
-
     modifier onlyCarAssetLogic() {
         require(msg.sender == carAssetLogic);
         _;
@@ -46,14 +44,6 @@ contract CarAssetLogicStorage is Destructible {
 
     function getSmartAssetAvailability(uint24 assetId) onlyCarAssetLogic constant returns(bool) {
         return smartAssetAvailabilityById[assetId].availability;
-    }
-
-    function getAssetIdViaOraclizeId(bytes32 id) onlyCarAssetLogic constant returns(uint24) {
-        return oraclizeIdToAssetId[id];
-    }
-
-    function setOraclizeIdToAssetId(bytes32 id, uint24 assetId) onlyCarAssetLogic {
-        oraclizeIdToAssetId[id] = assetId;
     }
 
     function setCarAssetLogic(address _carAssetLogic) onlyOwner {

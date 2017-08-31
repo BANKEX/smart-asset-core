@@ -1,9 +1,7 @@
 pragma solidity ^0.4.10;
 
-import "./BaseAssetLogic.sol";
+import "./DhOraclizeBase.sol";
 import "./CarAssetLogicStorage.sol";
-import '../oraclize/oraclizeAPI_0.4.sol';
-import 'jsmnsol-lib/JsmnSolLib.sol';
 
 
 contract IotSimulationInterface {
@@ -14,7 +12,7 @@ contract IotSimulationInterface {
 /**
  * @title Car smart asset logic  contract
  */
-contract CarAssetLogic is BaseAssetLogic, usingOraclize {
+contract CarAssetLogic is DhOraclizeBase {
     uint private BASE_CAR_PRICE = 10000;
 
     uint private MIN_CAR_PRICE = 100;
@@ -23,8 +21,6 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     address private iotSimulationAddr;
 
     CarAssetLogicStorage carAssetLogicStorage;
-
-    string public endpoint = "https://dev-web-prototype-bankex.azurewebsites.net/api/dh/";
 
     /**
     * Coefficient to calculate delivery price. E.g price = distance * coefficient
@@ -62,25 +58,6 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         _;
     }
 
-    function __callback(bytes32 myid, string result) {
-        require(msg.sender == oraclize_cbAddress());
-
-        var (status, tokens, numberOfFoundTokens) = JsmnSolLib.parse(result, 10);
-
-        bytes11 lat = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[2].start, tokens[2].end)));
-        bytes32 imageUrl = parseHex(JsmnSolLib.getBytes(result, tokens[4].start, tokens[4].end));
-        bool shaked = JsmnSolLib.parseBool(JsmnSolLib.getBytes(result, tokens[6].start, tokens[6].end));
-        bytes11 long = bytes11(getFirst32Bytes(JsmnSolLib.getBytes(result, tokens[8].start, tokens[8].end)));
-
-
-        uint24 assetId = carAssetLogicStorage.getAssetIdViaOraclizeId(myid);
-
-        carAssetLogicStorage.setSmartAssetAvailabilityData(assetId, shaked);
-
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        asset.updateFromExternalSource(assetId, lat, long, imageUrl);
-    }
-
     function CarAssetLogic() {
         cityMapping["Moscow"] = LatLong("55", "37", true);
         cities.push("Moscow");
@@ -98,6 +75,10 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         cityMapping["Lublin"] = LatLong("51", "22", true);
         cities.push("Lublin");
 
+    }
+
+    function updateAvailability(uint24 assetId, bool availability) internal {
+        carAssetLogicStorage.setSmartAssetAvailabilityData(assetId, availability);
     }
 
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {
@@ -143,21 +124,8 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         return calculateDeliveryPrice(id, latLong.lat, latLong.long);
     }
 
-    /**
-     * @dev Function to force run update of external params
-     */
-    function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
-        string memory url   = strConcat("json(", endpoint , param, ").0.parameters");
-        bytes32 oraclizeId = oraclize_query("URL", url, 800000);
-        carAssetLogicStorage.setOraclizeIdToAssetId(oraclizeId, id);
-    }
-
     function getSmartAssetAvailability(uint24 id) constant returns (bool availability) {
         return carAssetLogicStorage.getSmartAssetAvailability(id);
-    }
-
-    function setEndpoint(string _endpoint) onlyOwner {
-        endpoint = _endpoint;
     }
 
     /**
@@ -264,30 +232,4 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         carAssetLogicStorage = CarAssetLogicStorage(_carAssetLogicStorage);
     }
 
-    function getFirst32Bytes(string source) returns (bytes32 result) {
-        assembly {
-            result := mload(add(source, 32))
-        }
-    }
-
-    function parseHex(string _a) private returns (bytes32) {
-        bytes memory bresult = bytes(_a);
-        uint mint = 0;
-
-        for (uint i=0; i<bresult.length; i++){
-            if ((bresult[i] >= 48)&&(bresult[i] <= 57)){
-
-                mint *= 16;
-                mint += uint(bresult[i]) - 48;
-            }
-            if ((bresult[i] >= 97)&&(bresult[i] <= 102)){
-
-                mint *= 16;
-                mint += uint(bresult[i]) - 97 + 10;
-            }
-        }
-        return bytes32(mint);
-    }
-
-    function () payable {}
 }
