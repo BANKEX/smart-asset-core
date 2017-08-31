@@ -29,18 +29,12 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     /**
     * Coefficient to calculate delivery price. E.g price = distance * coefficient
     */
-    uint coefficient;
+    uint coefficient = 2226389000000000;
 
     /**
     * Coefficient to calculate car price.
     */
     uint priceCoefficient = 4452778000000000;
-
-    /**
-    * Default coefficient.
-    *@see coefficient
-    */
-    uint DEFAULT_COEFFICIENT = 2226389000000000;
 
     /**
     * City that have been added to this contract with their lat longs
@@ -51,8 +45,9 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
      * Construct encapsulating latitude and longitude pair
      */
     struct LatLong {
-    uint lat;
-    uint long;
+    bytes11 lat;
+    bytes11 long;
+    bool initialized;
     }
 
     // Mapping city to its latitude longitude pair
@@ -87,20 +82,20 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     }
 
     function CarAssetLogic() {
-        cityMapping["Moscow"] = LatLong(55, 37);
+        cityMapping["Moscow"] = LatLong("55", "37", true);
         cities.push("Moscow");
 
-        cityMapping["Saint-Petersburg"] = LatLong(59, 30);
+        cityMapping["Saint-Petersburg"] = LatLong("59", "30", true);
         cities.push("Saint-Petersburg");
 
 
-        cityMapping["Kiev"] = LatLong(50, 30);
+        cityMapping["Kiev"] = LatLong("50", "30", true);
         cities.push("Kiev");
 
-        cityMapping["Lviv"] = LatLong(49, 24);
+        cityMapping["Lviv"] = LatLong("49", "24", true);
         cities.push("Lviv");
 
-        cityMapping["Lublin"] = LatLong(51, 22);
+        cityMapping["Lublin"] = LatLong("51", "22", true);
         cities.push("Lublin");
 
     }
@@ -138,17 +133,14 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
         return cities;
     }
 
-    function calculateDeliveryPrice(uint24 id, bytes32 cityName) onlySmartAssetRouter constant returns (uint) {
+    function calculateDeliveryPrice(uint24 id, bytes11 latitudeTo, bytes11 longitudeTo) onlySmartAssetRouter constant returns (uint) {
+        return 10 * coefficient * 1 wei;
+
+    }
+
+    function calculateDeliveryPrice (uint24 id, bytes32 cityName) onlySmartAssetRouter constant returns(uint) {
         LatLong latLong = cityMapping[cityName];
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-
-        var (latitude, longitude, imageUrl, assetType) = asset.getAssetIotById(id);
-
-        if (coefficient == 0)
-        coefficient = DEFAULT_COEFFICIENT;
-
-        return ((max(latLong.lat, uint(latitude))) + (max(latLong.long, uint(longitude)))) * coefficient * 1 wei;
-
+        return calculateDeliveryPrice(id, latLong.lat, latLong.long);
     }
 
     /**
@@ -175,13 +167,13 @@ contract CarAssetLogic is BaseAssetLogic, usingOraclize {
     *@param lat latitude of the city to be added
     *@param long longitude of the city to be added
     */
-    function addCity(bytes32 cityName, uint lat, uint long) onlyOwner() {
+    function addCity(bytes32 cityName, bytes11 lat, bytes11 long) onlyOwner() {
         LatLong latLong = cityMapping[cityName];
-        if (latLong.lat == 0x0 && latLong.long == 0x0) {
+        if (latLong.initialized == false) {
             cities.push(cityName);
         }
 
-        cityMapping[cityName] = LatLong(lat, long);
+        cityMapping[cityName] = LatLong(lat, long, true);
     }
 
     /**

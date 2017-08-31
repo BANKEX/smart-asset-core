@@ -35,11 +35,13 @@ contract('CarAssetLogic', function(accounts) {
             return carAssetLogic.getAvailableCities.call();
         }).then(function(result){
             citiesNumber = result.length;
+            console.log(citiesNumber);
         }).then(function(){
-            return carAssetLogic.addCity('London', 60, 60);
+            return carAssetLogic.addCity('London', '60', '60');
         }).then(function(){
             return carAssetLogic.getAvailableCities.call();
         }).then(function(result) {
+            console.log(result.length);
             assert.notEqual(citiesNumber, result.length);
             done();
         })
