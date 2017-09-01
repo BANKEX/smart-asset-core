@@ -36,7 +36,7 @@ contract DhOraclizeBase is BaseAssetLogic, usingOraclize {
     function updateAvailability(uint24 assetId, bool availability) internal;
 
     function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
-        string memory url   = strConcat("json(", endpoint , id, ").0.parameters");
+        string memory url   = strConcat("json(", endpoint , uint2str(id), ").0.parameters");
         bytes32 oraclizeId = oraclize_query("URL", url, 800000);
         oraclizeIdToAssetId[oraclizeId] = id;
     }
