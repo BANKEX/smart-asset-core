@@ -454,6 +454,10 @@ contract SmartAsset is Destructible {
         return smartAssetRouter.calculateDeliveryPrice(assetId, param);
     }
 
+    function calculateDeliveryPrice(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) constant returns (uint) {
+        return smartAssetRouter.calculateDeliveryPrice(assetId, latitudeTo, longitudeTo);
+    }
+
     function isAssetTheSameState(uint24 assetId) constant returns (bool modified) {
         return smartAssetRouter.isAssetTheSameState(assetId);
     }
