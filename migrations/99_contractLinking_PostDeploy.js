@@ -123,11 +123,13 @@ module.exports = function(deployer, network) {
             smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
         })
         .then(function() {
-            web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000})
+            if((network == 'development') || (network == 'testnet')) {
+                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000})
+            }
         })
         .then(function() {
-            web3.eth.sendTransaction({from : web3.eth.accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000})
-        })
-    ;
-
+            if((network == 'development') || (network == 'testnet')) {
+                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000})
+            }
+        });
 };
