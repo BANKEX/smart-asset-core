@@ -14,7 +14,14 @@ module.exports =
             port: 8545,
             network_id: '3',
             gas: '4700000'
-        }
+        },
+        mainnet:
+            {
+                network_id: '1',
+                host: "localhost",
+                port: 8545,
+                gasPrice: 60000000000
+            }
     },
     mocha:
     {
