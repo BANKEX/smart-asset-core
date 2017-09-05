@@ -26,7 +26,7 @@ module.exports = function(deployer, network) {
         })
         .then(function(instance) {
             smartAsset = instance;
-            smartAsset.setSmartAssetStorage(SmartAssetStorage.address);
+            return smartAsset.setSmartAssetStorage(SmartAssetStorage.address);
         })
         .then(function() {
             return smartAsset.setBuyAssetAddr(BuySmartAsset.address);
@@ -38,7 +38,7 @@ module.exports = function(deployer, network) {
             return SmartAssetStorage.deployed()
         })
         .then(function(smartAssetStorageInstance) {
-            smartAssetStorageInstance.setSmartAsset(SmartAsset.address);
+            return smartAssetStorageInstance.setSmartAsset(SmartAsset.address);
         })
         .then(function() {
             return SmartAssetRouter.deployed();
@@ -69,14 +69,14 @@ module.exports = function(deployer, network) {
             }
         })
         .then(function(instance){
-            instance.setCarAssetLogic(CarAssetLogic.address);
+            return instance.setCarAssetLogic(CarAssetLogic.address);
         })
         .then(function() {
             if(network == 'development') {
-                carAssetLogic.setCarAssetLogicStorage(CarAssetLogicStorageMock.address);
+                return carAssetLogic.setCarAssetLogicStorage(CarAssetLogicStorageMock.address);
             }
             else {
-                carAssetLogic.setCarAssetLogicStorage(CarAssetLogicStorage.address);
+                return carAssetLogic.setCarAssetLogicStorage(CarAssetLogicStorage.address);
             }
         })
         .then(function() {
@@ -105,11 +105,11 @@ module.exports = function(deployer, network) {
         .then(function() {
             return BankExCertified.deployed();
         }).then(function(instance) {
-            instance.setStorageAddress(BankExCertifiedStorage.address);
+            return instance.setStorageAddress(BankExCertifiedStorage.address);
         }).then(function() {
             return BankExCertifiedStorage.deployed();
         }).then(function(instance) {
-            instance.setBankExCertifiedAddress(BankExCertified.address);
+            return instance.setBankExCertifiedAddress(BankExCertified.address);
         })
 //      Post deploy steps
         .then(function(){
@@ -120,7 +120,7 @@ module.exports = function(deployer, network) {
             return smartAssetMetadata.addSmartAssetType("car", CarAssetLogic.address);
         })
         .then(function() {
-            smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
+            return smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
         })
         .then(function() {
             if((network == 'development') || (network == 'testnet')) {
