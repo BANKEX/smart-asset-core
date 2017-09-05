@@ -14,14 +14,11 @@ module.exports =
             port: 8545,
             network_id: '3',
             gas: '4700000'
-        }
-    },
-    mocha:
-    {
-        reporter: "mocha-junit-reporter",
-        reporterOptions:
-        {
-            mochaFile: "junit-test-results.xml"
+        },
+        live: {
+            host: 'localhost',
+            port: 8545,
+            network_id: 1
         }
     }
 };

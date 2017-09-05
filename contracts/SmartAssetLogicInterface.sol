@@ -45,6 +45,12 @@ contract SmartAssetLogicInterface {
     function calculateDeliveryPrice(uint24 id, bytes32 city) constant returns (uint);
 
     /**
+     * @dev Calculates delivery price for a given smart asset
+     * @return uint delivery price
+     */
+    function calculateDeliveryPrice(uint24 id, bytes11 latitudeTo, bytes11 longitudeTo) constant returns (uint);
+
+    /**
      * @dev Returns smart asset availability (e.g car is still on
      * the parking lot)
      * Called upon asset sale
@@ -57,5 +63,5 @@ contract SmartAssetLogicInterface {
      * @dev Function that forces updates of Smart Asset external source params.
      * @param id Id of smart asset
      */
-    function forceUpdateFromExternalSource(uint24 id);
+    function forceUpdateFromExternalSource(uint24 id, string param);
 }

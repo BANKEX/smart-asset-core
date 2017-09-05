@@ -1,6 +1,6 @@
 pragma solidity ^0.4.10;
 
-import "./BaseAssetLogic.sol";
+import "./DhOraclizeBase.sol";
 import "./CarAssetLogicStorage.sol";
 
 
@@ -12,26 +12,25 @@ contract IotSimulationInterface {
 /**
  * @title Car smart asset logic  contract
  */
-contract CarAssetLogic is BaseAssetLogic {
+contract CarAssetLogic is DhOraclizeBase {
     uint private BASE_CAR_PRICE = 10000;
 
     uint private MIN_CAR_PRICE = 100;
+    uint private MAX_CAR_PRICE = 10000;
 
     address private iotSimulationAddr;
 
     CarAssetLogicStorage carAssetLogicStorage;
 
-
     /**
     * Coefficient to calculate delivery price. E.g price = distance * coefficient
     */
-    uint coefficient;
+    uint coefficient = 2226389000000000;
 
     /**
-    * Default coefficient.
-    *@see coefficient
+    * Coefficient to calculate car price.
     */
-    uint DEFAULT_COEFFICIENT = 2226389000000000;
+    uint priceCoefficient = 4452778000000000;
 
     /**
     * City that have been added to this contract with their lat longs
@@ -42,8 +41,9 @@ contract CarAssetLogic is BaseAssetLogic {
      * Construct encapsulating latitude and longitude pair
      */
     struct LatLong {
-    uint lat;
-    uint long;
+    bytes11 lat;
+    bytes11 long;
+    bool initialized;
     }
 
     // Mapping city to its latitude longitude pair
@@ -58,23 +58,27 @@ contract CarAssetLogic is BaseAssetLogic {
         _;
     }
 
-
     function CarAssetLogic() {
-        cityMapping["Moscow"] = LatLong(55, 37);
+        cityMapping["Moscow"] = LatLong("55", "37", true);
         cities.push("Moscow");
 
-        cityMapping["Saint-Petersburg"] = LatLong(59, 30);
+        cityMapping["Saint-Petersburg"] = LatLong("59", "30", true);
         cities.push("Saint-Petersburg");
 
 
-        cityMapping["Kiev"] = LatLong(50, 30);
+        cityMapping["Kiev"] = LatLong("50", "30", true);
         cities.push("Kiev");
 
-        cityMapping["Lviv"] = LatLong(49, 24);
+        cityMapping["Lviv"] = LatLong("49", "24", true);
         cities.push("Lviv");
 
-        cityMapping["Lublin"] = LatLong(51, 22);
+        cityMapping["Lublin"] = LatLong("51", "22", true);
         cities.push("Lublin");
+
+    }
+
+    function updateAvailability(uint24 assetId, bool availability) internal {
+        carAssetLogicStorage.setSmartAssetAvailabilityData(assetId, availability);
     }
 
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {
@@ -83,9 +87,10 @@ contract CarAssetLogic is BaseAssetLogic {
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
-        carAssetLogicStorage.setSmartAssetPriceData(assetId, _calculateAssetPrice(millage, smoker), sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
+        uint price = _calculateAssetPrice(millage, smoker);
+        carAssetLogicStorage.setSmartAssetPriceData(assetId, price, sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
 
-        return _calculateAssetPrice(millage, smoker);
+        return price;
     }
 
     function getSmartAssetPrice(uint24 id) constant returns (uint) {
@@ -109,46 +114,14 @@ contract CarAssetLogic is BaseAssetLogic {
         return cities;
     }
 
-    function calculateDeliveryPrice(uint24 id, bytes32 cityName) onlySmartAssetRouter constant returns (uint) {
+    function calculateDeliveryPrice(uint24 id, bytes11 latitudeTo, bytes11 longitudeTo) onlySmartAssetRouter constant returns (uint) {
+        return 10 * coefficient * 1 wei;
+
+    }
+
+    function calculateDeliveryPrice (uint24 id, bytes32 cityName) onlySmartAssetRouter constant returns(uint) {
         LatLong latLong = cityMapping[cityName];
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-
-        var (latitude, longitude, imageUrl, assetType) = asset.getAssetIotById(id);
-
-        if (coefficient == 0)
-        coefficient = DEFAULT_COEFFICIENT;
-
-        return ((max(latLong.lat, uint(latitude))) + (max(latLong.long, uint(longitude)))) * coefficient * 1 wei;
-
-    }
-
-    /**
-     * @dev Function to updates Smart Asset IoT availability
-     */
-    function updateAvailabilityViaIotSimulator(
-    uint24 id,
-    bool availability
-    ) onlyIotSimulator()
-    {
-        carAssetLogicStorage.setSmartAssetAvailabilityData(id, availability);
-    }
-
-    /**
-     * @dev Function to force run update of external params
-     */
-    function forceUpdateFromExternalSource(uint24 id) onlySmartAssetRouter {
-        IotSimulationInterface iotSimulation = IotSimulationInterface(iotSimulationAddr);
-        iotSimulation.generateIotOutput(id, 0);
-        iotSimulation.generateIotAvailability(id, true);
-    }
-
-    /**
-     * @dev Function to updates Smart Asset IoT params
-     */
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) onlyIotSimulator()
-    {
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
+        return calculateDeliveryPrice(id, latLong.lat, latLong.long);
     }
 
     function getSmartAssetAvailability(uint24 id) constant returns (bool availability) {
@@ -162,13 +135,13 @@ contract CarAssetLogic is BaseAssetLogic {
     *@param lat latitude of the city to be added
     *@param long longitude of the city to be added
     */
-    function addCity(bytes32 cityName, uint lat, uint long) onlyOwner() {
+    function addCity(bytes32 cityName, bytes11 lat, bytes11 long) onlyOwner() {
         LatLong latLong = cityMapping[cityName];
-        if (latLong.lat == 0x0 && latLong.long == 0x0) {
+        if (latLong.initialized == false) {
             cities.push(cityName);
         }
 
-        cityMapping[cityName] = LatLong(lat, long);
+        cityMapping[cityName] = LatLong(lat, long, true);
     }
 
     /**
@@ -180,6 +153,15 @@ contract CarAssetLogic is BaseAssetLogic {
         coefficient = _wei;
     }
 
+
+    /**
+    * Sets coefficient for delivery price calculation in wei
+    *e.g 2226389000000000 ~ 0,0022 ether ~ 0.5 $
+    * @param _wei the coefficient to set
+    */
+    function setPriceCoefficientInWei(uint _wei) onlyOwner() {
+        priceCoefficient = _wei;
+    }
 
     /**
      * @dev Setter for the SmartAsset contract address
@@ -210,10 +192,19 @@ contract CarAssetLogic is BaseAssetLogic {
     }
 
     /**
+     * @dev Setter for the Car max price - parameter for car price calculation
+     * @param price Max price of the car
+     */
+    function setMaxCarPrice(uint price) onlyOwner returns (bool result) {
+        MAX_CAR_PRICE = price;
+        return true;
+    }
+
+    /**
      * @dev Formula for car price calculation
      */
     function _calculateAssetPrice(uint millage, uint8 smoker) constant private returns (uint price) {
-        return max(BASE_CAR_PRICE - millage / 10 - smoker * BASE_CAR_PRICE / 3, MIN_CAR_PRICE);
+        return min(max(BASE_CAR_PRICE - millage / 100 - smoker * BASE_CAR_PRICE / 3, MIN_CAR_PRICE), MAX_CAR_PRICE) * priceCoefficient * 1 wei;
     }
 
     /**
@@ -221,6 +212,13 @@ contract CarAssetLogic is BaseAssetLogic {
      */
     function max(uint a, uint b) private returns (uint) {
         return a > b ? a : b;
+    }
+
+    /**
+     * @dev Min function
+     */
+    function min(uint a, uint b) private returns (uint) {
+        return a < b ? a : b;
     }
 
     /**
@@ -233,4 +231,5 @@ contract CarAssetLogic is BaseAssetLogic {
     function setCarAssetLogicStorage(address _carAssetLogicStorage) onlyOwner {
         carAssetLogicStorage = CarAssetLogicStorage(_carAssetLogicStorage);
     }
+
 }

@@ -50,12 +50,16 @@ contract SmartAssetRouter is Destructible{
         return _getSmartAssetImpl(id).calculateDeliveryPrice(id, city);
     }
 
+    function calculateDeliveryPrice(uint24 id, bytes11 latitudeTo, bytes11 longitudeTo) returns (uint) {
+        return _getSmartAssetImpl(id).calculateDeliveryPrice(id, longitudeTo, latitudeTo);
+    }
+
     function getSmartAssetAvailability(uint24 id) returns (bool) {
         return _getSmartAssetImpl(id).getSmartAssetAvailability(id);
     }
 
-    function forceUpdateFromExternalSource(uint24 id) onlySmartAsset {
-        return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id);
+    function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAsset {
+        return _getSmartAssetImpl(id).forceUpdateFromExternalSource(id, param);
     }
 
     function setAssetType(uint24 assetId, bytes16 assetType) onlySmartAsset {

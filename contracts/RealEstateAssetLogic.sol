@@ -1,19 +1,18 @@
 pragma solidity ^0.4.10;
 
-import "./BaseAssetLogic.sol";
+import "./DhOraclizeBase.sol";
+
+contract RealEstateAssetLogic is DhOraclizeBase {
 
 
-contract RealEstateAssetLogic is BaseAssetLogic {
-
+    function updateAvailability(uint24 assetId, bool availability) internal {
+        //no op
+    }
 
     function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
         asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
-    }
-
-    function forceUpdateFromExternalSource(uint24 id) onlySmartAssetRouter {
-        updateViaIotSimulator(id, bytes11(id + 1), bytes11(id + 2), "/link");
     }
 
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {

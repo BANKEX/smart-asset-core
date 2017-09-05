@@ -46,7 +46,6 @@ contract CarAssetLogicStorage is Destructible {
         return smartAssetAvailabilityById[assetId].availability;
     }
 
-
     function setCarAssetLogic(address _carAssetLogic) onlyOwner {
         carAssetLogic = _carAssetLogic;
     }

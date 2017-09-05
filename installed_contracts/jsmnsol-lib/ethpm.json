@@ -1,0 +1,20 @@
+{
+  "authors": [
+    "Christoph Niemann <christoph@niemannsland.de>"
+  ],
+  "license": "MIT",
+  "description": "JSON parser for Solidity",
+  "keywords": [
+    "ethereum",
+    "json",
+    "parser"
+  ],
+  "links": {},
+  "sources": [
+    "./contracts/JsmnSolLib.sol"
+  ],
+  "dependencies": {},
+  "manifest_version": 1,
+  "package_name": "jsmnsol-lib",
+  "version": "0.0.3"
+}

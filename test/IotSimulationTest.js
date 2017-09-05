@@ -9,7 +9,7 @@ function toAscii(input) {
 
 contract('IotSimulation', function(accounts) {
 
-    it("Should update params of SmartAsset", function() {
+    xit("Should update params of SmartAsset", function() {
         var smartAssetGeneratedId;
         var smartAsset;
 
@@ -36,7 +36,7 @@ contract('IotSimulation', function(accounts) {
             });
     });
 
-    it("Should update params of SmartAssetAvailability", function() {
+    xit("Should update params of SmartAssetAvailability", function() {
         var smartAssetGeneratedId;
         var smartAsset;
         var simulator;
@@ -111,28 +111,4 @@ contract('IotSimulation', function(accounts) {
                 console.log('Expected error. Got it');
             });
     });
-
-    it("Simulation of IoT change data via force smartAssetMethod.", function() {
-         var smartAssetGeneratedId;
-         var smartAsset;
-         var simulator;
-
-         return SmartAsset.deployed().then(function(instance) {
-                 smartAsset = instance;
-                 return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
-             }).then(function(result) {
-                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
-                 return smartAsset.forceUpdateFromExternalSource(smartAssetGeneratedId);
-             })
-             .then(function(result) {
-                 return smartAsset.getAssetIotById.call(smartAssetGeneratedId);
-             })
-             .then(function(returnValue) {
-                assert.notEqual(toAscii(returnValue[0]), '');
-                assert.notEqual(toAscii(returnValue[1]), '');
-                assert.notEqual(toAscii(returnValue[2]), '');
-                assert.equal(toAscii(returnValue[3]), "car")
-             });
-     });
-
 });

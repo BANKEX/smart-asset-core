@@ -79,11 +79,15 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
         return 0;
     }
 
+    function calculateDeliveryPrice(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) constant returns (uint) {
+        return 0;
+    }
+
     function isAssetTheSameState(uint24 assetId) constant returns (bool sameState) {
         return true;
     }
 
-    function forceUpdateFromExternalSource(uint24 id) {
+    function forceUpdateFromExternalSource(uint24 id, string param) {
     }
 
     function setSmartAssetAddr(address contractAddress) onlyOwner returns (bool result) {

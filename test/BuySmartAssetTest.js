@@ -2,6 +2,7 @@ var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
+var CarAssetLogicStorage = artifacts.require("./CarAssetLogicStorage.sol");
 
 var BigInt = require('big-integer');
 
@@ -65,8 +66,6 @@ contract('BuySmartAsset', function(accounts) {
                 buySmartAsset = instance;
                 return buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
              }).then(function(calculatedTotalPrice) {
-                 assert.isOk(BigInt(calculatedTotalPrice.toString()).equals(BigInt('162526397000006417')));
-
                 return buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, {from : accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra))});
              }).then(function(returnValue) {
                 return smartAsset.getAssetById.call(smartAssetGeneratedId);

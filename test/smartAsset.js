@@ -122,7 +122,7 @@ contract('SmartAsset', function(accounts) {
 
       }).then(function(){
 
-          BKXToken.deployed().then(function(instance){
+          return BKXToken.deployed().then(function(instance){
               bkxToken = instance;
               return bkxToken.balanceOf(web3.eth.accounts[0]);
 
@@ -147,7 +147,7 @@ contract('SmartAsset', function(accounts) {
     it('Should throw error as last index is smaller that first', function() {
         var smartAsset;
 
-        SmartAsset.deployed().then(function(instance) {
+        return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
             return smartAsset.getMyAssets('car', 1, 0);
 
@@ -159,7 +159,7 @@ contract('SmartAsset', function(accounts) {
     it('Should throw error as the last index if out of bound', function() {
         var smartAsset;
 
-        SmartAsset.deployed().then(function(instance) {
+        return SmartAsset.deployed().then(function(instance) {
             smartAsset = instance;
             return smartAsset.getMyAssets('car', 0, 5);
 
@@ -200,6 +200,9 @@ contract('SmartAsset', function(accounts) {
 
             var vins = result[3];
             assert.equal(toAscii(vins[0]), 'Audi A8');
+
+            var status = result[6];
+            assert.equal(status, 3, "Status should be on 3 - OnSale position in the list of states ");
         })
 
     });

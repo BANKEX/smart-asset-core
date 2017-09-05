@@ -48,6 +48,14 @@ contract BuySmartAsset is Destructible, PullPayment {
     }
 
     /**
+     * @dev Returns total price of the asset
+     * @param assetId Id of smart asset
+     */
+    function getTotalPrice(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) constant returns (uint totalPrice) {
+        return smartAssetRouter.getSmartAssetPrice(assetId) + smartAssetRouter.calculateDeliveryPrice(assetId, latitudeTo, longitudeTo);
+    }
+
+    /**
      * @dev Performs buying of the asset
      * @param assetId Id of smart asset
      * @param cityName City name of destination/delivery city
@@ -60,10 +68,29 @@ contract BuySmartAsset is Destructible, PullPayment {
 
 		uint totalPrice = getTotalPrice(assetId, cityName);
 
-		require(msg.value >= totalPrice);
+        buyAsset(assetId, totalPrice);
+    }
 
-		SmartAssetI smartAssetInterface = SmartAssetI(smartAssetAddr);
-		smartAssetInterface.getAssetOwnerById(assetId).transfer(totalPrice);
+    /**
+     * @dev Performs buying of the asset
+     * @param assetId Id of smart asset
+     */
+    function buyAsset(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) payable {
+
+        require(smartAssetRouter.getSmartAssetAvailability(assetId));
+
+        require(smartAssetRouter.isAssetTheSameState(assetId));
+
+        uint totalPrice = getTotalPrice(assetId, latitudeTo, longitudeTo);
+
+        buyAsset(assetId, totalPrice);
+    }
+
+    function buyAsset(uint24 assetId, uint totalPrice) private{
+        require(msg.value >= totalPrice);
+
+        SmartAssetI smartAssetInterface = SmartAssetI(smartAssetAddr);
+        smartAssetInterface.getAssetOwnerById(assetId).transfer(totalPrice);
 
         smartAssetInterface.sellAsset(assetId, msg.sender);
 
