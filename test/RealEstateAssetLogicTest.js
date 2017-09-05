@@ -13,6 +13,9 @@ contract('RealEstateAssetLogic', function(accounts) {
         var smartAsset;
         var buySmartAsset;
 
+        var assetPrice;
+        var totalPrice;
+
 
         return SmartAssetMetadata.deployed().then(function(instance) {
            return instance.addSmartAssetType("real estate", RealEstateAssetLogic.address);
@@ -41,7 +44,6 @@ contract('RealEstateAssetLogic', function(accounts) {
             realEstateAssetLogic = instance;
             return realEstateAssetLogic.updateViaIotSimulator(id, 10, 10, '/image', {from : accounts[1]});
 
-
         }).then(function() {
              return smartAsset.calculateAssetPrice(id);
 
@@ -49,8 +51,8 @@ contract('RealEstateAssetLogic', function(accounts) {
             return smartAsset.getSmartAssetPrice(id);
 
         }).then(function(result) {
-            assert.equal(40000, parseInt(result));
-
+            assetPrice = parseInt(result)
+            assert.isAbove(assetPrice, 0);
             return smartAsset.makeOnSale(id);
 
 
@@ -62,8 +64,9 @@ contract('RealEstateAssetLogic', function(accounts) {
             return buySmartAsset.getTotalPrice(id, 'Saint-Petersburg');
 
         }).then(function(result) {
-            assert.equal(40010, parseInt(result));
-            return buySmartAsset.buyAsset(id, 'Saint-Petersburg', {from : accounts[1], value: 40010});
+            totalPrice = parseInt(result);
+            assert.isAbove(totalPrice, assetPrice);
+            return buySmartAsset.buyAsset(id, 'Saint-Petersburg', {from : accounts[1], value: totalPrice});
 
         }).then(function() {
             return smartAsset.getAssetById(id);

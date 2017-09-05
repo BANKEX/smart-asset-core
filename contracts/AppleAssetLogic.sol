@@ -2,7 +2,8 @@ pragma solidity ^0.4.10;
 
 import "./DhOraclizeBase.sol";
 
-contract RealEstateAssetLogic is DhOraclizeBase {
+
+contract AppleAssetLogic is DhOraclizeBase {
 
     /**
     * Coefficient to calculate apple device price.
@@ -13,24 +14,18 @@ contract RealEstateAssetLogic is DhOraclizeBase {
         //no op
     }
 
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) {
-        SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-
-        asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
-    }
-
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {
 
     }
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
-        var(timestamp, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner) = getById(assetId);
-        return priceCoefficient * sqm;
+        var(timestamp, docUrl, deviceType, email, model, characteristic, color, garanty, state, owner) = getById(assetId);
+        return priceCoefficient * uint(deviceType) + 10;
     }
 
     function getSmartAssetPrice(uint24 id) constant returns (uint) {
-        var(timestamp, docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner) = getById(id);
-        return priceCoefficient * sqm;
+        var(timestamp, docUrl, deviceType, email, model, characteristic, color, garanty, state, owner) = getById(id);
+        return priceCoefficient * uint(deviceType) + 10;
     }
 
     function isAssetTheSameState(uint24 id) onlySmartAssetRouter constant returns (bool modified) {
@@ -43,10 +38,10 @@ contract RealEstateAssetLogic is DhOraclizeBase {
 
     function calculateDeliveryPrice(uint24 id, bytes11 latitudeTo, bytes11 longitudeTo) onlySmartAssetRouter constant returns (uint) {
         return priceCoefficient;
+
     }
 
     function getSmartAssetAvailability(uint24 id) constant returns (bool) {
         return true;
     }
-
 }
