@@ -16,12 +16,23 @@ var BankExCertifiedStorage = artifacts.require('./BankExCertifiedStorage.sol');
 module.exports = function(deployer, network) {
 
     var smartAssetMetadata;
+    var smartAsset;
+    var realEstateAsset;
+    var carAssetLogic;
 
+//      SmartAsset linking
     deployer.then(function() {
             return SmartAsset.deployed();
         })
-        .then(function(smartAssetInstance) {
-            return smartAssetInstance.setSmartAssetStorage(SmartAssetStorage.address);
+        .then(function(instance) {
+            smartAsset = instance;
+            return smartAsset.setSmartAssetStorage(SmartAssetStorage.address);
+        })
+        .then(function() {
+            return smartAsset.setBuyAssetAddr(BuySmartAsset.address);
+        })
+        .then(function(){
+            return smartAsset.setBKXTokenAddress(BKXToken.address);
         })
         .then(function() {
             return SmartAssetStorage.deployed()
@@ -35,29 +46,19 @@ module.exports = function(deployer, network) {
         .then(function(smartAssetRouter) {
             return smartAssetRouter.setSmartAssetAddress(SmartAsset.address);
         })
-        .then(function() {
-            return SmartAsset.deployed();
-        })
-        .then(function(smartAsset) {
-            return smartAsset.setBuyAssetAddr(BuySmartAsset.address);
-        })
+//      Logic contracts linking
         .then(function(){
              return CarAssetLogic.deployed();
         })
         .then(function(instance){
-             return instance.setSmartAssetAddr(SmartAsset.address);
+             carAssetLogic = instance;
+             return carAssetLogic.setSmartAssetAddr(SmartAsset.address);
         })
         .then(function(){
-            return CarAssetLogic.deployed();
-        })
-        .then(function(instance){
-             return instance.setSmartAssetRouterAddr(SmartAssetRouter.address);
+             return carAssetLogic.setSmartAssetRouterAddr(SmartAssetRouter.address);
         })
         .then(function(){
-            return CarAssetLogic.deployed();
-        })
-        .then(function(instance){
-            return instance.setIotSimulationAddr(IotSimulation.address);
+            return carAssetLogic.setIotSimulationAddr(IotSimulation.address);
         })
         .then(function() {
             if(network == 'development') {
@@ -71,14 +72,11 @@ module.exports = function(deployer, network) {
             return instance.setCarAssetLogic(CarAssetLogic.address);
         })
         .then(function() {
-            return CarAssetLogic.deployed();
-        })
-        .then(function(instance) {
             if(network == 'development') {
-                return instance.setCarAssetLogicStorage(CarAssetLogicStorageMock.address);
+                return carAssetLogic.setCarAssetLogicStorage(CarAssetLogicStorageMock.address);
             }
             else {
-                return instance.setCarAssetLogicStorage(CarAssetLogicStorage.address);
+                return carAssetLogic.setCarAssetLogicStorage(CarAssetLogicStorage.address);
             }
         })
         .then(function() {
@@ -87,37 +85,22 @@ module.exports = function(deployer, network) {
         .then(function(instance){
             return instance.setCarAssetLogicAddr(CarAssetLogic.address);
         })
-
-        .then(function(){
-            return SmartAssetMetadata.deployed()
+        .then(function() {
+            return RealEstateAssetLogic.deployed();
         })
         .then(function(instance){
-            smartAssetMetadata = instance;
-            return smartAssetMetadata.addSmartAssetType("car", CarAssetLogic.address);
+            realEstateAsset = instance;
+            realEstateAsset.setSmartAssetAddr(SmartAsset.address);
         })
+        .then(function(){
+             return realEstateAsset.setSmartAssetRouterAddr(SmartAssetRouter.address);
+        })
+//      Additional contracts
         .then(function(){
             return BKXToken.deployed()
         })
         .then(function(instance){
             return instance.setSmartAssetContract(SmartAsset.address);
-        })
-        .then(function() {
-            return SmartAsset.deployed();
-        })
-        .then(function(instance){
-            return instance.setBKXTokenAddress(BKXToken.address);
-        })
-        .then(function() {
-            return RealEstateAssetLogic.deployed();
-        })
-        .then(function(instance){
-            return instance.setSmartAssetAddr(SmartAsset.address);
-        })
-        .then(function(){
-            return RealEstateAssetLogic.deployed();
-        })
-        .then(function(instance){
-             return instance.setSmartAssetRouterAddr(SmartAssetRouter.address);
         })
         .then(function() {
             return BankExCertified.deployed();
@@ -128,9 +111,25 @@ module.exports = function(deployer, network) {
         }).then(function(instance) {
             return instance.setBankExCertifiedAddress(BankExCertified.address);
         })
+//      Post deploy steps
+        .then(function(){
+            return SmartAssetMetadata.deployed()
+        })
+        .then(function(instance){
+            smartAssetMetadata = instance;
+            return smartAssetMetadata.addSmartAssetType("car", CarAssetLogic.address);
+        })
         .then(function() {
             return smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
         })
-    ;
-
+        .then(function() {
+            if((network == 'development') || (network == 'testnet')) {
+                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000})
+            }
+        })
+        .then(function() {
+            if((network == 'development') || (network == 'testnet')) {
+                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000})
+            }
+        });
 };
