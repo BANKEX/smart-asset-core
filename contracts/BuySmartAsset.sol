@@ -99,4 +99,12 @@ contract BuySmartAsset is Destructible, PullPayment {
 
         AssetSoldTo(assetId, msg.sender);
     }
+
+    function setSmartAsset(address _smartAssetAddr) onlyOwner {
+        smartAssetAddr = _smartAssetAddr;
+    }
+
+    function setSmartAssetRouter(address routerAddress) onlyOwner {
+        smartAssetRouter = SmartAssetRouter(routerAddress);
+    }
 }

@@ -124,12 +124,17 @@ module.exports = function(deployer, network) {
         })
         .then(function() {
             if((network == 'development') || (network == 'testnet')) {
-                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000})
+                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000}, function(err){
+                    if(err) console.log(err);
+                })
             }
         })
         .then(function() {
             if((network == 'development') || (network == 'testnet')) {
-                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000})
+                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000}, function(err){
+                    if(err) console.log(err);
+                })
+
             }
         });
 };

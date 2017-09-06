@@ -60,5 +60,48 @@ contract('SmartAssetMetadata', function(accounts) {
         })
     });
 
+    it('should not add asset type that already defined but update the logic address', function() {
+
+        assetType = 'Not Used Type';
+        var newSmartAssetLogicAddress = '0xFF7766715a9Ea89007a2Fc6d2c2D7b6909490E25';
+
+        return SmartAssetMetadata.deployed().then(function(instance) {
+
+            meta = instance;
+            return meta.getAssetTypes();
+
+        }).then(function(result) {
+            assetTypesInitial = result.length;
+
+        }).then(function() {
+            return meta.addSmartAssetType(assetType, smartAssetLogicAddress);
+
+        }).then(function() {
+            return meta.getAssetTypes();
+
+        }).then(function(result) {
+            assert.equal(assetTypesInitial + 1, result.length);
+            return meta.getAssetLogicAddress(assetType);
+
+        }).then(function(result){
+            assert.equal(smartAssetLogicAddress.toLowerCase(), result);
+
+            return meta.addSmartAssetType(assetType, newSmartAssetLogicAddress);
+
+        }).then(function(){
+
+            return meta.getAssetTypes();
+
+        }).then(function(result) {
+            assert.equal(assetTypesInitial + 1, result.length);
+            return meta.getAssetLogicAddress(assetType);
+
+        }).then(function(result) {
+            assert.equal(newSmartAssetLogicAddress.toLowerCase(), result);
+        })
+
+
+    })
+
 
 });

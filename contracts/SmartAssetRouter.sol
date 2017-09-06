@@ -3,6 +3,7 @@ pragma solidity ^0.4.10;
 
 import './SmartAssetMetadata.sol';
 import './SmartAssetLogicInterface.sol';
+import './SmartAssetRouterStorage.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 
@@ -10,8 +11,7 @@ contract SmartAssetRouter is Destructible{
     address private smartAssetAddr;
 
     SmartAssetMetadata smartAssetMetadata;
-
-    mapping (uint24 => bytes16) assetTypeById;
+    SmartAssetRouterStorage smartAssetRouterStorage;
 
     /**
      * Check whether SmartAsset contract executes method or not
@@ -27,7 +27,7 @@ contract SmartAssetRouter is Destructible{
     }
 
     function getAssetType(uint24 assetId) constant returns (bytes16) {
-        return assetTypeById[assetId];
+        return smartAssetRouterStorage.getAssetType(assetId);
     }
 
     function onAssetSold(uint24 assetId) onlySmartAsset {
@@ -63,7 +63,7 @@ contract SmartAssetRouter is Destructible{
     }
 
     function setAssetType(uint24 assetId, bytes16 assetType) onlySmartAsset {
-        assetTypeById[assetId] = assetType;
+        smartAssetRouterStorage.setAssetType(assetId, assetType);
     }
 
     /**
@@ -75,8 +75,16 @@ contract SmartAssetRouter is Destructible{
         smartAssetAddr = contractAddress;
     }
 
+    function setSmartAssetMetaAddress(address _metaDataAddress) onlyOwner {
+        smartAssetMetadata = SmartAssetMetadata(_metaDataAddress);
+    }
+
+    function setSmartAssetRouterStorage(address _smartAssetRouterStorageAddress) onlyOwner {
+        smartAssetRouterStorage = SmartAssetRouterStorage(_smartAssetRouterStorageAddress);
+    }
+
     function _getSmartAssetImpl(uint24 assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface){
-        bytes16 assetType = assetTypeById[assetId];
+        bytes16 assetType = smartAssetRouterStorage.getAssetType(assetId);
         address implAddress = smartAssetMetadata.getAssetLogicAddress(assetType);
         return SmartAssetLogicInterface(implAddress);
     }

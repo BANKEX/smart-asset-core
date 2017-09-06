@@ -20,5 +20,13 @@ module.exports =
             port: 8545,
             network_id: 1
         }
-    }
+    },
+    mocha:
+        {
+            reporter: "mocha-junit-reporter",
+            reporterOptions:
+                {
+                    mochaFile: "junit-test-results.xml"
+                }
+        }
 };

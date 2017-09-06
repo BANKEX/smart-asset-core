@@ -525,7 +525,15 @@ contract SmartAsset is Destructible {
 
     }
 
-    function setSmartAssetStorage (address _smartAssetStorage) {
+    function setSmartAssetStorage (address _smartAssetStorage) onlyOwner {
         smartAssetStorage = SmartAssetStorage(_smartAssetStorage);
+    }
+
+    function setSmartAssetMetaData(address metaDataAddress) onlyOwner {
+        smartAssetMetadata = SmartAssetMetadata(metaDataAddress);
+    }
+
+    function setSmartAssetRouterAddress(address routerAddress) onlyOwner {
+        smartAssetRouter = SmartAssetRouter(routerAddress);
     }
 }
