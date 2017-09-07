@@ -1,106 +1,58 @@
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
-var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
-var CarAssetLogicStorage = artifacts.require("./CarAssetLogicStorage.sol");
 
 var BigInt = require('big-integer');
 
-contract('BuySmartAsset', function(accounts) {
-    it("Should sell asset", function() {
-         var smartAssetGeneratedId;
-         var expectedAssetTotalPrice;
-         var deliveryCity = "Lublin";
+contract('BuySmartAsset', function (accounts) {
 
-         var smartAsset;
-         var iotSimulation;
-         var buySmartAsset;
-         var extra = 1000; //
-         var balanceBeforeWithdrawal;
-         var balanceAfterWithdrawal;
-         var gasPrice = 100000000000;
-         var gas ;
+    it("Should sell asset", async () => {
+        var deliveryCity = "Lublin";
 
-         return SmartAsset.deployed().then(function(instance) {
-                 smartAsset = instance;
-                 return smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
-             }).then(function(result) {
-                 smartAssetGeneratedId = result.logs[0].args.id.c[0];
-                 return IotSimulation.deployed();
-             })
-             .then(function(instance) {
-                 iotSimulation = instance;
-                 return iotSimulation.generateIotOutput(smartAssetGeneratedId, 0);
-             })
-             .then(function() {
-                return iotSimulation.generateIotAvailability(smartAssetGeneratedId, true);
-             })
-             .then(function() {
-                 return smartAsset.calculateAssetPrice(smartAssetGeneratedId);
-             })
-             .then(function() {
-                 return smartAsset.getSmartAssetPrice(smartAssetGeneratedId);
-             })
-             .then(function(returnValue) {
-                assert.isAbove(parseInt(returnValue), 0, 'price should be bigger than 0');
-                return smartAsset.makeOnSale(smartAssetGeneratedId);
-             })
-             .then(function(result) {
-                return smartAsset.getAssetById.call(smartAssetGeneratedId);
-             })
-             .then(function(returnValue) {
-                assert.equal(returnValue[8], 3, 'state should be OnSale = position 3 in State enum list');
-                return smartAsset.makeOffSale(smartAssetGeneratedId);
-             })
-             .then(function(result) {
-                return smartAsset.getAssetById.call(smartAssetGeneratedId);
-             })
-             .then(function(returnValue) {
-                assert.equal(returnValue[8], 2, 'state should be PriceCalculated = position 2 in State enum list');
-                return smartAsset.makeOnSale(smartAssetGeneratedId);
-             })
-             .then(function(returnValue) {
-                return BuySmartAsset.deployed();
-             })
-             .then(function(instance) {
-                buySmartAsset = instance;
-                return buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
-             }).then(function(calculatedTotalPrice) {
-                return buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, {from : accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra))});
-             }).then(function(returnValue) {
-                return smartAsset.getAssetById.call(smartAssetGeneratedId);
-             }).then(function(returnValue) {
-                assert.equal(returnValue[8], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
-                assert.equal(returnValue[9], accounts[1]);
-
-             }).then(function() {
-                 return web3.eth.getBalance(accounts[1]);
-
-             }).then(function(result) {
-                 balanceBeforeWithdrawal = result.toString();
+        var extra = 1000; //
+        var gasPrice = 100000000000;
 
 
-             }).then(function() {
-                 return buySmartAsset.withdrawPayments.estimateGas({from : accounts[1]});
+        const smartAsset = await SmartAsset.deployed();
+        const iotSimulation = await IotSimulation.deployed();
+        const buySmartAsset = await BuySmartAsset.deployed()
 
-             }).then(function(result){
-                 gas = result;
+        const result = await smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        const smartAssetGeneratedId = result.logs[0].args.id.c[0];
 
-             }).then(function() {
-                 return buySmartAsset.withdrawPayments({from : accounts[1], gasPrice: gasPrice});
+        await iotSimulation.generateIotOutput(smartAssetGeneratedId, 0);
+        await iotSimulation.generateIotAvailability(smartAssetGeneratedId, true);
+        await smartAsset.calculateAssetPrice(smartAssetGeneratedId);
 
-             }).then(function() {
+        const assetObjPrice = await smartAsset.getSmartAssetPrice(smartAssetGeneratedId);
+        assert.isAbove(parseInt(assetObjPrice), 0, 'price should be bigger than 0');
 
-                 return web3.eth.getBalance(accounts[1]);
+        await smartAsset.makeOnSale(smartAssetGeneratedId);
 
-             }).then(function(result) {
+        var assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
+        assert.equal(assetObj[8], 3, 'state should be OnSale = position 3 in State enum list');
 
-                 balanceAfterWithdrawal = result.toString();
+        await smartAsset.makeOffSale(smartAssetGeneratedId);
+        assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
+        assert.equal(assetObj[8], 2, 'state should be PriceCalculated = position 2 in State enum list');
 
-                 var totalGas = gas * gasPrice;
+        await smartAsset.makeOnSale(smartAssetGeneratedId);
 
-                 assert.isOk((BigInt(balanceAfterWithdrawal).add(BigInt(totalGas))).eq(BigInt(balanceBeforeWithdrawal).add(BigInt(extra))));
-             })
-             ;
-      });
-});
+        const calculatedTotalPrice = await buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
+        await buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, { from: accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra)) });
+
+        assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
+        assert.equal(assetObj[8], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
+        assert.equal(assetObj[9], accounts[1]);
+
+        const balanceBeforeWithdrawal = await web3.eth.getBalance(accounts[1]);
+        const gas = await buySmartAsset.withdrawPayments.estimateGas({ from: accounts[1] });
+        await buySmartAsset.withdrawPayments({ from: accounts[1], gasPrice: gasPrice });
+
+        const balanceAfterWithdrawal = await web3.eth.getBalance(accounts[1]);
+
+        var totalGas = gas * gasPrice;
+
+        assert.isOk((BigInt(balanceAfterWithdrawal.toString()).add(BigInt(totalGas))).eq(BigInt(balanceBeforeWithdrawal.toString()).add(BigInt(extra))));
+    })
+})

@@ -4,77 +4,34 @@ var SmartAssetMetadata = artifacts.require("./SmartAssetMetadata.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 
 
-contract('RealEstateAssetLogic', function(accounts) {
+contract('RealEstateAssetLogic', function (accounts) {
 
-    it('Should pass flow', function() {
+    it('Should pass flow', async () => {
+        const smartAsset = await SmartAsset.deployed();
+        const smartAssetMetadata = await SmartAssetMetadata.deployed();
+        const realEstateAssetLogic = await RealEstateAssetLogic.deployed();
+        const buySmartAsset = await BuySmartAsset.deployed();
 
-        var id;
-        var realEstateAssetLogic;
-        var smartAsset;
-        var buySmartAsset;
+        await smartAssetMetadata.addSmartAssetType("real estate", RealEstateAssetLogic.address);
+        const result = await smartAsset.createAsset(200, "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", "40", "Real Estate");
+        const id = await result.logs[0].args.id.c[0];
 
-        var assetPrice;
-        var totalPrice;
+        var assetObj = await smartAsset.getAssetById(id);
+        assert.equal(accounts[0], assetObj[9]);
 
+        await realEstateAssetLogic.updateViaIotSimulator(id, 10, 10, "/link", { from: accounts[1] });
+        await smartAsset.calculateAssetPrice(id);
+        const assetPrice = await smartAsset.getSmartAssetPrice(id);
 
-        return SmartAssetMetadata.deployed().then(function(instance) {
-           return instance.addSmartAssetType("real estate", RealEstateAssetLogic.address);
+        assert.isAbove(parseInt(assetPrice), 0);
+        await smartAsset.makeOnSale(id);
 
-        }).then(function(){
-            return SmartAsset.deployed();
+        const totalPrice = await buySmartAsset.getTotalPrice(id, 'Saint-Petersburg');
+        assert.isAbove(parseInt(totalPrice), assetPrice);
 
-        }).then(function(instance) {
-            smartAsset = instance;
-            return smartAsset.createAsset(200, "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", "40", "Real Estate");
+        await buySmartAsset.buyAsset(id, 'Saint-Petersburg', { from: accounts[1], value: totalPrice });
+        assetObj = await smartAsset.getAssetById(id);
 
-        }).then(function(result){
-            id = result.logs[0].args.id.c[0];
-
-        }).then(function() {
-            return smartAsset.getAssetById(id);
-
-        }).then(function(result) {
-            assert.equal(accounts[0], result[9]);
-
-
-        }).then(function() {
-            return RealEstateAssetLogic.deployed()
-
-        }).then(function(instance){
-            realEstateAssetLogic = instance;
-            return realEstateAssetLogic.updateViaIotSimulator(id, 10, 10, "/link", {from : accounts[1]});
-
-        }).then(function() {
-             return smartAsset.calculateAssetPrice(id);
-
-        }).then(function() {
-            return smartAsset.getSmartAssetPrice(id);
-
-        }).then(function(result) {
-            assetPrice = parseInt(result)
-            assert.isAbove(assetPrice, 0);
-            return smartAsset.makeOnSale(id);
-
-
-        }).then(function() {
-            return BuySmartAsset.deployed();
-
-        }).then(function (instance) {
-            buySmartAsset = instance;
-            return buySmartAsset.getTotalPrice(id, 'Saint-Petersburg');
-
-        }).then(function(result) {
-            totalPrice = parseInt(result);
-            assert.isAbove(totalPrice, assetPrice);
-            return buySmartAsset.buyAsset(id, 'Saint-Petersburg', {from : accounts[1], value: totalPrice});
-
-        }).then(function() {
-            return smartAsset.getAssetById(id);
-
-        }).then(function(result) {
-            assert.equal(accounts[1], result[9]);
-
-        });
+        assert.equal(accounts[1], assetObj[9]);
     })
-
-});
+})

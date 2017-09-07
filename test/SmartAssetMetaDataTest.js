@@ -4,104 +4,59 @@ function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
 }
 
-contract('SmartAssetMetadata', function(accounts) {
-
-    var meta;
+contract('SmartAssetMetadata', function (accounts) {
     var assetType = "New Asset Type";
     var smartAssetLogicAddress = '0x586Bfe2c9a8A69727549e92326642301389771B8';
-    var assetTypesInitial;
 
-    it("Should add new asset type", function() {
+    it("Should add new asset type", async () => {
+        const meta = await SmartAssetMetadata.deployed();
+        var result = await meta.getAssetTypes();
+        const assetTypesInitial = result.length;
 
-        return SmartAssetMetadata.deployed().then(function(instance) {
+        await meta.addSmartAssetType(assetType, smartAssetLogicAddress);
 
-            meta = instance;
-            return meta.getAssetTypes();
+        result = await meta.getAssetTypes();
 
-        }).then(function(result) {
-            assetTypesInitial = result.length;
-
-        }).then(function() {
-            return meta.addSmartAssetType(assetType, smartAssetLogicAddress);
-
-        }).then(function() {
-            return meta.getAssetTypes();
-
-        }).then(function(result) {
-            assert.equal(assetTypesInitial + 1, result.length);
-            assert.equal(assetType, toAscii(result[assetTypesInitial]));
-        })
-    });
-
-    it("Should update Smart Asset Logic Address", function() {
-
-        var newSmartAssetLogicAddress = '0xFF7766715a9Ea89007a2Fc6d2c2D7b6909490E25';
-
-        return SmartAssetMetadata.deployed().then(function(instance) {
-
-            meta = instance;
-            return meta.addSmartAssetType(assetType, smartAssetLogicAddress);
-
-        }).then(function() {
-            return meta.getAssetLogicAddress(assetType);
-
-        }).then(function(result) {
-            assert.equal(smartAssetLogicAddress.toLowerCase(), result);
-
-        }).then(function() {
-            meta.updateAssetLogicAddress(assetType, newSmartAssetLogicAddress);
-
-        }).then(function() {
-            return meta.getAssetLogicAddress(assetType);
-
-        }).then(function(result) {
-            assert.equal(newSmartAssetLogicAddress.toLowerCase(), result);
-
-        })
-    });
-
-    it('should not add asset type that already defined but update the logic address', function() {
-
-        assetType = 'Not Used Type';
-        var newSmartAssetLogicAddress = '0xFF7766715a9Ea89007a2Fc6d2c2D7b6909490E25';
-
-        return SmartAssetMetadata.deployed().then(function(instance) {
-
-            meta = instance;
-            return meta.getAssetTypes();
-
-        }).then(function(result) {
-            assetTypesInitial = result.length;
-
-        }).then(function() {
-            return meta.addSmartAssetType(assetType, smartAssetLogicAddress);
-
-        }).then(function() {
-            return meta.getAssetTypes();
-
-        }).then(function(result) {
-            assert.equal(assetTypesInitial + 1, result.length);
-            return meta.getAssetLogicAddress(assetType);
-
-        }).then(function(result){
-            assert.equal(smartAssetLogicAddress.toLowerCase(), result);
-
-            return meta.addSmartAssetType(assetType, newSmartAssetLogicAddress);
-
-        }).then(function(){
-
-            return meta.getAssetTypes();
-
-        }).then(function(result) {
-            assert.equal(assetTypesInitial + 1, result.length);
-            return meta.getAssetLogicAddress(assetType);
-
-        }).then(function(result) {
-            assert.equal(newSmartAssetLogicAddress.toLowerCase(), result);
-        })
-
-
+        assert.equal(assetTypesInitial + 1, result.length);
+        assert.equal(assetType, toAscii(result[assetTypesInitial]));
     })
 
+    it("Should update Smart Asset Logic Address", async () => {
+        var newSmartAssetLogicAddress = '0xFF7766715a9Ea89007a2Fc6d2c2D7b6909490E25';
 
-});
+        const meta = await SmartAssetMetadata.deployed();
+        await meta.addSmartAssetType(assetType, smartAssetLogicAddress);
+
+        var result = await meta.getAssetLogicAddress(assetType);
+        assert.equal(smartAssetLogicAddress.toLowerCase(), result);
+
+        await meta.updateAssetLogicAddress(assetType, newSmartAssetLogicAddress);
+        result = await meta.getAssetLogicAddress(assetType);
+
+        assert.equal(newSmartAssetLogicAddress.toLowerCase(), result);
+    })
+
+    it('should not add asset type that already defined but update the logic address', async () => {
+        assetType = 'Not Used Type';
+        var newSmartAssetLogicAddress = '0xFF7766715a9Ea89007a2Fc6d2c2D7b6909490E25';
+        const meta = await SmartAssetMetadata.deployed();
+
+        var result = await meta.getAssetTypes();
+        const assetTypesInitial = result.length;
+
+        await meta.addSmartAssetType(assetType, smartAssetLogicAddress);
+
+        result = await meta.getAssetTypes();
+        assert.equal(assetTypesInitial + 1, result.length);
+
+        result = await meta.getAssetLogicAddress(assetType);
+        assert.equal(smartAssetLogicAddress.toLowerCase(), result);
+
+        await meta.addSmartAssetType(assetType, newSmartAssetLogicAddress);
+        result = await meta.getAssetTypes();
+        assert.equal(assetTypesInitial + 1, result.length);
+
+        result = await meta.getAssetLogicAddress(assetType);
+        assert.equal(newSmartAssetLogicAddress.toLowerCase(), result);
+    })
+})
