@@ -2,104 +2,61 @@ var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 
-contract('CarAssetLogic', function(accounts) {
+contract('CarAssetLogic', function (accounts) {
 
     var smartAssetId;
     var smartAsset;
     var iotSimulationInstance;
 
-    it("Should return price", function(done) {
-        SmartAsset.deployed().then(function(instance){
-            smartAsset = instance;
-            return smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
-        }).then(function(result) {
-            smartAssetId = result.logs[0].args.id.c[0];
-            return IotSimulation.deployed();
-        }).then(function(instance) {
-            return instance.generateIotOutput(smartAssetId, 10);
-        }).then(function(){
-            return smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
-        }).then(function(result){
-            assert.isAbove(result, 0);
-            done();
-        });
-    });
+    it("Should return price", async () => {
+        const smartAsset = await SmartAsset.deployed();
+        const iotSimulation = await IotSimulation.deployed();
 
-    it('Should add city', function(done) {
+        const result = await smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+        const smartAssetId = await result.logs[0].args.id.c[0];
 
-        var carAssetLogic;
-        var citiesNumber;
+        await iotSimulation.generateIotOutput(smartAssetId, 10);
+        const deliveryPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
 
-        CarAssetLogic.deployed().then(function (instance) {
-            carAssetLogic = instance;
-            return carAssetLogic.getAvailableCities.call();
-        }).then(function(result){
-            citiesNumber = result.length;
-            console.log(citiesNumber);
-        }).then(function(){
-            return carAssetLogic.addCity('London', '60', '60');
-        }).then(function(){
-            return carAssetLogic.getAvailableCities.call();
-        }).then(function(result) {
-            console.log(result.length);
-            assert.notEqual(citiesNumber, result.length);
-            done();
-        })
+        assert.isAbove(deliveryPrice, 0);
+    })
 
-    });
+    it('Should add city', async () => {
+        const carAssetLogic = await CarAssetLogic.deployed();
+        const availableCitiesBeforeAdd = await carAssetLogic.getAvailableCities.call();
+
+        await carAssetLogic.addCity('London', '60', '60');
+        const availableCitiesAfterAdd = await carAssetLogic.getAvailableCities.call();
+
+        assert.notEqual(availableCitiesBeforeAdd.length, availableCitiesAfterAdd.length);
+    })
 
 
-    it('Should not add city', function(done) {
+    it('Should not add city', async () => {
+        const carAssetLogic = await CarAssetLogic.deployed();
+        const availableCitiesBeforeAdd = await carAssetLogic.getAvailableCities.call();
 
-        var carAssetLogic;
-        var citiesNumber;
+        await carAssetLogic.addCity('Moscow', 60, 60);
+        const availableCitiesAfterAdd = await carAssetLogic.getAvailableCities.call();
 
-        CarAssetLogic.deployed().then(function (instance) {
-            carAssetLogic = instance;
-            return carAssetLogic.getAvailableCities.call();
-        }).then(function(result){
-            citiesNumber = result.length;
-        }).then(function(){
-            return carAssetLogic.addCity('Moscow', 60, 60);
-        }).then(function(){
-            return carAssetLogic.getAvailableCities.call();
-        }).then(function(result) {
-            assert.equal(citiesNumber, result.length);
-            done();
-        })
+        assert.equal(availableCitiesBeforeAdd.length, availableCitiesAfterAdd.length);
+    })
 
-    });
-
-    it("Should set coefficient", function(done) {
-
-        var carAssetLogic;
-        var smartAsset;
-        var priceInitial;
+    it("Should set coefficient", async () => {
         var coefficientToSet = 2226389; // == (DEFAULT_COEFFICIENT / 10 to the 9th)
 
-        SmartAsset.deployed().then(function(instance){
-            smartAsset = instance;
-            return smartAsset.createAsset(Date.now(), "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
-        }).then(function(result) {
-            smartAssetId = result.logs[0].args.id.c[0];
-            return IotSimulation.deployed();
-        }).then(function(instance) {
-            instance.generateIotOutput(smartAssetId, 100);
-        }).then(function() {
-            return CarAssetLogic.deployed()
-        }).then(function(instance){
-            carAssetLogic = instance;
-            return smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
-        }).then(function(result){
-            priceInitial = result;
-        }).then(function() {
-            return carAssetLogic.setCoefficientInWei(coefficientToSet);
-        }).then(function() {
-            return smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
-        }).then(function(result){
-            assert.equal(priceInitial/Math.pow(10, 9), result);
-            done();
-        });
-    });
+        const smartAsset = await SmartAsset.deployed();
+        const iotSimulation = await IotSimulation.deployed();
+        const carAssetLogic = await CarAssetLogic.deployed();
+        const result = await smartAsset.createAsset(Date.now(), "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        const smartAssetId = await result.logs[0].args.id.c[0];
 
-});
+        await iotSimulation.generateIotOutput(smartAssetId, 100);
+
+        const initialPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+        await carAssetLogic.setCoefficientInWei(coefficientToSet);
+        const newPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+
+        assert.equal(initialPrice / Math.pow(10, 9), newPrice);
+    })
+})
