@@ -2,19 +2,26 @@ pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
+
 /**
  * Interface for SmartAsset contract
  */
 contract CarAssetLogicInterface {
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl);
+    function updateViaIotSimulator(
+        uint24 id,
+        bytes11 latitude,
+        bytes11 longitude,
+        bytes32 imageUrl
+    );
 
     function updateAvailabilityViaIotSimulator(uint24 id, bool availability);
 }
 
+
 /**
  * @title IotSimulation contract
  */
-contract IotSimulation is Destructible{
+contract IotSimulation is Destructible {
     address private carAssetLogicAddr;
     uint private hundred = 100;
     uint private thousand = 1000;

@@ -4,7 +4,7 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 import './BankExCertifiedStorage.sol';
 
 
-contract BankExCertified is Destructible  {
+contract BankExCertified is Destructible {
 
     BankExCertifiedStorage bankExCertifiedStorage;
 

@@ -5,6 +5,7 @@ import './SmartAssetMetadata.sol';
 import './SmartAssetStorage.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
+
 /**
 *Interface for BKXToken contract
 */
@@ -99,9 +100,25 @@ contract SmartAsset is Destructible {
         address owner = msg.sender;
         uint24 id = smartAssetStorage.getId();
 
-        smartAssetStorage.setSmartAssetDataManualById(id, year, docUrl, _type, email, b1, b2, b3, u1);
+        smartAssetStorage.setSmartAssetDataManualById(
+            id,
+            year,
+            docUrl,
+            _type,
+            email,
+            b1,
+            b2,
+            b3,
+            u1
+        );
 
-        smartAssetStorage.setSmartAssetDataMetaById(id, smartAssetStorage.getSmartAssetsCountByOwner(owner, assetType), 0, uint8(State.ManualDataAreEntered), owner);
+        smartAssetStorage.setSmartAssetDataMetaById(
+            id,
+            smartAssetStorage.getSmartAssetsCountByOwner(owner, assetType),
+            0,
+            uint8(State.ManualDataAreEntered),
+            owner
+        );
 
         smartAssetStorage.addSmartAssetByOwner(owner, assetType, id);
 
@@ -130,7 +147,6 @@ contract SmartAsset is Destructible {
         smartAssetStorage.deleteSmartAssetById(id);
     }
 
-
     /**
     *@dev Gets the number of assets on sale by type
     *@param asset type
@@ -140,7 +156,6 @@ contract SmartAsset is Destructible {
         return smartAssetStorage.getSmartAssetsOnSaleCount(assetType);
     }
 
-
     /**
     *@dev Gets assets on sale by type
     *@param asset type
@@ -148,13 +163,14 @@ contract SmartAsset is Destructible {
     */
     function getAssetsOnSale(bytes16 assetType, uint24 firstIndex, uint24 lastIndex) constant
     returns (
-    uint24[],
-    uint8[],
-    uint8[],
-    bytes32[],
-    bytes32[],
-    bytes32[],
-    uint[]) {
+        uint24[],
+        uint8[],
+        uint8[],
+        bytes32[],
+        bytes32[],
+        bytes32[],
+        uint[])
+    {
 
         require(lastIndex >= firstIndex);
         require(lastIndex <= getAssetsOnSaleCount(assetType));
@@ -163,7 +179,7 @@ contract SmartAsset is Destructible {
 
         uint24 count = 0;
 
-        for(uint24 k = firstIndex; k <= lastIndex; k++) {
+        for (uint24 k = firstIndex; k <= lastIndex; k++) {
 
             ids[count] = smartAssetStorage.getAssetOnSaleAtIndex(assetType, k);
 
@@ -174,7 +190,7 @@ contract SmartAsset is Destructible {
         return getAssets(ids);
     }
 
-     function searchAssetsOnSaleByKeyWord(bytes16 assetType, bytes32 keyWord) constant
+    function searchAssetsOnSaleByKeyWord(bytes16 assetType, bytes32 keyWord) constant
      returns (
          uint24[] memory id,
          uint8[] memory year,
@@ -182,26 +198,33 @@ contract SmartAsset is Destructible {
          bytes32[] memory b1,
          bytes32[] memory b2,
          bytes32[] memory b3,
-         uint[] memory u1) {
+         uint[] memory u1)
+     {
 
-         uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
+        uint lastIndex = getAssetsOnSaleCount(assetType) - 1;
 
-         uint count = getCountOfMatchingItems(lastIndex, assetType, keyWord);
+        uint count = getCountOfMatchingItems(lastIndex, assetType, keyWord);
 
-         uint24[] memory foundItemsArray = getFoundItemsArray(count, lastIndex, assetType, keyWord);
+        uint24[] memory foundItemsArray = getFoundItemsArray(
+            count,
+            lastIndex,
+            assetType,
+            keyWord
+        );
 
-         return getFoundItems(count, foundItemsArray);
+        return getFoundItems(count, foundItemsArray);
      }
 
     function getFoundItems(uint count, uint24[] smartAssetIds) private constant
-    returns(
+     returns (
         uint24[] memory ids,
         uint8[] memory yearss,
         uint8[] memory _types,
         bytes32[] memory b1s,
         bytes32[] memory b2s,
         bytes32[] memory b3s,
-        uint[] memory u1s) {
+        uint[] memory u1s)
+    {
 
         ids = new uint24[](count);
         yearss = new uint8[](count);
@@ -226,27 +249,32 @@ contract SmartAsset is Destructible {
         return (ids, yearss, _types, b1s, b2s, b3s, u1s);
     }
 
-
     function getCountOfMatchingItems(uint lastIndex, bytes16 assetType, bytes32 keyWord) private constant returns(uint) {
         uint count = 0;
         for (uint24 i = 0; i <= lastIndex; i++) {
             uint24 id = smartAssetStorage.getAssetOnSaleAtIndex(assetType, i);
 
-            if(smartAssetStorage.getSmartAssetb1(id) == keyWord) {
+            if (smartAssetStorage.getSmartAssetb1(id) == keyWord) {
                 count++;
             }
         }
         return count;
     }
 
-    function getFoundItemsArray(uint count, uint lastIndex, bytes16 assetType, bytes32 keyWord) private constant returns(uint24[]) {
+    function getFoundItemsArray(
+        uint count,
+        uint lastIndex,
+        bytes16 assetType,
+        bytes32 keyWord
+    ) private constant returns(uint24[])
+    {
         uint24[] memory foundItems = new uint24[](count);
         uint indexInFound = 0;
 
         for (uint24 i = 0; i <= lastIndex; i++) {
             uint24 id = smartAssetStorage.getAssetOnSaleAtIndex(assetType, i);
 
-            if(smartAssetStorage.getSmartAssetb1(id) == keyWord) {
+            if (smartAssetStorage.getSmartAssetb1(id) == keyWord) {
                 foundItems[indexInFound++] = id;
             }
         }
@@ -283,8 +311,7 @@ contract SmartAsset is Destructible {
         State state,
         address owner,
         bytes32 assetType
-    )
-    {
+    ) {
         require(!smartAssetStorage.isAssetEmpty(id));
 
         year = smartAssetStorage.getSmartAssetYear(id);
@@ -313,8 +340,7 @@ contract SmartAsset is Destructible {
     bytes11,
     bytes32,
     bytes32
-    )
-    {
+    ) {
         require(!smartAssetStorage.isAssetEmpty(id));
         var(latitude, longitude, imageUrl) = smartAssetStorage.getSmartAssetDataIotById(id);
 
@@ -338,7 +364,7 @@ contract SmartAsset is Destructible {
      * @return id Identification numbers
      * @return rest of Smart asset definition/entity
      */
-     function getMyAssets(bytes16 assetType , uint8 firstIndex, uint8 lastIndex) constant
+    function getMyAssets(bytes16 assetType, uint8 firstIndex, uint8 lastIndex) constant
      returns (
          uint24[],
          uint8[] ,
@@ -347,24 +373,20 @@ contract SmartAsset is Destructible {
          bytes32[],
          bytes32[],
          uint[]
-     )
-     {
-         require(lastIndex >= firstIndex);
-         require(lastIndex <= getMyAssetsCount(assetType));
+     ) {
+        require(lastIndex >= firstIndex);
+        require(lastIndex <= getMyAssetsCount(assetType));
 
-         uint24[] memory ids = new uint24[](lastIndex - firstIndex + 1);
+        uint24[] memory ids = new uint24[](lastIndex - firstIndex + 1);
 
-         uint24 count = 0;
+        uint24 count = 0;
 
-         for(uint24 k = firstIndex; k <= lastIndex; k++) {
+        for (uint24 k = firstIndex ; k <= lastIndex; k++) {
+            ids[count] = smartAssetStorage.getAssetByOwnerAtIndex(msg.sender, assetType, k);
+            count++;
+        }
 
-             ids[count] = smartAssetStorage.getAssetByOwnerAtIndex(msg.sender, assetType, k);
-
-             count++;
-
-         }
-
-         return getAssets(ids);
+        return getAssets(ids);
      }
 
     /**
@@ -379,7 +401,13 @@ contract SmartAsset is Destructible {
 
         uint24 smartAssetsOnSale = smartAssetStorage.getSmartAssetsOnSaleCount(assetType);
 
-        smartAssetStorage.setSmartAssetDataMetaById(id, indexInSmartAssetsByOwner, smartAssetsOnSale, uint8(State.OnSale), owner);
+        smartAssetStorage.setSmartAssetDataMetaById(
+            id,
+            indexInSmartAssetsByOwner,
+            smartAssetsOnSale,
+            uint8(State.OnSale),
+            owner
+        );
 
         smartAssetStorage.addSmartAssetOnSale(assetType, id);
 
@@ -395,7 +423,13 @@ contract SmartAsset is Destructible {
 
         require(owner == msg.sender && State(state) == State.OnSale);
 
-        smartAssetStorage.setSmartAssetDataMetaById(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, uint8(State.PriceCalculated), owner);
+        smartAssetStorage.setSmartAssetDataMetaById(
+            id,
+            indexInSmartAssetsByOwner,
+            indexInSmartAssetsOnSale,
+            uint8(State.PriceCalculated),
+            owner
+        );
         bytes16 assetType = smartAssetRouter.getAssetType(id);
 
         smartAssetStorage.deleteSmartAssetOnSale(assetType, indexInSmartAssetsOnSale);
@@ -412,8 +446,7 @@ contract SmartAsset is Destructible {
         bytes11 latitude,
         bytes11 longitude,
         bytes32 imageUrl
-    )
-    {
+    ) {
         //checks that function is executed from correct contract
         require(msg.sender == smartAssetMetadata.getAssetLogicAddress(smartAssetRouter.getAssetType(id)));
 
@@ -422,11 +455,27 @@ contract SmartAsset is Destructible {
 
         require(State(state) < State.OnSale);
 
-        smartAssetStorage.setSmartAssetDataIotById(id, latitude, longitude, imageUrl);
+        smartAssetStorage.setSmartAssetDataIotById(
+            id,
+            latitude,
+            longitude,
+            imageUrl
+        );
 
-        smartAssetStorage.setSmartAssetDataMetaById(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, uint8(State.IotDataCollected), owner);
+        smartAssetStorage.setSmartAssetDataMetaById(
+            id,
+            indexInSmartAssetsByOwner,
+            indexInSmartAssetsOnSale,
+            uint8(State.IotDataCollected),
+            owner
+        );
 
-        IotUpdateEvent(id, latitude, longitude, imageUrl);
+        IotUpdateEvent(
+            id,
+            latitude,
+            longitude,
+            imageUrl
+        );
     }
 
     function forceUpdateFromExternalSource(uint24 assetId, string param) {
@@ -439,7 +488,13 @@ contract SmartAsset is Destructible {
         var (indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner) = smartAssetStorage.getSmartAssetDataMetaById(assetId);
         require(owner == msg.sender && State(state) < State.OnSale);
         smartAssetRouter.calculateAssetPrice(assetId);
-        smartAssetStorage.setSmartAssetDataMetaById(assetId, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, uint8(State.PriceCalculated), owner);
+        smartAssetStorage.setSmartAssetDataMetaById(
+            assetId,
+            indexInSmartAssetsByOwner,
+            indexInSmartAssetsOnSale,
+            uint8(State.PriceCalculated),
+            owner
+        );
     }
 
     function getSmartAssetPrice(uint24 assetId) constant returns (uint) {
@@ -473,7 +528,13 @@ contract SmartAsset is Destructible {
         smartAssetStorage.deleteSmartAssetOnSale(assetType, indexInSmartAssetsOnSale);
         smartAssetStorage.deleteSmartAssetByOwner(owner, assetType, indexInSmartAssetsByOwner);
 
-        smartAssetStorage.setSmartAssetDataMetaById(id, indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, uint8(State.ManualDataAreEntered), newOwner);
+        smartAssetStorage.setSmartAssetDataMetaById(
+            id,
+            indexInSmartAssetsByOwner,
+            indexInSmartAssetsOnSale,
+            uint8(State.ManualDataAreEntered),
+            newOwner
+        );
 
         smartAssetStorage.addSmartAssetByOwner(newOwner, assetType, id);
 
@@ -498,7 +559,8 @@ contract SmartAsset is Destructible {
         bytes32[] memory b1s,
         bytes32[] memory b2s,
         bytes32[] memory b3s,
-        uint[] memory states) {
+        uint[] memory states
+    ){
 
         uint size = ids.length;
 

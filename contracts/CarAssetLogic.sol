@@ -9,6 +9,7 @@ contract IotSimulationInterface {
     function generateIotAvailability(uint24 id, bool availability) returns (bool result);
 }
 
+
 /**
  * @title Car smart asset logic  contract
  */
@@ -41,9 +42,9 @@ contract CarAssetLogic is DhOraclizeBase {
      * Construct encapsulating latitude and longitude pair
      */
     struct LatLong {
-    bytes11 lat;
-    bytes11 long;
-    bool initialized;
+        bytes11 lat;
+        bytes11 long;
+        bool initialized;
     }
 
     // Mapping city to its latitude longitude pair
@@ -88,7 +89,19 @@ contract CarAssetLogic is DhOraclizeBase {
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
         uint price = _calculateAssetPrice(millage, smoker);
-        carAssetLogicStorage.setSmartAssetPriceData(assetId, price, sha256(timestamp, docUrl, smoker, email, model, vin, color, millage));
+        carAssetLogicStorage.setSmartAssetPriceData(
+            assetId,
+            price,
+            sha256(
+                timestamp,
+                docUrl,
+                smoker,
+                email,
+                model,
+                vin,
+                color,
+                millage)
+        );
 
         return price;
     }
@@ -103,7 +116,16 @@ contract CarAssetLogic is DhOraclizeBase {
         var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
         var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(assetId);
 
-        return sha256(timestamp, docUrl, smoker, email, model, vin, color, millage) == hash;
+        return sha256(
+            timestamp,
+            docUrl,
+            smoker,
+            email,
+            model,
+            vin,
+            color,
+            millage
+        ) == hash;
     }
 
     /**
@@ -152,7 +174,6 @@ contract CarAssetLogic is DhOraclizeBase {
     function setCoefficientInWei(uint _wei) onlyOwner() {
         coefficient = _wei;
     }
-
 
     /**
     * Sets coefficient for delivery price calculation in wei

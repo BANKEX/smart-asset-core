@@ -34,7 +34,7 @@ contract CarAssetLogicStorage is Destructible {
         smartAssetPriceById[assetId] = SmartAssetPriceData(price, hash);
     }
 
-    function getSmartAssetPriceData(uint24 assetId) onlyCarAssetLogic constant returns (uint, bytes32)  {
+    function getSmartAssetPriceData(uint24 assetId) onlyCarAssetLogic constant returns (uint, bytes32) {
         return (smartAssetPriceById[assetId].price, smartAssetPriceById[assetId].hash);
     }
 
