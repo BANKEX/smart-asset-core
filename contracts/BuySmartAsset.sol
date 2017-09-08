@@ -1,4 +1,4 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import './SmartAssetRouter.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
