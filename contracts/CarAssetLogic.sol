@@ -14,10 +14,8 @@ contract IotSimulationInterface {
  * @title Car smart asset logic  contract
  */
 contract CarAssetLogic is DhOraclizeBase {
-    uint private BASE_CAR_PRICE = 10000;
-
-    uint private MIN_CAR_PRICE = 100;
-    uint private MAX_CAR_PRICE = 10000;
+    uint private MIN_CAR_PRICE = 1;
+    uint private MAX_CAR_PRICE = 10;
 
     address private iotSimulationAddr;
 
@@ -195,15 +193,6 @@ contract CarAssetLogic is DhOraclizeBase {
     }
 
     /**
-     * @dev Setter for the Car base price - parameter for car price calculation
-     * @param price Base price of the car
-     */
-    function setBaseCarPrice(uint price) onlyOwner returns (bool result) {
-        BASE_CAR_PRICE = price;
-        return true;
-    }
-
-    /**
      * @dev Setter for the Car min price - parameter for car price calculation
      * @param price Min price of the car
      */
@@ -225,7 +214,7 @@ contract CarAssetLogic is DhOraclizeBase {
      * @dev Formula for car price calculation
      */
     function _calculateAssetPrice(uint millage, uint8 smoker) constant private returns (uint price) {
-        return min(max(BASE_CAR_PRICE - millage / 100 - smoker * BASE_CAR_PRICE / 3, MIN_CAR_PRICE), MAX_CAR_PRICE) * priceCoefficient * 1 wei;
+        return min(max(millage % 10 - smoker, MIN_CAR_PRICE), MAX_CAR_PRICE) * priceCoefficient * 1 wei;
     }
 
     /**
