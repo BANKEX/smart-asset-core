@@ -1,8 +1,9 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 
 import './SmartAssetLogicInterface.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
+
 
 /**
  * Interface for SmartAsset contract
@@ -21,7 +22,11 @@ contract SmartAssetInterface {
         uint,
         address);
 
-    function updateFromExternalSource(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl);
+    function updateFromExternalSource(
+        uint24 id,
+        bytes11 latitude,
+        bytes11 longitude,
+        bytes32 imageUrl);
 
     function getAssetIotById(uint24 id) constant returns (bytes11, bytes11, bytes32, bytes32);
 }
@@ -42,8 +47,7 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
         _;
     }
 
-    function getById(uint24 assetId)
-    returns (
+    function getById(uint24 assetId) returns (
         uint32,
         bytes6,
         uint8,
@@ -58,7 +62,6 @@ contract BaseAssetLogic is SmartAssetLogicInterface, Destructible {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
         return asset.getAssetById(assetId);
     }
-
 
     function onAssetSold(uint24 assetId) {
 

@@ -1,8 +1,9 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import './BaseAssetLogic.sol';
 import '../oraclize/oraclizeAPI_0.4.sol';
 import 'jsmnsol-lib/JsmnSolLib.sol';
+
 
 contract DhOraclizeBase is BaseAssetLogic, usingOraclize {
 
@@ -30,13 +31,23 @@ contract DhOraclizeBase is BaseAssetLogic, usingOraclize {
         updateAvailability(assetId, shaked);
 
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
-        asset.updateFromExternalSource(assetId, lat, long, imageUrl);
+        asset.updateFromExternalSource(
+            assetId,
+            lat,
+            long,
+            imageUrl
+        );
     }
 
     function updateAvailability(uint24 assetId, bool availability) internal;
 
     function forceUpdateFromExternalSource(uint24 id, string param) onlySmartAssetRouter {
-        string memory url   = strConcat("json(", endpoint , uint2str(id), ").0.parameters");
+        string memory url = strConcat(
+            "json(",
+            endpoint,
+            uint2str(id),
+            ").0.parameters"
+        );
         bytes32 oraclizeId = oraclize_query("URL", url, 800000);
         oraclizeIdToAssetId[oraclizeId] = id;
     }
@@ -51,13 +62,13 @@ contract DhOraclizeBase is BaseAssetLogic, usingOraclize {
         bytes memory bresult = bytes(_a);
         uint mint = 0;
 
-        for (uint i=0; i<bresult.length; i++){
-            if ((bresult[i] >= 48)&&(bresult[i] <= 57)){
+        for (uint i = 0; i < bresult.length; i++) {
+            if ((bresult[i] >= 48)&&(bresult[i] <= 57)) {
 
                 mint *= 16;
                 mint += uint(bresult[i]) - 48;
             }
-            if ((bresult[i] >= 97)&&(bresult[i] <= 102)){
+            if ((bresult[i] >= 97)&&(bresult[i] <= 102)) {
 
                 mint *= 16;
                 mint += uint(bresult[i]) - 97 + 10;

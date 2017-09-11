@@ -1,6 +1,7 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import "./DhOraclizeBase.sol";
+
 
 contract RealEstateAssetLogic is DhOraclizeBase {
 
@@ -13,10 +14,20 @@ contract RealEstateAssetLogic is DhOraclizeBase {
         //no op
     }
 
-    function updateViaIotSimulator(uint24 id, bytes11 latitude, bytes11 longitude, bytes32 imageUrl) {
+    function updateViaIotSimulator(
+        uint24 id,
+        bytes11 latitude,
+        bytes11 longitude,
+        bytes32 imageUrl
+    ) {
         SmartAssetInterface asset = SmartAssetInterface(smartAssetAddr);
 
-        asset.updateFromExternalSource(id, latitude, longitude, imageUrl);
+        asset.updateFromExternalSource(
+            id,
+            latitude,
+            longitude,
+            imageUrl
+        );
     }
 
     function onAssetSold(uint24 assetId) onlySmartAssetRouter {

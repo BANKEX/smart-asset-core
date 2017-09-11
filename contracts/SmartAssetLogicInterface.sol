@@ -1,7 +1,7 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
+
 
 contract SmartAssetLogicInterface {
-
 
     /**
      * @dev Called upon completion of the sell asset process

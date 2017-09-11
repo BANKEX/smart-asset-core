@@ -1,8 +1,9 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import './SmartAssetRouter.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 import 'zeppelin-solidity/contracts/payment/PullPayment.sol';
+
 
 /**
  * Interface for SmartAsset contract
@@ -66,7 +67,7 @@ contract BuySmartAsset is Destructible, PullPayment {
 
         require(smartAssetRouter.isAssetTheSameState(assetId));
 
-		uint totalPrice = getTotalPrice(assetId, cityName);
+        uint totalPrice = getTotalPrice(assetId, cityName);
 
         buyAsset(assetId, totalPrice);
     }
@@ -86,7 +87,7 @@ contract BuySmartAsset is Destructible, PullPayment {
         buyAsset(assetId, totalPrice);
     }
 
-    function buyAsset(uint24 assetId, uint totalPrice) private{
+    function buyAsset(uint24 assetId, uint totalPrice) private {
         require(msg.value >= totalPrice);
 
         SmartAssetI smartAssetInterface = SmartAssetI(smartAssetAddr);

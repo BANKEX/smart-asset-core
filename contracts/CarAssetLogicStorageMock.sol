@@ -1,6 +1,7 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import './CarAssetLogicStorage.sol';
+
 
 contract CarAssetLogicStorageMock is CarAssetLogicStorage {
 

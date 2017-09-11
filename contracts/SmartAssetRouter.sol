@@ -1,4 +1,4 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 
 import './SmartAssetMetadata.sol';
@@ -7,7 +7,7 @@ import './SmartAssetRouterStorage.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 
-contract SmartAssetRouter is Destructible{
+contract SmartAssetRouter is Destructible {
     address private smartAssetAddr;
 
     SmartAssetMetadata smartAssetMetadata;
@@ -83,7 +83,7 @@ contract SmartAssetRouter is Destructible{
         smartAssetRouterStorage = SmartAssetRouterStorage(_smartAssetRouterStorageAddress);
     }
 
-    function _getSmartAssetImpl(uint24 assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface){
+    function _getSmartAssetImpl(uint24 assetId) private constant returns (SmartAssetLogicInterface smartAssetLogicInterface) {
         bytes16 assetType = smartAssetRouterStorage.getAssetType(assetId);
         address implAddress = smartAssetMetadata.getAssetLogicAddress(assetType);
         return SmartAssetLogicInterface(implAddress);

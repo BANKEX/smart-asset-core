@@ -1,4 +1,4 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
@@ -10,12 +10,11 @@ contract SmartAssetMetadata is Destructible {
     bytes16[] assetTypes;
 
     function addSmartAssetType(bytes16 newType, address smartAssetLogic) onlyOwner() {
-        if(smartAssetLogicAddresses[newType] == address(0)) {
+        if (smartAssetLogicAddresses[newType] == address(0)) {
             assetTypes.push(newType);
         }
 
         smartAssetLogicAddresses[newType] = smartAssetLogic;
-
     }
 
     function getAssetTypes() constant returns (bytes16[]) {

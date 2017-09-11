@@ -1,7 +1,8 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
+
 
 /**
  * @title Interface to confirm/comply with token API (for example via Etherium Wallet)

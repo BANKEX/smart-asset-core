@@ -1,10 +1,10 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 import './BankExCertifiedStorage.sol';
 
 
-contract BankExCertified is Destructible  {
+contract BankExCertified is Destructible {
 
     BankExCertifiedStorage bankExCertifiedStorage;
 
