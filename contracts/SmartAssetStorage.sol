@@ -37,6 +37,8 @@ contract SmartAssetStorage is Destructible {
         bytes32 imageUrl;
     }
 
+    mapping(uint24 => uint) assetsTimestamp;
+
     mapping (uint => SmartAssetDataMeta) smartAssetMetaById;
 
     mapping (uint => SmartAssetDataManual) smartAssetManualById;
@@ -220,6 +222,10 @@ contract SmartAssetStorage is Destructible {
         return(data.indexInSmartAssetsByOwner);
     }
 
+    function getSmartAssetTimestamp(uint24 id) constant returns(uint) {
+        return assetsTimestamp[id];
+    }
+
     function getSmartAssetLatitude(uint24 id) constant returns(bytes11) {
         SmartAssetDataIot data = smartAssetIotById[id];
         return(data.latitude);
@@ -281,6 +287,10 @@ contract SmartAssetStorage is Destructible {
 
     function setSmartAssetIndexInAssetsByOwner(uint24 id, uint24 indexInSmartAssetsByOwner) onlySmartAsset {
         smartAssetMetaById[id].indexInSmartAssetsByOwner = indexInSmartAssetsByOwner;
+    }
+
+    function setSmartAssetTimestamp(uint24 id, uint timestamp) onlySmartAsset {
+        assetsTimestamp[id] = timestamp;
     }
 
     function setSmartAssetLatitude(uint24 id, bytes11 latitude) onlySmartAsset {

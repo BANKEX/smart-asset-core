@@ -76,6 +76,7 @@ contract SmartAsset is Destructible {
     //     * @param b3 Generic byte32 parameter #3
     //     */
     function createAsset(
+        uint timestamp,
         uint8 year,
         bytes32 docUrl,
         uint8 _type,
@@ -119,6 +120,8 @@ contract SmartAsset is Destructible {
             uint8(State.ManualDataAreEntered),
             owner
         );
+
+        smartAssetStorage.setSmartAssetTimestamp(id, timestamp);
 
         smartAssetStorage.addSmartAssetByOwner(owner, assetType, id);
 
@@ -300,6 +303,7 @@ contract SmartAsset is Destructible {
      */
     function getAssetById(uint24 id) constant
     returns (
+        uint timestamp,
         uint8 year,
         bytes32 docUrl,
         uint8 _type,
@@ -314,6 +318,7 @@ contract SmartAsset is Destructible {
     ) {
         require(!smartAssetStorage.isAssetEmpty(id));
 
+        timestamp = smartAssetStorage.getSmartAssetTimestamp(id);
         year = smartAssetStorage.getSmartAssetYear(id);
         docUrl = smartAssetStorage.getSmartAssetDocURl(id);
         _type = smartAssetStorage.getSmartAssetType(id);
@@ -503,10 +508,6 @@ contract SmartAsset is Destructible {
 
     function getSmartAssetAvailability(uint24 assetId) constant returns (bool) {
         return smartAssetRouter.getSmartAssetAvailability(assetId);
-    }
-
-    function calculateDeliveryPrice(uint24 assetId, bytes32 param) constant returns (uint) {
-        return smartAssetRouter.calculateDeliveryPrice(assetId, param);
     }
 
     function calculateDeliveryPrice(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) constant returns (uint) {

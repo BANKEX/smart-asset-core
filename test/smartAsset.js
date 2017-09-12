@@ -8,24 +8,26 @@ function toAscii(input) {
 contract('SmartAsset', function (accounts) {
 
     it("Should create asset", async () => {
+        const timestamp = Date.now();
         const smartAsset = await SmartAsset.deployed();
-        const result = await smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+        const result = await smartAsset.createAsset(timestamp, 200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
         const smartAssetGeneratedId = result.logs[0].args.id.c[0];
 
         const returnValue = await smartAsset.getAssetById.call(smartAssetGeneratedId);
 
         console.log(returnValue);
-        assert.equal(returnValue[0], 200);
-        assert.equal(toAscii(returnValue[1]), "docUrl");
-        assert.equal(returnValue[2], 1);
-        assert.equal(toAscii(returnValue[3]), "email@email.com");
-        assert.equal(toAscii(returnValue[4]), "BMW X5");
-        assert.equal(toAscii(returnValue[5]), "VIN01");
-        assert.equal(toAscii(returnValue[6]), "yellow");
-        assert.equal(returnValue[7], 25000);
-        assert.equal(returnValue[8], 0);
-        assert.equal(returnValue[9], accounts[0]);
-        assert.equal(toAscii(returnValue[10]), "car");
+        assert.equal(returnValue[0], timestamp);
+        assert.equal(returnValue[1], 200);
+        assert.equal(toAscii(returnValue[2]), "docUrl");
+        assert.equal(returnValue[3], 1);
+        assert.equal(toAscii(returnValue[4]), "email@email.com");
+        assert.equal(toAscii(returnValue[5]), "BMW X5");
+        assert.equal(toAscii(returnValue[6]), "VIN01");
+        assert.equal(toAscii(returnValue[7]), "yellow");
+        assert.equal(returnValue[8], 25000);
+        assert.equal(returnValue[9], 0);
+        assert.equal(returnValue[10], accounts[0]);
+        assert.equal(toAscii(returnValue[11]), "car");
 
     })
 
@@ -33,8 +35,10 @@ contract('SmartAsset', function (accounts) {
         const smartAsset = await SmartAsset.deployed();
         const initialMyAssetsCarCount = await smartAsset.getMyAssetsCount.call("car");
 
-        await smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
-        await smartAsset.createAsset(201, "docUrl", 25, "email@email2.com", "notCar", "info", "data", "25", "Notcar");
+        const timestamp = Date.now();
+
+        await smartAsset.createAsset(timestamp, 200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        await smartAsset.createAsset(timestamp, 201, "docUrl", 25, "email@email2.com", "notCar", "info", "data", "25", "Notcar");
 
         const newMyAssetsCarCount = await smartAsset.getMyAssetsCount.call("car");
         assert.equal(parseInt(newMyAssetsCarCount), parseInt(initialMyAssetsCarCount) + 1);
@@ -112,8 +116,9 @@ contract('SmartAsset', function (accounts) {
     })
 
     it('Should return assets on sale', async () => {
+        const timestamp = Date.now();
         const smartAsset = await SmartAsset.deployed();
-        const res = await smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        const res = await smartAsset.createAsset(timestamp, 200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
         const smartAssetGeneratedId = res.logs[0].args.id.c[0];
 
         await smartAsset.calculateAssetPrice(smartAssetGeneratedId);
@@ -138,15 +143,16 @@ contract('SmartAsset', function (accounts) {
     })
 
     it('Should search for smart assets', async () => {
+        const timestamp = Date.now();
         const smartAsset = await SmartAsset.deployed();
-        var result = await smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        var result = await smartAsset.createAsset(timestamp, 200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
         var smartAssetGeneratedId = result.logs[0].args.id.c[0];
 
         await smartAsset.calculateAssetPrice(smartAssetGeneratedId);
 
         await smartAsset.makeOnSale(smartAssetGeneratedId);
 
-        result = await smartAsset.createAsset(201, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
+        result = await smartAsset.createAsset(timestamp, 201, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
         smartAssetGeneratedId = result.logs[0].args.id.c[0];
 
         await smartAsset.calculateAssetPrice(smartAssetGeneratedId);
