@@ -1,3 +1,7 @@
+var HDWalletProvider = require("truffle-hdwallet-provider");
+
+var mnemonic = "";
+
 module.exports =
 {
     networks:
@@ -10,10 +14,8 @@ module.exports =
         },
         testnet:
         {
-            host: 'localhost',
-            port: 8545,
-            network_id: '3',
-            gas: '4700000'
+            provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/F4WHTukmf2BpFI8UE2L5"),
+            network_id: 3
         },
         live: {
             host: 'localhost',
