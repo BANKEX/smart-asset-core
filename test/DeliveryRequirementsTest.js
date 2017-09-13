@@ -9,14 +9,15 @@ contract('CarAssetLogic', function (accounts) {
     var iotSimulationInstance;
 
     it("Should return price", async () => {
+        const timestamp = Date.now();
         const smartAsset = await SmartAsset.deployed();
         const iotSimulation = await IotSimulation.deployed();
 
-        const result = await smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+        const result = await smartAsset.createAsset(timestamp, 200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
         const smartAssetId = await result.logs[0].args.id.c[0];
 
         await iotSimulation.generateIotOutput(smartAssetId, 10);
-        const deliveryPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+        const deliveryPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "111,12", "111,12");
 
         assert.isAbove(deliveryPrice, 0);
     })
@@ -48,14 +49,14 @@ contract('CarAssetLogic', function (accounts) {
         const smartAsset = await SmartAsset.deployed();
         const iotSimulation = await IotSimulation.deployed();
         const carAssetLogic = await CarAssetLogic.deployed();
-        const result = await smartAsset.createAsset(Date.now(), "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        const result = await smartAsset.createAsset(Date.now(), 200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
         const smartAssetId = await result.logs[0].args.id.c[0];
 
         await iotSimulation.generateIotOutput(smartAssetId, 100);
 
-        const initialPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+        const initialPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "111", "111")
         await carAssetLogic.setCoefficientInWei(coefficientToSet);
-        const newPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "Saint-Petersburg")
+        const newPrice = await smartAsset.calculateDeliveryPrice(smartAssetId, "111", "111")
 
         assert.equal(initialPrice / Math.pow(10, 9), newPrice);
     })

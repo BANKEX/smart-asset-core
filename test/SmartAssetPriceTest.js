@@ -7,7 +7,7 @@ contract('IotSimulation', function (accounts) {
     it("Check exception will be thrown in case asset is in step OnSale or after", async () => {
         const smartAsset = await SmartAsset.deployed();
         const simulator = await IotSimulation.deployed();
-        var result = await smartAsset.createAsset(200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
+        var result = await smartAsset.createAsset(Date.now(), 200, "docUrl", 1, "email@email.com", "BMW X5", "VIN01", "yellow", "25000", "car");
         const smartAssetGeneratedId = result.logs[0].args.id.c[0];
 
         await simulator.generateIotOutput(smartAssetGeneratedId, 0);

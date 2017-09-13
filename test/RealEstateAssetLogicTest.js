@@ -13,13 +13,13 @@ contract('RealEstateAssetLogic', function (accounts) {
         const buySmartAsset = await BuySmartAsset.deployed();
 
         await smartAssetMetadata.addSmartAssetType("real estate", RealEstateAssetLogic.address);
-        const result = await smartAsset.createAsset(200, "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", "40", "Real Estate");
+        const result = await smartAsset.createAsset(Date.now(), 200, "docUrl", 3, "email@email1.com", "GOVNUMBER123", "London Private Drive 4", "", 40, "Real Estate");
         const id = await result.logs[0].args.id.c[0];
 
         var assetObj = await smartAsset.getAssetById(id);
-        assert.equal(accounts[0], assetObj[9]);
+        assert.equal(accounts[0], assetObj[10]);
 
-        await realEstateAssetLogic.updateViaIotSimulator(id, 10, 10, "/link", { from: accounts[1] });
+        await realEstateAssetLogic.updateViaIotSimulator(id, '11,11', '22,22', "/link", { from: accounts[1] });
         await smartAsset.calculateAssetPrice(id);
         const assetPrice = await smartAsset.getSmartAssetPrice(id);
 
@@ -32,6 +32,6 @@ contract('RealEstateAssetLogic', function (accounts) {
         await buySmartAsset.buyAsset(id, 'Saint-Petersburg', { from: accounts[1], value: totalPrice });
         assetObj = await smartAsset.getAssetById(id);
 
-        assert.equal(accounts[1], assetObj[9]);
+        assert.equal(accounts[1], assetObj[10]);
     })
 })

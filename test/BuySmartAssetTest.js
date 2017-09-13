@@ -17,7 +17,7 @@ contract('BuySmartAsset', function (accounts) {
         const iotSimulation = await IotSimulation.deployed();
         const buySmartAsset = await BuySmartAsset.deployed()
 
-        const result = await smartAsset.createAsset(200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
+        const result = await smartAsset.createAsset(Date.now(), 200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
         const smartAssetGeneratedId = result.logs[0].args.id.c[0];
 
         await iotSimulation.generateIotOutput(smartAssetGeneratedId, 0);
@@ -30,11 +30,11 @@ contract('BuySmartAsset', function (accounts) {
         await smartAsset.makeOnSale(smartAssetGeneratedId);
 
         var assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
-        assert.equal(assetObj[8], 3, 'state should be OnSale = position 3 in State enum list');
+        assert.equal(assetObj[9], 3, 'state should be OnSale = position 3 in State enum list');
 
         await smartAsset.makeOffSale(smartAssetGeneratedId);
         assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
-        assert.equal(assetObj[8], 2, 'state should be PriceCalculated = position 2 in State enum list');
+        assert.equal(assetObj[9], 2, 'state should be PriceCalculated = position 2 in State enum list');
 
         await smartAsset.makeOnSale(smartAssetGeneratedId);
 
@@ -42,8 +42,8 @@ contract('BuySmartAsset', function (accounts) {
         await buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, { from: accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra)) });
 
         assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
-        assert.equal(assetObj[8], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
-        assert.equal(assetObj[9], accounts[1]);
+        assert.equal(assetObj[9], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
+        assert.equal(assetObj[10], accounts[1]);
 
         const balanceBeforeWithdrawal = await web3.eth.getBalance(accounts[1]);
         const gas = await buySmartAsset.withdrawPayments.estimateGas({ from: accounts[1] });

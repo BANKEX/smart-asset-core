@@ -87,20 +87,25 @@ contract CarAssetLogic is DhOraclizeBase {
     }
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
-        var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
+        var(timestamp, year, docUrl, smoker, email, model, vin, color, millage, state, owner, assetType) = getById(assetId);
+        return calculateAssetPrice0(assetId, timestamp, docUrl, smoker, email, model, vin, color, millage);
+    }
+
+    function calculateAssetPrice0(uint24 assetId, uint timestamp, bytes32 docUrl, uint8 smoker, bytes32 email, bytes32 model, bytes32 vin , bytes32 color, uint millage) private returns(uint) {
         uint price = _calculateAssetPrice(millage, smoker);
+
         carAssetLogicStorage.setSmartAssetPriceData(
-            assetId,
-            price,
-            sha256(
-                timestamp,
-                docUrl,
-                smoker,
-                email,
-                model,
-                vin,
-                color,
-                millage)
+        assetId,
+        price,
+        sha256(
+        timestamp,
+        docUrl,
+        smoker,
+        email,
+        model,
+        vin,
+        color,
+        millage)
         );
 
         return price;
@@ -112,19 +117,23 @@ contract CarAssetLogic is DhOraclizeBase {
         return price;
     }
 
-    function isAssetTheSameState(uint24 assetId) onlySmartAssetRouter constant returns (bool modified) {
-        var(timestamp, docUrl, smoker, email, model, vin, color, millage, state, owner) = getById(assetId);
+    function isAssetTheSameState(uint24 assetId) onlySmartAssetRouter constant returns (bool) {
+        var(timestamp, year, docUrl, smoker, email, model, vin, color, millage, state, owner, assetType) = getById(assetId);
+        return checkState(assetId, timestamp, docUrl, smoker, email, model, vin, color, millage);
+    }
+
+    function checkState(uint24 assetId, uint timestamp, bytes32 docUrl, uint8 smoker, bytes32 email, bytes32 model, bytes32 vin , bytes32 color, uint millage) private returns(bool) {
         var (price, hash) = carAssetLogicStorage.getSmartAssetPriceData(assetId);
 
         return sha256(
-            timestamp,
-            docUrl,
-            smoker,
-            email,
-            model,
-            vin,
-            color,
-            millage
+        timestamp,
+        docUrl,
+        smoker,
+        email,
+        model,
+        vin,
+        color,
+        millage
         ) == hash;
     }
 
