@@ -19,7 +19,6 @@ contract('RealEstateAssetLogic', function (accounts) {
         var assetObj = await smartAsset.getAssetById(id);
         assert.equal(accounts[0], assetObj[10]);
 
-        await realEstateAssetLogic.updateViaIotSimulator(id, '11,11', '22,22', "/link", { from: accounts[1] });
         await smartAsset.calculateAssetPrice(id);
         const assetPrice = await smartAsset.getSmartAssetPrice(id);
 
