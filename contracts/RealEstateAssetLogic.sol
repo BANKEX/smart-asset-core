@@ -20,12 +20,12 @@ contract RealEstateAssetLogic is DhOraclizeBase {
     }
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
-        var(timestamp, year, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner) = getById(assetId);
+        var(timestamp, year, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner, assetType) = getById(assetId);
         return max(priceCoefficient * sqm % 10, priceCoefficient);
     }
 
     function getSmartAssetPrice(uint24 id) constant returns (uint) {
-        var(timestamp, year,  docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner) = getById(id);
+        var(timestamp, year, docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner, assetType) = getById(id);
         return max(priceCoefficient * sqm % 10, priceCoefficient);
     }
 

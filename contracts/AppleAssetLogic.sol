@@ -19,12 +19,12 @@ contract AppleAssetLogic is DhOraclizeBase {
     }
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
-        var(timestamp, docUrl, deviceType, email, model, characteristic, color, garanty, state, owner) = getById(assetId);
+        var(timestamp, year, docUrl, deviceType, email, model, characteristic, color, garanty, state, owner, assetType) = getById(assetId);
         return priceCoefficient * uint(deviceType);
     }
 
     function getSmartAssetPrice(uint24 id) constant returns (uint) {
-        var(timestamp, docUrl, deviceType, email, model, characteristic, color, garanty, state, owner) = getById(id);
+        var(timestamp, year, docUrl, deviceType, email, model, characteristic, color, garanty, state, owner, assetType) = getById(id);
         return priceCoefficient * uint(deviceType);
     }
 
