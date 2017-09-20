@@ -20,13 +20,13 @@ contract RealEstateAssetLogic is DhOraclizeBase {
     }
 
     function calculateAssetPrice(uint24 assetId) onlySmartAssetRouter returns (uint) {
-        var(timestamp, year, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner, assetType) = getById(assetId);
-        return priceCoefficient * sqm;
+        var(timestamp, year, docUrl, propertyType, email, governmentNumber, _address, _empty, sqm, state, owner) = getById(assetId);
+        return max(priceCoefficient * sqm % 10, priceCoefficient);
     }
 
     function getSmartAssetPrice(uint24 id) constant returns (uint) {
-        var(timestamp, year, docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner, assetType) = getById(id);
-        return priceCoefficient * sqm;
+        var(timestamp, year,  docUrl, propertyType, email, governmentNumber, _address, _empty,  sqm, state, owner) = getById(id);
+        return max(priceCoefficient * sqm % 10, priceCoefficient);
     }
 
     function isAssetTheSameState(uint24 id) onlySmartAssetRouter constant returns (bool modified) {
@@ -45,4 +45,10 @@ contract RealEstateAssetLogic is DhOraclizeBase {
         return true;
     }
 
+    /**
+     * @dev Max function
+     */
+    function max(uint a, uint b) private returns (uint) {
+        return a > b ? a : b;
+    }
 }
