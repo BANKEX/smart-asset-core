@@ -39,14 +39,6 @@ contract BuySmartAsset is Destructible, PullPayment {
         smartAssetRouter = SmartAssetRouter(routerAddress);
     }
 
-    /**
-     * @dev Returns total price of the asset
-     * @param assetId Id of smart asset
-     * @param cityName City name of destination/delivery city
-     */
-    function getTotalPrice(uint24 assetId, bytes32 cityName) constant returns (uint totalPrice) {
-        return smartAssetRouter.getSmartAssetPrice(assetId) + smartAssetRouter.calculateDeliveryPrice(assetId, cityName);
-    }
 
     /**
      * @dev Returns total price of the asset
@@ -54,22 +46,6 @@ contract BuySmartAsset is Destructible, PullPayment {
      */
     function getTotalPrice(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) constant returns (uint totalPrice) {
         return smartAssetRouter.getSmartAssetPrice(assetId) + smartAssetRouter.calculateDeliveryPrice(assetId, latitudeTo, longitudeTo);
-    }
-
-    /**
-     * @dev Performs buying of the asset
-     * @param assetId Id of smart asset
-     * @param cityName City name of destination/delivery city
-     */
-    function buyAsset(uint24 assetId, bytes32 cityName) payable {
-
-        require(smartAssetRouter.getSmartAssetAvailability(assetId));
-
-        require(smartAssetRouter.isAssetTheSameState(assetId));
-
-        uint totalPrice = getTotalPrice(assetId, cityName);
-
-        buyAsset(assetId, totalPrice);
     }
 
     /**

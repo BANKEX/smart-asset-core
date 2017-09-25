@@ -25,10 +25,10 @@ contract('RealEstateAssetLogic', function (accounts) {
         assert.isAbove(parseInt(assetPrice), 0);
         await smartAsset.makeOnSale(id);
 
-        const totalPrice = await buySmartAsset.getTotalPrice(id, 'Saint-Petersburg');
+        const totalPrice = await buySmartAsset.getTotalPrice(id, '112', '223');
         assert.isAbove(parseInt(totalPrice), assetPrice);
 
-        await buySmartAsset.buyAsset(id, 'Saint-Petersburg', { from: accounts[1], value: totalPrice });
+        await buySmartAsset.buyAsset(id, '112', '223', { from: accounts[1], value: totalPrice });
         assetObj = await smartAsset.getAssetById(id);
 
         assert.equal(accounts[1], assetObj[10]);

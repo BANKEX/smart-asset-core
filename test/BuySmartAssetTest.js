@@ -38,8 +38,8 @@ contract('BuySmartAsset', function (accounts) {
 
         await smartAsset.makeOnSale(smartAssetGeneratedId);
 
-        const calculatedTotalPrice = await buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, deliveryCity);
-        await buySmartAsset.buyAsset(smartAssetGeneratedId, deliveryCity, { from: accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra)) });
+        const calculatedTotalPrice = await buySmartAsset.getTotalPrice.call(smartAssetGeneratedId, '112', '223');
+        await buySmartAsset.buyAsset(smartAssetGeneratedId, '112', '223', { from: accounts[1], value: BigInt(calculatedTotalPrice.toString()).add(BigInt(extra)) });
 
         assetObj = await smartAsset.getAssetById.call(smartAssetGeneratedId);
         assert.equal(assetObj[9], 0, 'state should be ManualDataAreEntered = position 0 in State enum list');
