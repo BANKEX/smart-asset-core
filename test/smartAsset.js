@@ -137,8 +137,8 @@ contract('SmartAsset', function (accounts) {
         var vins = result[3];
         assert.equal(toAscii(vins[0]), 'Audi A8');
 
-        var status = result[6];
-        assert.equal(status, 3, "Status should be on 3 - OnSale position in the list of states ");
+        var owner = result[6];
+        assert.equal(owner, web3.eth.accounts[0]);
 
     })
 

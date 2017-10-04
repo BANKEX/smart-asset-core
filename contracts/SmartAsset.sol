@@ -172,7 +172,7 @@ contract SmartAsset is Destructible {
         bytes32[],
         bytes32[],
         bytes32[],
-        uint[])
+        address[])
     {
 
         require(lastIndex >= firstIndex);
@@ -377,7 +377,7 @@ contract SmartAsset is Destructible {
          bytes32[],
          bytes32[],
          bytes32[],
-         uint[]
+         address[]
      ) {
         require(lastIndex >= firstIndex);
         require(lastIndex <= getMyAssetsCount(assetType));
@@ -560,7 +560,7 @@ contract SmartAsset is Destructible {
         bytes32[] memory b1s,
         bytes32[] memory b2s,
         bytes32[] memory b3s,
-        uint[] memory states
+        address[] memory owners
     ){
 
         uint size = ids.length;
@@ -570,7 +570,7 @@ contract SmartAsset is Destructible {
         b1s = new bytes32[](size);
         b2s = new bytes32[](size);
         b3s = new bytes32[](size);
-        states = new uint[](size);
+        owners = new address[](size);
 
         for (uint24 i = 0; i < size; i++) {
 
@@ -581,10 +581,10 @@ contract SmartAsset is Destructible {
             b1s[i] = smartAssetStorage.getSmartAssetb1(id);
             b2s[i] = smartAssetStorage.getSmartAssetb2(id);
             b3s[i] = smartAssetStorage.getSmartAssetb3(id);
-            states[i] = smartAssetStorage.getSmartAssetState(id);
+            owners[i] = smartAssetStorage.getSmartAssetOwner(id);
         }
 
-        return (ids, yearss, _types, b1s, b2s, b3s, states);
+        return (ids, yearss, _types, b1s, b2s, b3s, owners);
 
     }
 
