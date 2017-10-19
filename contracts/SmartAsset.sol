@@ -7,15 +7,6 @@ import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
 
 
 /**
-*Interface for BKXToken contract
-*/
-contract BKXTokenInterface {
-    function balanceOf(address _address) constant returns (uint balance);
-    function burn(address _address, uint amount);
-}
-
-
-/**
  * @title Smart asset contract
  */
 contract SmartAsset is Destructible {
@@ -26,8 +17,6 @@ contract SmartAsset is Destructible {
 
     SmartAssetStorage smartAssetStorage;
 
-    BKXTokenInterface bkxToken;
-    uint bkxPriceForTransaction = 1;
 
     // Next identifier
     uint24 nextId;
@@ -53,22 +42,6 @@ contract SmartAsset is Destructible {
         smartAssetMetadata = SmartAssetMetadata(metadataAddress);
     }
 
-    /**
-    *@dev Sets BKXToken contract address for this contract
-    *@param _bkxTokenAddress BKXToken contract address
-    */
-    function setBKXTokenAddress(address _bkxTokenAddress) onlyOwner() {
-        bkxToken = BKXTokenInterface(_bkxTokenAddress);
-    }
-
-    /**
-   *@dev Sets amount BKX tokens to be paid for transactions
-   *@param _bkxTokenAddress BKXToken contract address
-   */
-    function setBKXPriceForTransaction(uint _bkxPriceForTransaction) onlyOwner() {
-        bkxPriceForTransaction = _bkxPriceForTransaction;
-    }
-
     //    /**
     //     * @dev Creates/stores new Smart asset
     //     * @param b1 Generic byte32 parameter #1
@@ -87,21 +60,11 @@ contract SmartAsset is Destructible {
         uint u1,
         bytes16 assetType
     ) {
-
-        //This piece is commented out due to the fact that not all those using the prototype application
-        //will have BKX tokens at their disposal. This logic is to remain here until needed.
-        //todo
-
-        /*if(bkxToken == address(0) || bkxToken.balanceOf(msg.sender) < bkxPriceForTransaction) {
-            throw;
-        }
-
-        bkxToken.burn(msg.sender, bkxPriceForTransaction);*/
-
         address owner = msg.sender;
         uint24 id = smartAssetStorage.getId();
 
         smartAssetStorage.setSmartAssetDataManualById(
+            owner,
             id,
             year,
             docUrl,

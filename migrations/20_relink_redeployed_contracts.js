@@ -15,8 +15,7 @@ module.exports = function(deployer, network) {
         .then(function(smartAsset) {
             return Promise.all([
               smartAsset.setSmartAssetStorage(SmartAssetStorage.address),
-              smartAsset.setBuyAssetAddr(BuySmartAsset.address),
-              smartAsset.setBKXTokenAddress(BKXToken.address)
+              smartAsset.setBuyAssetAddr(BuySmartAsset.address)
             ]);
         })
 

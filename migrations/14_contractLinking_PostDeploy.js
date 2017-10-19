@@ -31,9 +31,6 @@ module.exports = function(deployer, network) {
         .then(function() {
             return smartAsset.setBuyAssetAddr(BuySmartAsset.address);
         })
-        .then(function(){
-            return smartAsset.setBKXTokenAddress(BKXToken.address);
-        })
         .then(function() {
             return SmartAssetStorage.deployed()
         })
