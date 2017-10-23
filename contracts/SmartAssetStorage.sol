@@ -138,7 +138,11 @@ contract SmartAssetStorage is Destructible {
         return uint24(smartAssetsByOwner[owner][assetType].length);
     }
 
-    function getId()constant returns(uint24) {
+    function getTokenAddress(uint24 id) constant returns(address) {
+        return assetsAddresses[id];
+    }
+
+    function getId() constant returns(uint24) {
         return id;
     }
 
