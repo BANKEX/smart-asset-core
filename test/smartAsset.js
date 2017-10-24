@@ -28,6 +28,7 @@ contract('SmartAsset', function (accounts) {
         assert.equal(returnValue[9], 0);
         assert.equal(returnValue[10], accounts[0]);
         assert.equal(toAscii(returnValue[11]), "car");
+        assert.notEqual(toAscii(returnValue[12]), "");
 
     })
 

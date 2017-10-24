@@ -277,7 +277,8 @@ contract SmartAsset is Destructible {
         uint u1,
         State state,
         address owner,
-        bytes32 assetType
+        bytes32 assetType,
+        address tokenAddress
     ) {
         require(!smartAssetStorage.isAssetEmpty(id));
 
@@ -294,6 +295,7 @@ contract SmartAsset is Destructible {
         owner = smartAssetStorage.getSmartAssetOwner(id);
 
         assetType = smartAssetRouter.getAssetType(id);
+        tokenAddress = smartAssetStorage.getTokenAddress(id);
 
     }
 
