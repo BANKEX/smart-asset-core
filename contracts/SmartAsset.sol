@@ -539,12 +539,14 @@ contract SmartAsset is Destructible {
 
             uint24 id = ids[i];
 
-            yearss[i] = smartAssetStorage.getSmartAssetYear(id);
-            _types[i] = smartAssetStorage.getSmartAssetType(id);
-            b1s[i] = smartAssetStorage.getSmartAssetb1(id);
-            b2s[i] = smartAssetStorage.getSmartAssetb2(id);
-            b3s[i] = smartAssetStorage.getSmartAssetb3(id);
-            owners[i] = smartAssetStorage.getSmartAssetOwner(id);
+            if(smartAssetStorage.hasTokenAddress(id)) {
+                yearss[i] = smartAssetStorage.getSmartAssetYear(id);
+                _types[i] = smartAssetStorage.getSmartAssetType(id);
+                b1s[i] = smartAssetStorage.getSmartAssetb1(id);
+                b2s[i] = smartAssetStorage.getSmartAssetb2(id);
+                b3s[i] = smartAssetStorage.getSmartAssetb3(id);
+                owners[i] = smartAssetStorage.getSmartAssetOwner(id);
+            }
         }
 
         return (ids, yearss, _types, b1s, b2s, b3s, owners);

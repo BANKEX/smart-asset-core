@@ -223,6 +223,10 @@ contract SmartAssetStorage is Destructible {
         return smartAssetsByOwner[owner][assetType][index];
     }
 
+    function hasTokenAddress(uint24 id) constant returns(bool) {
+        return assetsAddresses[id] != address(0);
+    }
+
     function setSmartAsset(address _smartAsset) onlyOwner {
         smartAsset = _smartAsset;
     }
