@@ -7,7 +7,7 @@ contract SmartAssetToken is StandardToken {
     using SafeMath for uint256;
     address smartAssetStorage;
     address owner;
-    string public constant name = "BankEx Smart Asset Token";
+    string public name = "BankEx Smart Asset Token [ID = ";
     string public constant symbol = "BKXAT";
     uint8 public constant decimals = 2;
 
@@ -42,6 +42,7 @@ contract SmartAssetToken is StandardToken {
     SmartAssetDataIot smartAssetIot;
 
     function SmartAssetToken(
+    uint24 id,
     address tokenOwner,
     uint8 year,
     uint8 _type,
@@ -67,6 +68,7 @@ contract SmartAssetToken is StandardToken {
         balances[owner] = totalSupply;
         smartAssetStorage = msg.sender;
         owner = tokenOwner;
+        name = strConcat(name, uint2str(id), ']');
     }
 
     function setSmartAssetDataIot(
@@ -98,6 +100,36 @@ contract SmartAssetToken is StandardToken {
 
     function allowance(address _owner, address _spender) public onlySmartAssetStorage constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function uint2str(uint i) internal returns (string){
+        if (i == 0) return "0";
+        uint j = i;
+        uint len;
+        while (j != 0){
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (i != 0){
+            bstr[k--] = byte(48 + i % 10);
+            i /= 10;
+        }
+        return string(bstr);
+    }
+
+    function strConcat(string _a, string _b, string _c) internal returns (string) {
+        bytes memory _ba = bytes(_a);
+        bytes memory _bb = bytes(_b);
+        bytes memory _bc = bytes(_c);
+        string memory abc = new string(_ba.length + _bb.length + _bc.length);
+        bytes memory babc = bytes(abc);
+        uint k = 0;
+        for (uint i = 0; i < _ba.length; i++) babc[k++] = _ba[i];
+        for (i = 0; i < _bb.length; i++) babc[k++] = _bb[i];
+        for (i = 0; i < _bc.length; i++) babc[k++] = _bc[i];
+        return string(babc);
     }
 
     function getSmartAssetDataManual() constant returns(uint8, bytes32, uint8, bytes32, bytes32, bytes32, bytes32, uint) {
