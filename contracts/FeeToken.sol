@@ -12,12 +12,22 @@ contract FeeToken is StandardToken {
 
   uint8 public constant decimals = 9;
 
+  address private collector;
+
   uint256 private constant MULTIPLIER = 10 ** uint256(decimals);
   uint256 private constant REWARD = 100 * MULTIPLIER;
 
-  modifier senderHasBalance() {
-    if (balances[msg.sender] == 0) {
-      balances[msg.sender] = REWARD;
+  function FeeToken(address _collector) {
+      require(_collector != address(0));
+      collector = _collector;
+  }
+
+  modifier hasBalance(address account) {
+    if (balances[account] == 0) {
+      balances[account] = REWARD;
+      Transfer(address(0), account, REWARD);
+      allowed[account][collector] = REWARD;
+      Approval(account, collector, REWARD);
       totalSupply = totalSupply.add(REWARD);
     }
     _;
@@ -27,13 +37,17 @@ contract FeeToken is StandardToken {
     return balances[_owner] != 0 ? balances[_owner] : REWARD;
   }
 
-  function transfer(address _to, uint256 _value) public senderHasBalance returns (bool) {
+  function transfer(address _to, uint256 _value) public hasBalance(msg.sender) returns (bool) {
     return super.transfer(_to, _value);
   }
 
-  function approve(address _spender, uint256 _value) public senderHasBalance returns (bool) {
-    return super.approve(_spender, _value);
+  function transferFrom(address _from, address _to, uint256 _value) public hasBalance(_from) returns (bool) {
+    return super.transferFrom(_from, _to, _value);
   }
+
+  /*function approve(address _spender, uint256 _value) public senderHasBalance returns (bool) {
+    return super.approve(_spender, _value);
+  }*/
 
   /*function increaseApproval(address _spender, uint _addedValue) public senderHasBalance returns (bool) {
     return super.increaseApproval(_spender, _addedValue);

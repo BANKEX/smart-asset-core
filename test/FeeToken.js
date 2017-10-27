@@ -15,7 +15,7 @@ const FEE = new BigNumber(1).mul(MULTIPLIER)
 contract('FeeToken', function ([_, tokenContractOwner, tokenHolder, someAccount, smartAssetContract, bankex]) {
 
   beforeEach(async function () {
-    this.token = await FeeToken.new({from: tokenContractOwner})
+    this.token = await FeeToken.new(smartAssetContract, {from: tokenContractOwner})
   })
 
   it('each account is given a reward', async function() {
@@ -30,13 +30,12 @@ contract('FeeToken', function ([_, tokenContractOwner, tokenHolder, someAccount,
   })
 
   it('smart asset contract can transfer approved tokens to BANKEX', async function() {
-    await this.token.approve(smartAssetContract, APPROVAL_AMOUNT, {from: tokenHolder})
     await this.token.transferFrom(tokenHolder, bankex, FEE, {from: smartAssetContract})
     const tokenHolderBalance = await this.token.balanceOf(tokenHolder, {from: someAccount})
     tokenHolderBalance.should.be.bignumber.equal(REWARD.sub(FEE))
     const bankexBalance = await this.token.balanceOf(bankex, {from: someAccount})
     bankexBalance.should.be.bignumber.equal(FEE)
     const smartAssetContractAllowance = await this.token.allowance(tokenHolder, smartAssetContract, {from: someAccount})
-    smartAssetContractAllowance.should.be.bignumber.equal(APPROVAL_AMOUNT.sub(FEE))
+    smartAssetContractAllowance.should.be.bignumber.equal(REWARD.sub(FEE))
   })
 })

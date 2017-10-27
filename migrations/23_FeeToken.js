@@ -9,7 +9,7 @@ module.exports = function(deployer, network) {
       return
     }
 
-    deployer.deploy(FeeToken)
+    deployer.deploy(FeeToken, SmartAsset.address)
     .then(() => {
       return FeeToken.deployed()
     })

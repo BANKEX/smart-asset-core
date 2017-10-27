@@ -20,14 +20,10 @@ contract('SmartAsset', function ([smartAssetContractOwner, smartAssetOwner, feeT
   describe('when fee is set', () => {
 
     beforeEach(async () => {
-      this.feeToken = await FeeToken.new({from: feeTokenContractOwner})
+      this.feeToken = await FeeToken.new(this.smartAsset.address, {from: feeTokenContractOwner})
       const feeTokenDecimals = await this.feeToken.decimals()
       this.fee = new BigNumber(10).pow(feeTokenDecimals)
       await this.smartAsset.setFee(this.feeToken.address, feeWallet, this.fee, {from: smartAssetContractOwner})
-    })
-
-    it('should fail if is not approved to gather fee', async () => {
-      await this.smartAsset.makeOnSale(this.assetId, {from: smartAssetOwner}).should.be.rejected
     })
 
     it('should gather fee', async () => {
