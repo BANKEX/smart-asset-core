@@ -4,6 +4,7 @@ import './SmartAssetRouter.sol';
 import './SmartAssetMetadata.sol';
 import './SmartAssetStorage.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Destructible.sol';
+import 'zeppelin-solidity/contracts/token/ERC20.sol';
 
 
 /**
@@ -35,11 +36,24 @@ contract SmartAsset is Destructible {
     SmartAssetRouter smartAssetRouter;
     SmartAssetMetadata smartAssetMetadata;
 
+    ERC20 public feeToken;
+    address public feeWallet;
+    uint256 public fee;
+
     function SmartAsset(address routerAddress, address metadataAddress) {
         require(routerAddress != address(0));
         require(metadataAddress != address(0));
         smartAssetRouter = SmartAssetRouter(routerAddress);
         smartAssetMetadata = SmartAssetMetadata(metadataAddress);
+    }
+
+    function setFee(address _feeToken, address _feeWallet, uint256 _fee) public onlyOwner {
+       require(_feeToken != address(0));
+       require(_feeWallet != address(0));
+       require(_fee > 0);
+       feeToken = ERC20(_feeToken);
+       feeWallet = _feeWallet;
+       fee = _fee;
     }
 
     //    /**
@@ -364,6 +378,7 @@ contract SmartAsset is Destructible {
      * @param id Smart asset identification number
      */
     function makeOnSale(uint24 id) {
+        require(fee == 0 || feeToken.transferFrom(msg.sender, feeWallet, fee));
         var (indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner) = smartAssetStorage.getSmartAssetDataMetaById(id);
 
         require(owner == msg.sender && State(state) == State.PriceCalculated);
