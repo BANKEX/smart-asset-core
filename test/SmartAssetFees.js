@@ -8,7 +8,7 @@ const should = require('chai')
 const SmartAsset = artifacts.require('SmartAsset')
 const FeeToken = artifacts.require('FeeToken')
 
-contract('SmartAsset', function ([smartAssetContractOwner, smartAssetOwner, feeTokenContractOwner, feeWallet, _]) {
+contract('SmartAsset', ([smartAssetContractOwner, smartAssetOwner, feeTokenContractOwner, feeWallet, _]) => {
 
   beforeEach(async () => {
     this.smartAsset = await SmartAsset.deployed()
@@ -26,8 +26,7 @@ contract('SmartAsset', function ([smartAssetContractOwner, smartAssetOwner, feeT
       await this.smartAsset.setFee(this.feeToken.address, feeWallet, this.fee, {from: smartAssetContractOwner})
     })
 
-    it('should gather fee', async () => {
-      await this.feeToken.approve(this.smartAsset.address, this.fee, {from: smartAssetOwner})
+    it('should collect fee', async () => {
       await this.smartAsset.makeOnSale(this.assetId, {from: smartAssetOwner})
       const feeWalletBalance = await this.feeToken.balanceOf(feeWallet)
       feeWalletBalance.should.be.bignumber.equal(this.fee)

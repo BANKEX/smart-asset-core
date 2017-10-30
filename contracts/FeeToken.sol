@@ -34,7 +34,17 @@ contract FeeToken is StandardToken {
   }
 
   function balanceOf(address _owner) public constant returns (uint256 balance) {
-    return balances[_owner] != 0 ? balances[_owner] : REWARD;
+    if (balances[_owner] == 0) {
+      return REWARD;
+    }
+    return balances[_owner];
+  }
+
+  function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
+    if (_spender == collector && allowed[_owner][collector] == 0) {
+      return REWARD;
+    }
+    return allowed[_owner][_spender];
   }
 
   function transfer(address _to, uint256 _value) public hasBalance(msg.sender) returns (bool) {
