@@ -142,28 +142,4 @@ contract('SmartAsset', function (accounts) {
         assert.equal(owner, web3.eth.accounts[0]);
 
     })
-
-    it('Should search for smart assets', async () => {
-        const timestamp = Date.now();
-        const smartAsset = await SmartAsset.deployed();
-        var result = await smartAsset.createAsset(timestamp, 200, "docUrl", 1, "email@email1.com", "Audi A8", "VIN02", "black", "2500", "car");
-        var smartAssetGeneratedId = result.logs[0].args.id.c[0];
-
-        await smartAsset.calculateAssetPrice(smartAssetGeneratedId);
-
-        await smartAsset.makeOnSale(smartAssetGeneratedId);
-
-        result = await smartAsset.createAsset(timestamp, 201, "docUrl", 1, "email@email1.com", "BMW X3", "VIN007", "red", "2500", "car");
-        smartAssetGeneratedId = result.logs[0].args.id.c[0];
-
-        await smartAsset.calculateAssetPrice(smartAssetGeneratedId);
-
-        await smartAsset.makeOnSale(smartAssetGeneratedId);
-
-        result = await smartAsset.searchAssetsOnSaleByKeyWord('car', 'BMW X3');
-
-        assert.equal(1, result[0].length);
-        var ids = result[0];
-        assert.equal(smartAssetGeneratedId, ids[0]);
-    })
 })
