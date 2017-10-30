@@ -47,6 +47,7 @@ contract SmartAssetStorage is Destructible {
     ) onlySmartAsset
     {
         address newAsset = new SmartAssetToken(
+        id,
         owner,
         year,
         _type,
