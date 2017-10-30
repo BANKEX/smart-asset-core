@@ -16,7 +16,7 @@ module.exports =
         {
             provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/F4WHTukmf2BpFI8UE2L5"),
             network_id: 3,
-            gas:  4709217
+            gas:  4700000
         },
         live: {
             provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/F4WHTukmf2BpFI8UE2L5"),
