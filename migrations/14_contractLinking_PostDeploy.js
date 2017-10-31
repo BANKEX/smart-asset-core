@@ -13,7 +13,7 @@ var BankExCertified = artifacts.require("./BankExCertified.sol");
 var BankExCertifiedStorage = artifacts.require('./BankExCertifiedStorage.sol');
 
 
-module.exports = function(deployer, network) {
+module.exports = function(deployer, network, accounts) {
 
     var smartAssetMetadata;
     var smartAsset;
@@ -120,18 +120,17 @@ module.exports = function(deployer, network) {
             return smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
         })
         .then(function() {
-            if((network == 'development') || (network == 'testnet')) {
-                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : CarAssetLogic.address, value : 2000000000000000000}, function(err){
+            if(network == 'development' || network == 'testnet') {
+                web3.eth.sendTransaction({from : accounts[0], to : CarAssetLogic.address, value : 2000000000000000000}, function(err){
                     if(err) console.log(err);
                 })
             }
         })
         .then(function() {
-            if((network == 'development') || (network == 'testnet')) {
-                web3.eth.sendTransaction({from : web3.eth.accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000}, function(err){
+            if(network == 'development' || network == 'testnet') {
+                web3.eth.sendTransaction({from : accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000}, function(err){
                     if(err) console.log(err);
                 })
-
             }
         });
 };
