@@ -18,6 +18,12 @@ module.exports =
             network_id: 3,
             gas:  4700000
         },
+        rinkeby:
+        {
+            provider: new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/F4WHTukmf2BpFI8UE2L5"),
+            network_id: 4,
+            gas: 4700000
+        },
         live: {
             provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/F4WHTukmf2BpFI8UE2L5"),
             network_id: 1,
