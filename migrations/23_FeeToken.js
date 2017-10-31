@@ -2,9 +2,8 @@ const SmartAsset = artifacts.require('SmartAsset')
 const FeeToken = artifacts.require('FeeToken')
 
 const FEE = new web3.BigNumber(1)
-const BANKEX = web3.eth.accounts[0]
 
-module.exports = function(deployer, network) {
+module.exports = (deployer, network, accounts) => {
     if(network != 'testnet') {
       return
     }
@@ -20,10 +19,10 @@ module.exports = function(deployer, network) {
       return Promise.all([
         SmartAsset.deployed(),
         feeTokenDecimals
-      ]);
+      ])
     })
     .then(([smartAssetInstance, feeTokenDecimals]) => {
       const multiplier = new web3.BigNumber(10).pow(feeTokenDecimals)
-      return smartAssetInstance.setFee(FeeToken.address, BANKEX, FEE.mul(multiplier))
+      return smartAssetInstance.setFee(FeeToken.address, accounts[0], FEE.mul(multiplier))
     })
 }
