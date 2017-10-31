@@ -121,14 +121,14 @@ module.exports = function(deployer, network, accounts) {
         })
         .then(function() {
             if(global.isTestNetwork(network)) {
-                web3.eth.sendTransaction({from : accounts[0], to : CarAssetLogic.address, value : 2000000000000000000}, function(err){
+                web3.eth.sendTransaction({from : accounts[0], to : CarAssetLogic.address, value : 200000000000000000}, function(err){
                     if(err) console.log(err);
                 })
             }
         })
         .then(function() {
             if(global.isTestNetwork(network)) {
-                web3.eth.sendTransaction({from : accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000}, function(err){
+                web3.eth.sendTransaction({from : accounts[0], to : RealEstateAssetLogic.address, value : 200000000000000000}, function(err){
                     if(err) console.log(err);
                 })
             }
