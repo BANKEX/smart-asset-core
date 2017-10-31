@@ -2,6 +2,11 @@ var HDWalletProvider = require("truffle-hdwallet-provider");
 
 var mnemonic = "";
 
+// used in migrations
+global.isTestNetwork = (network) => {
+    return ['development', 'ropsten', 'rinkeby'].includes(network)
+}
+
 module.exports =
 {
     networks:
