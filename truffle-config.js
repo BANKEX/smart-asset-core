@@ -12,7 +12,7 @@ module.exports =
             port: 8545,
             network_id: "*" // Match any network id
         },
-        testnet:
+        ropsten:
         {
             provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/F4WHTukmf2BpFI8UE2L5"),
             network_id: 3,

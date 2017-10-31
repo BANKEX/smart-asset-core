@@ -120,14 +120,14 @@ module.exports = function(deployer, network, accounts) {
             return smartAssetMetadata.addSmartAssetType('Real Estate', RealEstateAssetLogic.address)
         })
         .then(function() {
-            if(network == 'development' || network == 'testnet') {
+            if(network == 'development' || network == 'ropsten') {
                 web3.eth.sendTransaction({from : accounts[0], to : CarAssetLogic.address, value : 2000000000000000000}, function(err){
                     if(err) console.log(err);
                 })
             }
         })
         .then(function() {
-            if(network == 'development' || network == 'testnet') {
+            if(network == 'development' || network == 'ropsten') {
                 web3.eth.sendTransaction({from : accounts[0], to : RealEstateAssetLogic.address, value : 2000000000000000000}, function(err){
                     if(err) console.log(err);
                 })

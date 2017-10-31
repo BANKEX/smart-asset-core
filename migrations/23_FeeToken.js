@@ -4,7 +4,7 @@ const FeeToken = artifacts.require('FeeToken')
 const FEE = new web3.BigNumber(1)
 
 module.exports = (deployer, network, accounts) => {
-    if(network != 'testnet') {
+    if(network != 'ropsten') {
       return
     }
 
