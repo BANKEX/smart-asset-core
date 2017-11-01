@@ -4,7 +4,6 @@ var IotSimulation = artifacts.require("IotSimulation.sol");
 var SmartAsset = artifacts.require("SmartAsset.sol");
 var BuySmartAsset = artifacts.require("BuySmartAsset.sol");
 var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
-var BKXToken = artifacts.require("BKXToken.sol");
 var RealEstateAssetLogic = artifacts.require("RealEstateAssetLogic.sol");
 var CarAssetLogicStorage = artifacts.require("CarAssetLogicStorage.sol");
 var CarAssetLogicStorageMock = artifacts.require("CarAssetLogicStorageMock.sol");
@@ -93,12 +92,6 @@ module.exports = function(deployer, network, accounts) {
              return realEstateAsset.setSmartAssetRouterAddr(SmartAssetRouter.address);
         })
 //      Additional contracts
-        .then(function(){
-            return BKXToken.deployed()
-        })
-        .then(function(instance){
-            return instance.setSmartAssetContract(SmartAsset.address);
-        })
         .then(function() {
             return BankExCertified.deployed();
         }).then(function(instance) {

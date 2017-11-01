@@ -1,5 +1,4 @@
 var SmartAsset = artifacts.require("./SmartAsset.sol");
-var BKXToken = artifacts.require("./BKXToken.sol");
 
 function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
