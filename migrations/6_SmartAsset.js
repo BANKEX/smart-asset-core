@@ -1,8 +1,8 @@
-var BuySmartAsset = artifacts.require("BuySmartAsset.sol");
 var SmartAsset = artifacts.require("SmartAsset.sol");
+var SmartAssetMetadata = artifacts.require("SmartAssetMetadata.sol");
 var SmartAssetRouter = artifacts.require("SmartAssetRouter.sol");
 
 
 module.exports = function(deployer) {
-    deployer.deploy(BuySmartAsset, SmartAsset.address, SmartAssetRouter.address);
-};
+    deployer.deploy(SmartAsset, SmartAssetRouter.address, SmartAssetMetadata.address);
+}
