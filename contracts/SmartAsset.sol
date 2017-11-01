@@ -56,6 +56,10 @@ contract SmartAsset is Destructible {
        fee = _fee;
     }
 
+    function clearFee() public onlyOwner {
+       fee = 0;
+    }
+
     //    /**
     //     * @dev Creates/stores new Smart asset
     //     * @param b1 Generic byte32 parameter #1
@@ -74,6 +78,7 @@ contract SmartAsset is Destructible {
         uint u1,
         bytes16 assetType
     ) {
+        require(fee == 0 || feeToken.transferFrom(msg.sender, feeWallet, fee));
         address owner = msg.sender;
         uint24 id = smartAssetStorage.getId();
 
@@ -287,7 +292,6 @@ contract SmartAsset is Destructible {
      * @param id Smart asset identification number
      */
     function makeOnSale(uint24 id) {
-        require(fee == 0 || feeToken.transferFrom(msg.sender, feeWallet, fee));
         var (indexInSmartAssetsByOwner, indexInSmartAssetsOnSale, state, owner) = smartAssetStorage.getSmartAssetDataMetaById(id);
 
         require(owner == msg.sender && State(state) == State.PriceCalculated);
