@@ -18,10 +18,6 @@ contract SmartAsset is Destructible {
 
     SmartAssetStorage smartAssetStorage;
 
-
-    // Next identifier
-    uint24 nextId;
-
     event NewSmartAsset(uint24 id);
     event AssetPutOnSale(uint24 id);
     event AssetTakenOffSale(uint24 id);
@@ -110,8 +106,8 @@ contract SmartAsset is Destructible {
         NewSmartAsset(id);
 
         smartAssetRouter.setAssetType(id, assetType);
-
-        smartAssetStorage.setId(++id);
+        //plus 2 to have different ids for test network and live one just not to have collision with DH data
+        smartAssetStorage.setId(id + 2);
     }
 
     /**

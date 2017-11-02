@@ -30,7 +30,11 @@ contract SmartAssetStorage is Destructible {
 
     mapping (bytes32 => uint24[]) smartAssetsOnSale;
 
-    uint24 id = 1;
+    uint24 id;
+
+    function SmartAssetStorage(uint24 idStart) {
+        id = idStart;
+    }
 
     /** ById set*/
     function setSmartAssetDataManualById(

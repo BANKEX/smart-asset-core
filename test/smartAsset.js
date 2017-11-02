@@ -46,9 +46,10 @@ contract('SmartAsset', function (accounts) {
         const returnValue = await smartAsset.getMyAssets.call("car", 0, 1);
         console.log(returnValue);
 
+        //for non live env ids should be odd numbers
         var ids = returnValue[0];
         assert.equal(ids[0], 1);
-        assert.equal(ids[1], 2);
+        assert.equal(ids[1], 3);
 
         var b1 = returnValue[3];
         assert.equal(toAscii(b1[0]), "BMW X5");
