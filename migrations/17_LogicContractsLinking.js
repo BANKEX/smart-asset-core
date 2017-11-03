@@ -6,40 +6,39 @@ var AppleAssetLogic = artifacts.require("AppleAssetLogic.sol");
 var IotSimulation = artifacts.require("IotSimulation.sol");
 
 
-module.exports = function(deployer) {
-    deployer.then(function() {
-            return CarAssetLogic.deployed();
-        })
-        .then(function(carAssetLogic){
-            return Promise.all([
-              carAssetLogic.setSmartAssetAddr(SmartAsset.address),
-              carAssetLogic.setSmartAssetRouterAddr(SmartAssetRouter.address),
-              carAssetLogic.setIotSimulationAddr(IotSimulation.address)
-            ]);
-        })
-        .then(function() {
-             return IotSimulation.deployed()
-        })
-        .then(function(iotSimulation){
-            return iotSimulation.setCarAssetLogicAddr(CarAssetLogic.address);
-        })
-
-        .then(function() {
-            return RealEstateAssetLogic.deployed();
-        })
-        .then(function(realEstateAsset){
-            return Promise.all([
-              realEstateAsset.setSmartAssetAddr(SmartAsset.address),
-              realEstateAsset.setSmartAssetRouterAddr(SmartAssetRouter.address)
-            ]);
-        })
-        .then(function() {
-            return AppleAssetLogic.deployed();
-        })
-        .then(function(appleAsset){
-            return Promise.all([
-              appleAsset.setSmartAssetAddr(SmartAsset.address),
-              appleAsset.setSmartAssetRouterAddr(SmartAssetRouter.address)
-            ]);
-        })
+module.exports = (deployer) => {
+    deployer.then(() => {
+        return CarAssetLogic.deployed();
+    })
+    .then((carAssetLogic) => {
+        return Promise.all([
+          carAssetLogic.setSmartAssetAddr(SmartAsset.address),
+          carAssetLogic.setSmartAssetRouterAddr(SmartAssetRouter.address),
+          carAssetLogic.setIotSimulationAddr(IotSimulation.address)
+        ]);
+    })
+    .then(() => {
+         return IotSimulation.deployed()
+    })
+    .then((iotSimulation) => {
+        return iotSimulation.setCarAssetLogicAddr(CarAssetLogic.address);
+    })
+    .then(() => {
+        return RealEstateAssetLogic.deployed();
+    })
+    .then((realEstateAsset) => {
+        return Promise.all([
+          realEstateAsset.setSmartAssetAddr(SmartAsset.address),
+          realEstateAsset.setSmartAssetRouterAddr(SmartAssetRouter.address)
+        ]);
+    })
+    .then(() => {
+        return AppleAssetLogic.deployed();
+    })
+    .then((appleAsset) => {
+        return Promise.all([
+          appleAsset.setSmartAssetAddr(SmartAsset.address),
+          appleAsset.setSmartAssetRouterAddr(SmartAssetRouter.address)
+        ]);
+    })
 }

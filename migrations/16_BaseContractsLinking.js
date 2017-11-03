@@ -6,37 +6,37 @@ var SmartAssetRouterStorage = artifacts.require("SmartAssetRouterStorage.sol");
 var SmartAssetMetadata = artifacts.require("SmartAssetMetadata.sol");
 
 
-module.exports = function(deployer) {
-    deployer.then(function() {
+module.exports = (deployer) => {
+    deployer.then(() => {
         return SmartAsset.deployed();
     })
-    .then(function(smartAsset) {
+    .then((smartAsset) => {
         return Promise.all([
           smartAsset.setSmartAssetStorage(SmartAssetStorage.address),
           smartAsset.setBuyAssetAddr(BuySmartAsset.address)
         ]);
     })
-    .then(function() {
+    .then(() => {
         return SmartAssetStorage.deployed()
     })
-    .then(function(smartAssetStorageInstance) {
+    .then((smartAssetStorageInstance) => {
         return smartAssetStorageInstance.setSmartAsset(SmartAsset.address);
     })
 
-    .then(function() {
+    .then(() => {
         return SmartAssetRouter.deployed();
     })
-    .then(function(smartAssetRouter) {
+    .then((smartAssetRouter) => {
         return Promise.all([
           smartAssetRouter.setSmartAssetAddress(SmartAsset.address),
           smartAssetRouter.setSmartAssetRouterStorage(SmartAssetRouterStorage.address),
           smartAssetRouter.setSmartAssetMetaAddress(SmartAssetMetadata.address)
         ]);
     })
-    .then(function(){
+    .then(() => {
         return SmartAssetRouterStorage.deployed();
     })
-    .then(function(instance){
+    .then((instance) => {
         return instance.setSmartAssetRouterAddress(SmartAssetRouter.address);
     })
 }

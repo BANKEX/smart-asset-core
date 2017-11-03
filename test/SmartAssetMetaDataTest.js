@@ -4,7 +4,7 @@ function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
 }
 
-contract('SmartAssetMetadata', function (accounts) {
+contract('SmartAssetMetadata', (accounts) => {
     var assetType = "New Asset Type";
     var smartAssetLogicAddress = '0x586Bfe2c9a8A69727549e92326642301389771B8';
 

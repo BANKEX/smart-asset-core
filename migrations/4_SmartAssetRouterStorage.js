@@ -1,5 +1,6 @@
 var SmartAssetRouterStorage = artifacts.require("SmartAssetRouterStorage.sol");
 
-module.exports = function(deployer) {
+
+module.exports = (deployer) => {
     deployer.deploy(SmartAssetRouterStorage);
 }

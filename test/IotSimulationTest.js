@@ -7,7 +7,7 @@ function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
 }
 
-contract('IotSimulation', function (accounts) {
+contract('IotSimulation', (accounts) => {
 
     it("generateIotOutput have to throw exception if id param is absent", async () => {
         const iotSimulation = await IotSimulation.deployed();

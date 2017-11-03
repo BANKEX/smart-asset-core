@@ -3,10 +3,10 @@ var CarAssetLogicStorageMock = artifacts.require("CarAssetLogicStorageMock.sol")
 var CarAssetLogic = artifacts.require("CarAssetLogic.sol");
 
 
-module.exports = function(deployer, network) {
+module.exports = (deployer, network) => {
     var carAssetLogicStorageOrMock;
 
-    deployer.then(function() {
+    deployer.then(() => {
         if(network == 'development') {
             return deployer.deploy(CarAssetLogicStorageMock);
         }
@@ -14,7 +14,7 @@ module.exports = function(deployer, network) {
             return deployer.deploy(CarAssetLogicStorage);
         }
     })
-    .then(function() {
+    .then(() => {
         if(network == 'development') {
             return CarAssetLogicStorageMock.deployed();
         }
@@ -22,14 +22,14 @@ module.exports = function(deployer, network) {
             return CarAssetLogicStorage.deployed();
         }
     })
-    .then(function(instance){
+    .then((instance) => {
         carAssetLogicStorageOrMock = instance;
         carAssetLogicStorageOrMock.setCarAssetLogic(CarAssetLogic.address);
     })
-    .then(function() {
+    .then(() => {
          return CarAssetLogic.deployed();
     })
-    .then(function(carAssetLogic){
+    .then((carAssetLogic) => {
         carAssetLogic.setCarAssetLogicStorage(carAssetLogicStorageOrMock.address);
     })
 }

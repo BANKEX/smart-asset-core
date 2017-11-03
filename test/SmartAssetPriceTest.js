@@ -2,7 +2,7 @@ var IotSimulation = artifacts.require("./IotSimulation.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 
-contract('IotSimulation', function (accounts) {
+contract('IotSimulation', (accounts) => {
 
     it("Check exception will be thrown in case asset is in step OnSale or after", async () => {
         const smartAsset = await SmartAsset.deployed();

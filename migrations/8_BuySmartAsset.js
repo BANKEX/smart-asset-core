@@ -3,6 +3,6 @@ var SmartAsset = artifacts.require("SmartAsset.sol");
 var SmartAssetRouter = artifacts.require("SmartAssetRouter.sol");
 
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     deployer.deploy(BuySmartAsset, SmartAsset.address, SmartAssetRouter.address);
 }
