@@ -4,7 +4,7 @@ var SmartAssetMetadata = artifacts.require("./SmartAssetMetadata.sol");
 var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 
 
-contract('RealEstateAssetLogic', function (accounts) {
+contract('RealEstateAssetLogic', (accounts) => {
 
     it('Should pass flow', async () => {
         const smartAsset = await SmartAsset.deployed();

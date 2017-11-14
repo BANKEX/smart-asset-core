@@ -2,15 +2,15 @@ var BankExCertifiedStorage = artifacts.require("BankExCertifiedStorage.sol");
 var BankExCertified = artifacts.require("BankExCertified.sol");
 
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     deployer.deploy(BankExCertifiedStorage)
-        .then(function() {
+        .then(() => {
             return BankExCertifiedStorage.deployed();
-        }).then(function(bankExCertifiedStorage) {
+        }).then((bankExCertifiedStorage) => {
             return bankExCertifiedStorage.setBankExCertifiedAddress(BankExCertified.address);
-        }).then(function() {
+        }).then(() => {
             return BankExCertified.deployed();
-        }).then(function(bankExCertified) {
+        }).then((bankExCertified) => {
             return bankExCertified.setStorageAddress(BankExCertifiedStorage.address);
         })
 }

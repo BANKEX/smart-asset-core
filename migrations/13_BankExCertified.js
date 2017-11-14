@@ -1,6 +1,6 @@
 var BankExCertified = artifacts.require("BankExCertified.sol");
 
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     deployer.deploy(BankExCertified);
 }

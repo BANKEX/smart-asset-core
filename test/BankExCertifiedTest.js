@@ -1,6 +1,6 @@
 var BankExCertified = artifacts.require("./BankExCertified.sol");
 
-contract('BankExCertified', function (accounts) {
+contract('BankExCertified', (accounts) => {
 
     it("Should return UnCertified by default", async () => {
         const bankExCertified = await BankExCertified.deployed();

@@ -2,7 +2,7 @@ var CarAssetLogic = artifacts.require("./CarAssetLogic.sol");
 var SmartAsset = artifacts.require("./SmartAsset.sol");
 var IotSimulation = artifacts.require("./IotSimulation.sol");
 
-contract('CarAssetLogic', function (accounts) {
+contract('CarAssetLogic', (accounts) => {
 
     var smartAssetId;
     var smartAsset;

@@ -4,7 +4,7 @@ var BuySmartAsset = artifacts.require("./BuySmartAsset.sol");
 
 var BigInt = require('big-integer');
 
-contract('BuySmartAsset', function (accounts) {
+contract('BuySmartAsset', (accounts) => {
 
     it("Should sell asset", async () => {
         var deliveryCity = "Lublin";

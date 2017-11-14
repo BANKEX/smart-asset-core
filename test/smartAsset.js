@@ -4,7 +4,7 @@ function toAscii(input) {
     return web3.toAscii(input).replace(/\u0000/g, '');
 }
 
-contract('SmartAsset', function (accounts) {
+contract('SmartAsset', (accounts) => {
 
     it("Should create asset", async () => {
         const timestamp = Date.now();

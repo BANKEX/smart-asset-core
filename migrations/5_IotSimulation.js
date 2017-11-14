@@ -1,6 +1,6 @@
 var IotSimulation = artifacts.require("IotSimulation.sol");
 
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     deployer.deploy(IotSimulation);
 }

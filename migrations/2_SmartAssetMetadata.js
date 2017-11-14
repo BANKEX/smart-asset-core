@@ -1,6 +1,6 @@
 var SmartAssetMetadata = artifacts.require("SmartAssetMetadata.sol");
 
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     deployer.deploy(SmartAssetMetadata);
 };

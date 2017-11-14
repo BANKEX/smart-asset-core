@@ -1,6 +1,6 @@
 var AppleAssetLogic = artifacts.require("AppleAssetLogic.sol");
 
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     deployer.deploy(AppleAssetLogic);
 }
