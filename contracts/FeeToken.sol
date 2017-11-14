@@ -25,7 +25,7 @@ contract FeeToken is StandardToken {
   modifier hasBalance(address account) {
     if (balances[account] == 0) {
       balances[account] = REWARD;
-      Transfer(address(0), account, REWARD);
+      Transfer(collector, account, REWARD);
       allowed[account][collector] = REWARD;
       Approval(account, collector, REWARD);
       totalSupply = totalSupply.add(REWARD);
@@ -34,7 +34,7 @@ contract FeeToken is StandardToken {
   }
 
   function balanceOf(address _owner) public constant returns (uint256 balance) {
-    if (balances[_owner] == 0) {
+    if (balances[_owner] == 0 && _owner != collector) {
       return REWARD;
     }
     return balances[_owner];
