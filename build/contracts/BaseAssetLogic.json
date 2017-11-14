@@ -1,0 +1,304 @@
+{
+  "contract_name": "BaseAssetLogic",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "getSmartAssetAvailability",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        },
+        {
+          "name": "param",
+          "type": "bytes32"
+        }
+      ],
+      "name": "calculateDeliveryPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setSmartAssetAddr",
+      "outputs": [
+        {
+          "name": "result",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "destroy",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "param",
+          "type": "string"
+        }
+      ],
+      "name": "forceUpdateFromExternalSource",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "isAssetTheSameState",
+      "outputs": [
+        {
+          "name": "sameState",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setSmartAssetRouterAddr",
+      "outputs": [
+        {
+          "name": "result",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "onAssetSold",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "getById",
+      "outputs": [
+        {
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "name": "year",
+          "type": "uint8"
+        },
+        {
+          "name": "docUrl",
+          "type": "bytes32"
+        },
+        {
+          "name": "_type",
+          "type": "uint8"
+        },
+        {
+          "name": "email",
+          "type": "bytes32"
+        },
+        {
+          "name": "b1",
+          "type": "bytes32"
+        },
+        {
+          "name": "b2",
+          "type": "bytes32"
+        },
+        {
+          "name": "b3",
+          "type": "bytes32"
+        },
+        {
+          "name": "u1",
+          "type": "uint256"
+        },
+        {
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "assetType",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "calculateAssetPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        },
+        {
+          "name": "latitudeTo",
+          "type": "bytes11"
+        },
+        {
+          "name": "longitudeTo",
+          "type": "bytes11"
+        }
+      ],
+      "name": "calculateDeliveryPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_recipient",
+          "type": "address"
+        }
+      ],
+      "name": "destroyAndSend",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "getSmartAssetPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x60606040525b5b60008054600160a060020a03191633600160a060020a03161790555b5b5b61071d806100336000396000f300606060405236156100d85763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166329d68b0081146100dd578063489c35071461010c57806368650b1a1461013c57806383197ef01461016f57806385fdbe2a146101845780638da5cb5b146101e1578063b5254419146100dd578063c9b84ee71461023f578063cced9c7514610272578063d1b619341461028f578063de8386ca1461031f578063e68d4c3a1461034c578063f2fde38b1461039a578063f5074f41146103bb578063fe407f4f1461031f575b600080fd5b34156100e857600080fd5b6100f862ffffff60043516610409565b604051901515815260200160405180910390f35b341561011757600080fd5b61012a62ffffff60043516602435610411565b60405190815260200160405180910390f35b341561014757600080fd5b6100f8600160a060020a036004351661041a565b604051901515815260200160405180910390f35b341561017a57600080fd5b610182610480565b005b341561018f57600080fd5b6101826004803562ffffff169060446024803590810190830135806020601f820181900481020160405190810160405281815292919060208401838380828437509496506104ac95505050505050565b005b34156101ec57600080fd5b6101f46104b1565b604051600160a060020a03909116815260200160405180910390f35b34156100e857600080fd5b6100f862ffffff60043516610409565b604051901515815260200160405180910390f35b341561024a57600080fd5b6100f8600160a060020a03600435166104c8565b604051901515815260200160405180910390f35b341561027d57600080fd5b61018262ffffff60043516610530565b005b341561029a57600080fd5b6102aa62ffffff60043516610534565b6040519b8c5260ff9a8b1660208d01526040808d019a909a52978a1660608c015260808b019690965260a08a019490945260c089019290925260e0880152610100870152909316610120850152600160a060020a03909216610140840152610160830191909152610180909101905180910390f35b341561032a57600080fd5b61012a62ffffff60043516610654565b60405190815260200160405180910390f35b341561035757600080fd5b61012a62ffffff6004351674ffffffffffffffffffffffffffffffffffffffffff196024358116906044351661065c565b60405190815260200160405180910390f35b34156103a557600080fd5b610182600160a060020a0360043516610666565b005b34156103c657600080fd5b610182600160a060020a03600435166106be565b005b341561032a57600080fd5b61012a62ffffff60043516610654565b60405190815260200160405180910390f35b60015b919050565b60005b92915050565b6000805433600160a060020a0390811691161461043657600080fd5b600160a060020a038216151561044b57600080fd5b506001805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03831617815561040c565b5b5b919050565b60005433600160a060020a0390811691161461049b57600080fd5b600054600160a060020a0316ff5b5b565b5b5050565b600054600160a060020a031681565b60015b919050565b6000805433600160a060020a039081169116146104e457600080fd5b600160a060020a03821615156104f957600080fd5b506002805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a038316179055600161040c565b5b5b919050565b5b50565b6000806000806000806000806000806000806000600160009054906101000a9004600160a060020a0316905080600160a060020a0316630f1f34538f600060405161018001526040517c010000000000000000000000000000000000000000000000000000000063ffffffff841602815262ffffff909116600482015260240161018060405180830381600087803b15156105ce57600080fd5b6102c65a03f115156105df57600080fd5b505050604051805190602001805190602001805190602001805190602001805190602001805190602001805190602001805190602001805190602001805190602001805190602001805190509c509c509c509c509c509c509c509c509c509c509c509c505b5091939597999b5091939597999b565b60005b919050565b60005b9392505050565b60005433600160a060020a0390811691161461068157600080fd5b600160a060020a03811615610530576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b5b5b50565b60005433600160a060020a039081169116146106d957600080fd5b80600160a060020a0316ff5b5b50565b60005b9190505600a165627a7a72305820fd42b6bedd0a04ddb172a16825bec4c8abfcf03f1e8d4857b76038c78f4832460029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509643100460
+}

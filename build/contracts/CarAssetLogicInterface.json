@@ -1,0 +1,51 @@
+{
+  "contract_name": "CarAssetLogicInterface",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "latitude",
+          "type": "bytes11"
+        },
+        {
+          "name": "longitude",
+          "type": "bytes11"
+        },
+        {
+          "name": "imageUrl",
+          "type": "bytes32"
+        }
+      ],
+      "name": "updateViaIotSimulator",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "availability",
+          "type": "bool"
+        }
+      ],
+      "name": "updateAvailabilityViaIotSimulator",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509643100461
+}

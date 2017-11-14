@@ -1,0 +1,126 @@
+{
+  "contract_name": "SmartAssetInterface",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        }
+      ],
+      "name": "getAssetById",
+      "outputs": [
+        {
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "name": "year",
+          "type": "uint8"
+        },
+        {
+          "name": "docUrl",
+          "type": "bytes32"
+        },
+        {
+          "name": "_type",
+          "type": "uint8"
+        },
+        {
+          "name": "email",
+          "type": "bytes32"
+        },
+        {
+          "name": "b1",
+          "type": "bytes32"
+        },
+        {
+          "name": "b2",
+          "type": "bytes32"
+        },
+        {
+          "name": "b3",
+          "type": "bytes32"
+        },
+        {
+          "name": "u1",
+          "type": "uint256"
+        },
+        {
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "assetType",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "latitude",
+          "type": "bytes11"
+        },
+        {
+          "name": "longitude",
+          "type": "bytes11"
+        },
+        {
+          "name": "imageUrl",
+          "type": "bytes32"
+        }
+      ],
+      "name": "updateFromExternalSource",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        }
+      ],
+      "name": "getAssetIotById",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes11"
+        },
+        {
+          "name": "",
+          "type": "bytes11"
+        },
+        {
+          "name": "",
+          "type": "bytes32"
+        },
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509643100460
+}

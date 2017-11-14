@@ -1,0 +1,159 @@
+{
+  "contract_name": "SmartAssetLogicInterface",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        }
+      ],
+      "name": "getSmartAssetAvailability",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "city",
+          "type": "bytes32"
+        }
+      ],
+      "name": "calculateDeliveryPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "param",
+          "type": "string"
+        }
+      ],
+      "name": "forceUpdateFromExternalSource",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        }
+      ],
+      "name": "isAssetTheSameState",
+      "outputs": [
+        {
+          "name": "sameState",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "onAssetSold",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "assetId",
+          "type": "uint24"
+        }
+      ],
+      "name": "calculateAssetPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        },
+        {
+          "name": "latitudeTo",
+          "type": "bytes11"
+        },
+        {
+          "name": "longitudeTo",
+          "type": "bytes11"
+        }
+      ],
+      "name": "calculateDeliveryPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint24"
+        }
+      ],
+      "name": "getSmartAssetPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509643100462
+}
