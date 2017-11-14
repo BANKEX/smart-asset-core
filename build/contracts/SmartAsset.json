@@ -933,8 +933,95 @@
       "links": {},
       "address": "0x098125549efdaa9b48c188c60585571fc4b80ad1",
       "updated_at": 1510679334692
+    },
+    "4": {
+      "events": {
+        "0xa97a5f32defba524d92b637b16293d92530f9c7d74d39327cf4e12b2802e91c9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "id",
+              "type": "uint24"
+            }
+          ],
+          "name": "NewSmartAsset",
+          "type": "event"
+        },
+        "0xf1af5567a86b3a2877fedd6741e2d0d5f2f0fc1f9567e2df2d52a7ec49ee4137": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "id",
+              "type": "uint24"
+            }
+          ],
+          "name": "AssetPutOnSale",
+          "type": "event"
+        },
+        "0xb3a06c95ef44424d6b5fb6790ca74686d712febef5fabc492b2dc8bf793e69be": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "id",
+              "type": "uint24"
+            }
+          ],
+          "name": "AssetTakenOffSale",
+          "type": "event"
+        },
+        "0x298ceccc759bf39d08a6f449d5bc3b596f643c86589209a2ecbd634655850cc6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "startIndex",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "endIndex",
+              "type": "uint8"
+            }
+          ],
+          "name": "IndexesQuried",
+          "type": "event"
+        },
+        "0x6a443bfaf95c90967acef81340b8d7a12e35aeaf911559f826a80b5e444370ac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "id",
+              "type": "uint24"
+            },
+            {
+              "indexed": false,
+              "name": "latitude",
+              "type": "bytes11"
+            },
+            {
+              "indexed": false,
+              "name": "longitude",
+              "type": "bytes11"
+            },
+            {
+              "indexed": false,
+              "name": "imageUrl",
+              "type": "bytes32"
+            }
+          ],
+          "name": "IotUpdateEvent",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8cd91532ac8a9afca2664a17f4880fc05ba5f0e1",
+      "updated_at": 1510680978330
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1510679334692
+  "updated_at": 1510680978330
 }

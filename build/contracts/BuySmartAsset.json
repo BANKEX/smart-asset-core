@@ -328,8 +328,61 @@
       "links": {},
       "address": "0xd3480be92e8d7241d6e0b924ed8d588b258f8c85",
       "updated_at": 1510679334689
+    },
+    "4": {
+      "events": {
+        "0x3a22d8eeac2ce8076694d03a4e6171c1a47e8d018cb950be460912b37650ec0f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "id",
+              "type": "uint24"
+            },
+            {
+              "indexed": false,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "AssetSoldTo",
+          "type": "event"
+        },
+        "0x0fbd2f544956cd49df3ba51f37dfcf65bf87effb3da1d190782b5afeb08a5386": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "AsyncSend",
+          "type": "event"
+        },
+        "0x252245fdfe07ec8b30eb8b635d398b3cb9057b8d85514fe09fa6bde5472a4577": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "uint256"
+            }
+          ],
+          "name": "EnteredMethod",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x6754ee60db8fe11e19fdbd76e74174fcd532904c",
+      "updated_at": 1510680978325
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1510679334689
+  "updated_at": 1510680978325
 }
