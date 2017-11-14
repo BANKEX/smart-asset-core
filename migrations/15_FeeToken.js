@@ -4,10 +4,6 @@ const FeeToken = artifacts.require('FeeToken')
 const FEE = new web3.BigNumber(1)
 
 module.exports = (deployer, network, accounts) => {
-    if(!global.isTestNetwork(network)) {
-      return
-    }
-
     deployer.deploy(FeeToken, SmartAsset.address)
     .then(() => {
       return FeeToken.deployed()
