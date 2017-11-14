@@ -53,9 +53,6 @@ contract BuySmartAsset is Destructible, PullPayment {
      * @param assetId Id of smart asset
      */
     function buyAsset(uint24 assetId, bytes11 latitudeTo, bytes11 longitudeTo) payable {
-
-        require(smartAssetRouter.getSmartAssetAvailability(assetId));
-
         require(smartAssetRouter.isAssetTheSameState(assetId));
 
         uint totalPrice = getTotalPrice(assetId, latitudeTo, longitudeTo);
